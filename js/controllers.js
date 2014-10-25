@@ -55,8 +55,11 @@ app.controller('PostsCtrl', function ($scope, $location, Auth, Post, Helper) {
 		$scope.post.creator = $scope.user.profile.userName;
 		$scope.post.creatorUID = $scope.user.uid;
 		$scope.post.createDate = Helper.formatDate(new Date());
-        var content = $scope.post.content;
-        $scope.post.content = content.replace(/\n/g, '<br/>');
+        	var content = $scope.post.content;
+        	$scope.post.content = content.replace(/\n/g, '<br/>');
+        	if(!$scope.post.picture){
+        		$scope.post.picture = '';	
+        	}
 		Post.create($scope.post).then(function () {
 			$scope.post = {content: '', title: ''};
 			$location.path('/posts');
