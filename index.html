@@ -1,43 +1,240 @@
-<!DOCTYPE html>
-<html lang="en" ng-app="vietsofts">
-  <head>
-	<meta charset="utf-8">
-    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
 	<title>Phần mềm Việt</title>
-	
-	<!-- Jquery -->
-	<script src="libs/jquery/jquery.min.js"></script>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap.min.css">
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap-theme.min.css">
-	<!-- Latest compiled and minified JavaScript -->
-	<script type="text/javascript" src="libs/bootstrap-3.2.0/js/bootstrap.min.js"></script>
-
-	<!-- Angular JS -->
-    	<script type="text/javascript" src="libs/angularjs/angular.min.js"></script>
-    	<script type="text/javascript" src="libs/angularjs/angular-sanitize.js"></script>
-    	<script type="text/javascript" src="libs/angularjs/angular-resource.min.js"></script>
-    	<script type="text/javascript" src="libs/angularjs/angular-route.min.js"></script>
-	
-	<!-- FireBase -->
-    	<script type="text/javascript" src="libs/firebase/firebase.js"></script>
-	<script type="text/javascript" src="libs/firebase/firebase-simple-login.js"></script>
-    	<script type="text/javascript" src="libs/angularfire/angularfire.min.js"></script>
-	
-	<!-- Custom Main Code -->
-    	<script type="text/javascript" src="js/app.js"></script>
-	<script type="text/javascript" src="js/controllers.js"></script>
-	<script type="text/javascript" src="js/services.js"></script>
-	
-  </head>
-  <body>
-	<!-- https://thinkster.io/angulartutorial/learn-to-build-realtime-webapps/ -->
-	<div class="container">
-		<div ng-include="'views/nav.html'"></div>
-		<div ng-view></div>
-		<div class="footer" ng-include src='"template/footer.html"'></div>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<link rel="shortcut icon" href="css/images/favicon.ico" />
+	<link rel="stylesheet" href="css/business.css" type="text/css" media="all" />
+	<!--[if IE 6]>
+		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+	<![endif]-->
+	<script type="text/javascript" src="libs/jquery/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="libs/jquery/jquery.jcarousel.js"></script>
+	<script type="text/javascript" src="libs/jquery/jquery-func.js"></script>
+</head>
+<body>
+<!-- Header -->
+<div id="header">
+	<!-- Shell -->
+	<div class="shell">
+		<h1 id="logo"><a href="#">Phần Mềm Việt</a></h1>
+		<!-- Navigation -->
+		<div id="navigation">
+			<ul>
+			    <li><a class="active" href="#"><span>Trang chủ</span></a></li>
+			    <li><a href="#"><span>Dịch vụ</span></a></li>
+			    <li><a href="#"><span>Dự án</span></a></li>
+			    <li><a href="#"><span>Blog</span></a></li>
+			    <li><a href="#"><span>Liên Hệ</span></a></li>
+			</ul>
+		</div>
+		<!-- end Navigation -->
+		
 	</div>
-  </body>
+	<!-- end Shell -->
+</div>
+<!-- end Header -->
+
+<!-- Main -->
+<div id="main">
+	<!-- Shell -->
+	<div class="shell">
+		<!-- Intro -->
+		<div class="intro">
+			<!-- Slider-carousel --> 
+			<div class="slider-carousel"> 
+				<ul>						
+					<li> 
+				    	<a href="#"><img src="css/images/Album-Downloader.png" alt="Album Downloader" /></a>
+				    	<div class="entry">
+					    	<h2>Album Downloader</h2>
+					    	<p>Với mong muốn tạo ra một phần mềm Việt đơn giản dễ sử dụng nên mình viết phần mềm tải nhạc từ các trang nhạc số của Việt Nam, để giúp mọi người có thể tải nhạc nhanh chóng đơn giản và tiện lợi.</p>
+					    	<ul>
+					    	    <li>Tính năng tự động tạo thư mục theo tên album</li>
+					    	    <li>Tag Mp3 với Tiêu đề, Album và Hình ảnh khi dùng chức năng tải về của Tools</li>
+					    	    <li>Tìm kiếm album trên các trang nhạc số.</li>
+					    	    <li>Tải nhạc lossless trên chiasenhac.com</li>
+					    	</ul>
+				    	</div>				    	
+				    	<a class="button" href="#">Xem chi tiết</a>
+				    </li>  
+				   	<li> 
+				    	<a href="#"><img src="css/images/Excel-Converter.png" alt="Excel Converter" /></a>
+				    	<div class="entry">
+					    	<h2>Excel Converter</h2>
+					    	<p>Việc chuyển đổi font chữ TCVN sang Unicode dạng văn bản thì có thể dùng công cụ có sẵn của Unikey, nhưng mà đối với tập tin excel thì chẳng tìm thấy công cụ nào để hỗ trợ chuyển mã mà không làm thay đổi định dạng, đó là lý do Excel Converter ra đời.</p>
+					    	<ul>
+					    	    <li>Chọn tập tin excel cần chuyển đổi.</li>
+					    	    <li>Chọn thư mục để sau khi chuyển đổi xong sẽ lưu ra thư mục này.</li>
+					    	    <li>Nhấn nút "Chuyển đổi" để chương trình bắt đầu chuyển đổi.</li>
+					    	    <li>Nhấn nút "Mở thư mục" để mở thư mục chứa tập tin excel.</li>
+					    	</ul>
+					    	<a class="button" href="#">Xem chi tiết</a>
+				    	</div>				    	
+				    </li> 
+				    <li> 
+				    	<a href="#"><img src="css/images/Web-Automation.png" alt="Web Automation" /></a>
+				    	<div class="entry">
+					    	<h2>Web Automation</h2>
+					    	<p>Đã bao giờ bạn làm các công việc mang tính lặp đi lặp lại hàng ngày một cách nhàm chán hay không? Phần mềm Web Automation sẽ giúp bạn tự động hóa công việc hàng ngày của bạn một cách nhanh chóng.</p>
+					    	<ul>
+					    	    <li>Phần mềm Web Automation giúp bạn tự động hóa công việc hàng ngày của bạn.</li>
+					    	    <li>Phần mềm giúp bạn đăng nhập, đăng ký tài khoản của các trang web một cách tự động.</li>
+					    	    <li>Phần mềm giúp bạn thu thập thông tin từ nhiều nguồn khác nhau</li>
+								<li>Phần mềm giúp bạn có đầy đủ thông tin phục vụ cho việc phân tích...</li>
+					    	</ul>
+					    	<a class="button" href="#">Xem chi tiết</a>
+				    	</div>				    	
+				    </li> 				    
+				    <li> 
+				    	<a href="#"><img src="css/images/Email-Marketing.png" alt="Email Marketing" /></a>
+				    	<div class="entry">
+					    	<h2>Phần mềm Lấy địa chỉ email từ Website</h2>
+					    	<p>Bạn đang tìm email để marketing hay quảng bá thương hiệu, bạn cần có một phần mềm để lấy tấc cả địa chỉ email từ một website bất kỳ hãy dùng phần mềm lọc địa chỉ email.</p>
+					    	<ul>
+					    	    <li>Phần mềm cho phép nhập vào một địa chỉ website có chứa danh sách các địa chỉ email.</li>
+					    	    <li>Sau khi lấy địa chỉ email xong bạn có thể lọc những email trùng lặp.</li>
+					    	    <li>Phần mềm để lọc những nick yahoo để sử dụng hoặc lấy những avatar của nick yahoo này.</li>
+					    	    <li>Phần mềm còn cho phép bạn lấy email từ danh sách website mà bạn đã tìm kiếm được.</li>
+					    	</ul>
+					    	<a class="button" href="#">Xem chi tiết</a>
+				    	</div>				    	
+				    </li> 				    
+				    <li> 
+				    	<a href="#"><img src="css/images/monitor.gif" alt="slide image" /></a>
+				    	<div class="entry">
+					    	<h2>Tải nhạc không lời trên woim.net</h2>
+					    	<p>Nếu bạn nào thích các ca khúc trong trang woim.net với rất nhiều bài hát không lời, các bạn có thể dùng phần mềm này.</p>
+					    	<ul>
+					    	    <li>Đây là một chương trình khá đơn giản và được viết bằng ngôn ngữ tiếng việt nên rất dễ sử dụng.</li>
+					    	    <li>Để tải Album trước tiên các bạn hãy chọn một bài hát trong album.</li>
+					    	    <li>Nếu dò tìm thành công chương trình sẽ liệt kê những link bài hát.</li>
+					    	    <li>Tiếp đến bạn chọn vào nút download và chọn thư mục để lưu Album.</li>
+					    	</ul>
+					    	<a class="button" href="#">Xem chi tiết</a>
+				    	</div>				    	
+				    </li> 
+					</ul>
+		    	<div class="slider-navigation"> 
+		    		<ul> 
+		    		    <li class="first"><a class="active" href="#"><span class="hidden-id">1</span><span class="button1"></span><em>Album Downloader</em>Phần mềm tải toàn bộ album nhạc số VN.</a></li> 
+		    		    <li><a href="#"><span class="hidden-id">2</span><span class="button2"></span><em>Excel Converter</em>Chuyển đổi font chữ TCVN sang Unicode.</a></li> 
+		    		    <li><a  href="#"><span class="hidden-id">3</span><span class="button3"></span><em>Web Automation</em>Hỗ trợ tự động hóa công việc hàng ngày.</a></li> 
+		    		    <li><a  href="#"><span class="hidden-id">4</span><span class="button4"></span><em>Email Marketing</em>Lấy địa chỉ email từ website.</a></li> 
+		    		    <li><a href="#"><span class="hidden-id">5</span><span class="button5"></span><em>Woim Downloader</em>Tải nhạc không lời trên woim.net.</a></li> 
+		    		</ul>
+		    	</div>	
+		    	<div class="cl">&nbsp;</div>
+			</div> 
+			<!-- Slider-carousel --> 
+			
+		</div>
+		<!-- end Intro -->
+		
+		<!-- Main-boxes -->
+		<div class="main-boxes">
+			<div class="box">
+				<div class="box-b">
+					<div class="box-t">
+						<h3>Thông báo</h3>
+						<ul>
+						    <!--<li class="last-item"><span>Cập nhật</span> Album Downloader 1.4.0.5</li>-->
+						</ul>
+					</div>
+				</div>
+			</div>			
+			<div class="box">
+				<div class="box-b">
+					<div class="box-t">
+						<h3>Dịch vụ</h3>
+						<ul>
+						    <!--<li><span>90 Lorem</span> ipsum dolor sit amet, consectetur adipiscing elit</li>
+						    <li><span>10 Praesent</span> aliquet lacus at metus accumsan porta, adipiscing elit</li>
+						    <li><span>45 Lorem</span> ipsum dolor sit amet, consectetur adipiscing elit, proin in ligula ut dui</li>-->
+						</ul>
+					</div>
+				</div>	
+			</div>			
+			<div class="box last">
+				<div class="box-b">
+					<div class="box-t">
+						<h3>Dự án</h3>
+						<ul>
+						    <!--<li><span>90 Lorem</span> ipsum dolor sit amet, consectetur adipiscing elit</li>
+						    <li><span>10 Praesent</span> aliquet lacus at metus accumsan porta, adipiscing elit</li>
+						    <li class="last-item"><span>45 Lorem</span> ipsum dolor sit amet, consectetur adipiscing elit, proin in ligula ut dui</li>-->
+						</ul>
+					</div>
+				</div>	
+			</div>
+			<div class="cl">&nbsp;</div>
+			<div class="more">
+				<div class="more-b">
+					<div class="more-t">
+						<div class="more-entry">
+						<p>Phần mềm Việt, phần mềm tiện ích dành cho người Việt.</p>
+						</div>
+					</div>
+				</div>		
+			</div>
+			<div class="cl">&nbsp;</div>
+		</div>
+		<!-- end Main-boxes -->
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Main -->
+
+<!-- Main-cols -->
+<!--<div id="main-cols">
+	Shell
+	<div class="shell">
+		<div class="col">
+			<h4>GET IN TOUCH</h4>
+			<ul>
+				<li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum placerat commodo ante, sit </li>
+			    <li><p><span>New York:</span> +34 44344 443</p><p><span>Ottawa:</span> +34 44344 443</p></li>
+			    <li><p><a href="#">info@businesslike.com</a></p><p><a href="#">sales@businesslike.com</a></p></li>
+			</ul>
+		</div>
+		<div class="col">
+			<h4>FOLLOW US</h4>
+			<ul class="social">
+			    <li><a class="facebook" href="#">facebook</a></li>
+			    <li><a class="twitter" href="#">twitter</a></li>
+			    <li><a class="del" href="#">del</a></li>
+			    <li><a class="rss" href="#">rss</a></li>
+			</ul>
+		</div>
+		<div class="col last">
+			<h4>BLOG ROLL</h4>
+			<ul>
+			    <li><p class="white">Lorem ipsum dolor sit amet, consectetur </p><p>posted on 20.07.09 in <a class="gray" href="#">Topicname</a> by <a href="#">admin</a></p></li>
+			    <li><p class="white">Sed vel diam mattis dolor tincidunt volutpat </p><p>posted on 20.07.09 in <a class="gray" href="#">Topicname</a> by <a href="#">admin</a></p></li>
+			    <li><p class="white">Duis lacus odio, mattis eu tristique id, </p><p>posted on 20.07.09 in <a class="gray" href="#">Topicname</a> by <a href="#">admin</a></p></li>
+			    <li><p class="white">Maecenas malesuada fermentum eros</p><p>posted on 20.07.09 in <a class="gray" href="#">Topicname</a> by <a href="#">admin</a></p></li>
+			</ul>
+		</div>
+		<div class="cl">&nbsp;</div>
+	</div>
+	end Shell
+</div>-->
+<!-- end Main-cols -->
+
+<!-- Footer -->
+<div id="footer">
+	<!-- Shell -->
+	<div class="shell">
+		<p class="left">
+			<a href="#">Điều khoản sử dụng</a> <span>-</span>
+			<a href="#">Chính sách</a> <span>-</span>
+			<a href="#">Hỏi đáp</a> <span>-</span>
+			<a href="#">Về chúng tôi</a>
+		</p>
+		<p class="text-right"> &copy; 2014 by ThangDC. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Footer -->
+</body>
 </html>
