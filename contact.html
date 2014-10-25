@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
+	<title>Liên Hệ - Phần mềm Việt</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<link rel="shortcut icon" href="css/images/favicon.ico" />
+	<link rel="stylesheet" href="css/business.css" type="text/css" media="all" />
+	<!--[if IE 6]>
+		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+	<![endif]-->
+	
+	<script type="text/javascript" src="libs/jquery/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="libs/jquery/jquery.jcarousel.js"></script>
+	<script type="text/javascript" src="libs/jquery/jquery-func.js"></script>
+	
+	<script type="text/javascript" src="libs/firebase/firebase.js"></script>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap-theme.min.css">
+	<style type="text/css">
+		.form-control { width: 95%;}
+	</style>
+	
+	<script type="text/javascript">
+		$(function(){
+			$('#btnSend').click(function(){
+				var fb = new Firebase("https://vietsofts.firebaseio.com/");
+				var messages = fb.child('messages');
+				
+				var fullName = $('#tbxFullName').val();
+				var email = $('#tbxEmail').val();
+				var phone = $('#tbxPhone').val();
+				var content = $('#tbxContent').val();
+				
+				var message = '';
+				if(!fullName){
+					message = 'Vui lòng nhập Họ và Tên trước khi gửi.';
+				}
+				else if(!email){
+					message = 'Vui lòng nhập Email trước khi gửi.';
+				}
+				else if(!content){
+					message = 'Vui lòng nhập Nội Dung trước khi gửi.';
+				}
+				
+				if(!message){
+					messages.push({
+						fullName: fullName,
+						email: email,
+						phone: phone,
+						content: content,
+						date: new Date().toString()
+					});
+					message = 'Thông điệp của bạn đã được gửi, cảm ơn bạn đã liên hệ.';
+					$('#tbxFullName').val('');
+					$('#tbxEmail').val('');
+					$('#tbxPhone').val('');
+					$('#tbxContent').val('');
+				}
+				$('#status').html(message);
+				return false;
+			});
+		});
+	</script>
+</head>
+<body>
+<!-- Header -->
+<div id="header">
+	<!-- Shell -->
+	<div class="shell">
+		<h1 id="logo" style="margin-top: 0;"><a href="/">Phần Mềm Việt</a></h1>
+		<!-- Navigation -->
+		<div id="navigation">
+			<ul>
+			    <li><a href="/"><span>Trang chủ</span></a></li>
+			    <li><a href="#"><span>Dịch vụ</span></a></li>
+			    <li><a href="#"><span>Dự án</span></a></li>
+			    <li><a href="http://www.thangdc.com"><span>Blog</span></a></li>
+			    <li><a class="active" href="contact.html"><span>Liên Hệ</span></a></li>
+			</ul>
+		</div>
+		<!-- end Navigation -->
+		
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Header -->
+
+<!-- Main -->
+<div id="main">
+	<!-- Shell -->
+	<div class="shell">		
+		<!-- Main-boxes -->
+		<div class="main-boxes">
+			<div class="more">
+				<div class="more-b">
+					<div class="more-t">
+						<div class="more-entry">
+							<form>
+								<div class="form-group">
+									<label>Họ và Tên: (*)</label>
+									<input class="form-control" id="tbxFullName" required type="text" />
+								</div>
+								<div class="form-group">
+									<label>Email: (*)</label>
+									<input class="form-control" id="tbxEmail" required type="email" />
+								</div class="form-group">
+								<div class="form-group">
+									<label>Điện thoại: </label>
+									<input class="form-control" id="tbxPhone" type="phone" />
+								</div>
+								<div class="form-group">
+									<label>Nội dung: (*)</label>
+									<textarea class="form-control" required id="tbxContent"></textarea>
+								</div>
+								<div style="margin-bottom: 15px;">
+									<button id="btnSend" class="btn btn-primary">Gửi</button>
+									<span id="status"></span>
+								</div>
+							</form>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+				</div>		
+			</div>
+			<div class="cl">&nbsp;</div>
+		</div>
+		<!-- end Main-boxes -->
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Main -->
+
+<!-- Footer -->
+<div id="footer">
+	<!-- Shell -->
+	<div class="shell">
+		<p class="left">
+			<a href="#">Điều khoản sử dụng</a> <span>-</span>
+			<a href="#">Chính sách</a> <span>-</span>
+			<a href="#">Hỏi đáp</a> <span>-</span>
+			<a href="#">Về chúng tôi</a>
+		</p>
+		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Footer -->
+</body>
+</html>
