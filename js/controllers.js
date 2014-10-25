@@ -58,7 +58,7 @@ app.controller('PostsCtrl', function ($scope, $location, Auth, Post, Helper) {
         	var content = $scope.post.content;
         	$scope.post.content = content.replace(/\n/g, '<br/>');
         	if(!$scope.post.picture){
-        		$scope.post.picture = '';	
+        		$scope.post.picture = 'images/Home.png';	
         	}
 		Post.create($scope.post).then(function () {
 			$scope.post = {content: '', title: ''};
