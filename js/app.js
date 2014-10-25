@@ -30,7 +30,7 @@ app.config(function($routeProvider, $locationProvider) {
 	.when('/posts', {
 		templateUrl: 'views/posts.html',
 		controller: 'PostsCtrl'
-    })
+    	})
 	.when('/posts/:postId', {
 		templateUrl: 'views/showpost.html',
 		controller: 'PostViewCtrl'
@@ -38,6 +38,7 @@ app.config(function($routeProvider, $locationProvider) {
 	.otherwise({
 		redirectTo:'/'
 	});
-
-    $locationProvider.html5Mode(true).hashPrefix('!');
+	
+	$location.html5Mode(true);
+    //$locationProvider.html5Mode(true).hashPrefix('!');
 });
