@@ -61,7 +61,7 @@ app.controller('PostsCtrl', function ($scope, $location, Auth, Post, Helper) {
         		$scope.post.picture = 'images/Home.png';	
         	}
 		Post.create($scope.post).then(function () {
-			$scope.post = {content: '', title: ''};
+			$scope.post = {content: '', title: '', picture: ''};
 			$location.path('/posts');
 		});
 	};
