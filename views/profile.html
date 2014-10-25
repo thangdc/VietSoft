@@ -1,0 +1,43 @@
+<div class="profile">
+	<div class="row">
+		<div class="col-sm-1">
+		  <img ng-src="images/NumberOne.png" class="prof-img" />
+		</div>
+
+		<div class="col-sm-10">
+		    <div class="name">
+			    <strong>Username:</strong> {{ profile.userName }}
+		    </div>
+		    <div>
+			    <strong>Email:</strong> {{user.email}}
+		    </div>
+            <div>
+                <strong>Follower: </strong> 0
+            </div>
+            <div>
+                <strong>Following: </strong> 0
+            </div>
+		</div>
+	</div>
+</div>
+<br/>
+<div class="posts-page">
+	<div class="panel panel-default" ng-repeat="post in posts" style="margin-bottom: 15px;">
+		<div class="panel-heading">
+			<a ng-href="#/posts/{{post.$id}}">
+			  {{ post.title }}
+			</a>
+		</div>
+		<div class="panel-body" ng-bind-html="post.content"></div>
+		<div class="panel-footer">
+			<a href=""><i class="glyphicon glyphicon-thumbs-up"></i> 0</a> 
+			<i class="glyphicon glyphicon-user"></i> 
+			<a ng-href="#/users/{{ post.creatorUID }}">{{ post.creator }}</a>&nbsp;
+			<i class="glyphicon glyphicon-time"></i> {{ post.createDate }} 
+			<i class="glyphicon glyphicon-trash"></i> 
+			<a href="" ng-click="deletePost(post)" ng-show="user.uid === post.creatorUID">
+				Delete
+			</a>
+		</div>
+	</div>
+</div>
