@@ -39,6 +39,6 @@ app.config(function($routeProvider, $locationProvider) {
 		redirectTo:'/'
 	});
 	
-	$location.html5Mode(true);
+	$locationProvider.html5Mode(true);
     //$locationProvider.html5Mode(true).hashPrefix('!');
 });
