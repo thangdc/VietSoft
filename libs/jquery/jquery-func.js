@@ -15,7 +15,7 @@ $(document).ready (function(){
 	
 	$(".slider-carousel").jcarousel({
 		scroll:1,
-		auto:4,
+		auto: 5,
 		wrap:"both",
 		visible:1,
         itemFirstInCallback: mycarousel_itemFirstInCallback,
