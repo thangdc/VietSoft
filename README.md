@@ -1,4 +1,0 @@
-VietSoft
-========
-
-VietSoft
