@@ -5,7 +5,7 @@ function generateqr(data) {
 	var encoding = $('#enc').val();
 	
 	var qrcode = fb.child('QRCode');
-	qrcode.push({ data: data});
+	qrcode.push({ data: data, date: new Date().toString() });
 	
 	var data = encodeURIComponent(data);
 	
