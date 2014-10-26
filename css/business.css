@@ -159,3 +159,5 @@ ul.social li a.rss { background-position:-104px 0; }
 .big-box .panel{ color: #000;}
 
 #footer a.active{ color: #fff;}
+.big-box  a { color: #a6dd1f; }
+.big-box  a:hover { color: #00f; }
