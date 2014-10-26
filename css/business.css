@@ -193,3 +193,6 @@ a.multi-line-button .subtitle {
 	margin-top: 4px;
 	opacity: 0.7;
 } 
+.addthis_native_toolbox {
+	padding-bottom: 10px;
+}
