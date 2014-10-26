@@ -1,8 +1,14 @@
+var fb = new Firebase("https://vietsofts.firebaseio.com/");
+
 function generateqr(data) {
 	$('#loading').show();
 	var encoding = $('#enc').val();
+	
+	var qrcode = fb.child('QRCode');
+	qrcode.push({ data: data});
+	
 	var data = encodeURIComponent(data);
-
+	
 	// Generate the URL (Get current domain self.request.path
 	var curl = 'http://albumdownloader.apphb.com/TienIch/QRCodeGeneratorImage?content=' + data + '&width=' + $('#x').val() + '&height=' + $('#y').val();
 
