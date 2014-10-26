@@ -132,3 +132,28 @@ ul.social li a.rss { background-position:-104px 0; }
 #footer a:hover { color:#ddd; text-decoration: none; }
 #footer p.text-right { text-align:right; }
 #footer span { padding:0 1px; }
+
+.big-box {
+	background: url("images/more-bg.gif") repeat-y scroll 0 0 rgba(0, 0, 0, 0);
+	color: #fff;
+}
+
+.big-box-b{
+	background: url("images/more-b.gif") no-repeat scroll 0 bottom rgba(0, 0, 0, 0);
+}
+
+.big-box-t{
+	background: url("images/more-t.gif") no-repeat scroll 0 top rgba(0, 0, 0, 0);
+}
+
+.big-box h2{
+	color: #ffd900;
+    font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+    font-size: 19px;
+    font-weight: bold;
+	padding-bottom: 7px;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.big-box .padding-content { padding: 0 15px 15px 15px;}
+.big-box .panel{ color: #000;}

@@ -51,125 +51,130 @@
 	<!-- Shell -->
 	<div class="shell">		
 		<!-- Main-boxes -->
-		<div class="panel panel-default">
-			<div class="panel-heading">Tạo mã QR Code</div>
-			<div class="panel-body">
-				<div class="col-md-4">
-					<div class="panel panel-default">
-						<div class="panel-heading text-center">Kết quả</div>
-						<div class="panel-body text-center" style="position: relative">
-							<img id="loading" alt="Đang tải..." style="display: none;left: 120px;position: absolute;top: 120px;z-index: 1;" src="http://albumdownloader.apphb.com/Images/loading.gif" />
-							<img alt="" class="imgpreview" style="width: 230px; height: 230px;"/>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-8">
-					<div class="panel panel-default">
-						<div class="panel-body">
-							<ul id="myTabs" class="nav nav-tabs">
-								<li class="active"><a href="#tab1">Văn bản</a></li>
-								<li><a href="#tab2">Tin nhắn SMS</a></li>
-								<li><a href="#tab3">Email</a></li>
-								<li><a href="#tab4">Điện thoại</a></li>
-								<li><a href="#tab5">Liên hệ</a></li>
-								<li><a href="#tab6">Địa chỉ</a></li>
-								<li><a href="#tab7">URL</a></li>
-							</ul>
-							
-							<div class="tab-content clearfix">
-								<div class="tab-pane active form-group" id="tab1">
-									<h4 class="text-center">Văn bản</h4>
-									<label>Văn bản để mã hoá (<span id="text2encode">0</span>)</label>
-									<textarea id="textarea1" class="form-control" style="height: 170px"></textarea></p>
-								</div>
-								<div class="tab-pane" id="tab2">
-									<h4 class="text-center">Mã hoá tin nhắn</h4>
-										<label>Số điện thoại (<span id="phonenumberbox">0</span>)</label>
-										<input id="phone" type="text" class="form-control" />
-										<label>Nội dung tin nhắn (<span id="messagebox">0</span>)</label>
-										<textarea id="textarea2" class="form-control" style="height: 120px"></textarea>
-									</p>             
-								</div>
-								<div class="tab-pane" id="tab3">
-									<h4 class="text-center">Mã Hoá Email</h4>					
-									<label>Địa chỉ Email (<span id="mailadr">0</span>)</label>
-									<input id="address" type="text" class="form-control" />
-									<label>Tiêu đề Email (<span id="mailsub">0</span>)</label>
-									<input id="subject" type="text" class="form-control"/>
-									<label>Nội dung Email (<span id="mailbox">0</span>)</label>
-									<textarea id="textarea3" class="form-control" style="height: 70px"></textarea>
-								</div>
-								<div class="tab-pane" id="tab4">
-									<h4 class="text-center">Gọi Điện Thoại</h4>
-									<label>Số Điện Thoại</label>
-									<input id="phone_number" type="text" class="form-control" />
-								</div>
-								<div class="tab-pane" id="tab5">
-									<h4 class="text-center">Thông Tin Liên Hệ</h4>
-									<div class="form-horizontal">
-										<div class="form-group">
-											<label class="col-sm-3 control-label">Tên đầy đủ</label>
-											<div class="col-sm-9">
-												<input id="contact_name" class="form-control" type="text" />
+		<div class="big-box">
+			<div class="big-box-b">
+				<div class="big-box-t">
+					<div class="container-fluid">
+						<div class="row text-justify padding-content">
+							<h2>Tạo mã QR Code</h2>
+							<div class="col-md-8">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<ul id="myTabs" class="nav nav-tabs">
+											<li class="active"><a href="#tab1">Văn bản</a></li>
+											<li><a href="#tab2">Tin nhắn SMS</a></li>
+											<li><a href="#tab3">Email</a></li>
+											<li><a href="#tab4">Điện thoại</a></li>
+											<li><a href="#tab5">Liên hệ</a></li>
+											<li><a href="#tab6">Địa chỉ</a></li>
+											<li><a href="#tab7">URL</a></li>
+										</ul>
+										
+										<div class="tab-content clearfix">
+											<div class="tab-pane active form-group" id="tab1">
+												<h4 class="text-center">Văn bản</h4>
+												<label>Văn bản để mã hoá (<span id="text2encode">0</span>)</label>
+												<textarea id="textarea1" class="form-control" style="height: 170px"></textarea></p>
+											</div>
+											<div class="tab-pane" id="tab2">
+												<h4 class="text-center">Mã hoá tin nhắn</h4>
+													<label>Số điện thoại (<span id="phonenumberbox">0</span>)</label>
+													<input id="phone" type="text" class="form-control" />
+													<label>Nội dung tin nhắn (<span id="messagebox">0</span>)</label>
+													<textarea id="textarea2" class="form-control" style="height: 120px"></textarea>
+												</p>             
+											</div>
+											<div class="tab-pane" id="tab3">
+												<h4 class="text-center">Mã Hoá Email</h4>					
+												<label>Địa chỉ Email (<span id="mailadr">0</span>)</label>
+												<input id="address" type="text" class="form-control" />
+												<label>Tiêu đề Email (<span id="mailsub">0</span>)</label>
+												<input id="subject" type="text" class="form-control"/>
+												<label>Nội dung Email (<span id="mailbox">0</span>)</label>
+												<textarea id="textarea3" class="form-control" style="height: 70px"></textarea>
+											</div>
+											<div class="tab-pane" id="tab4">
+												<h4 class="text-center">Gọi Điện Thoại</h4>
+												<label>Số Điện Thoại</label>
+												<input id="phone_number" type="text" class="form-control" />
+											</div>
+											<div class="tab-pane" id="tab5">
+												<h4 class="text-center">Thông Tin Liên Hệ</h4>
+												<div class="form-horizontal">
+													<div class="form-group">
+														<label class="col-sm-3 control-label">Tên đầy đủ</label>
+														<div class="col-sm-9">
+															<input id="contact_name" class="form-control" type="text" />
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-sm-3 control-label">Số điện thoại</label>
+														<div class="col-sm-9">
+															<input id="contact_phone" class="form-control" type="text" />
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-sm-3 control-label">Email</label>
+														<div class="col-sm-9">
+															<input id="contact_email" class="form-control" type="text" />
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-sm-3 control-label">Địa chỉ</label>
+														<div class="col-sm-9">
+															<input id="contact_address" class="form-control" type="text" />
+														</div>
+													</div>
+													<div class="form-group">
+														<label class="col-sm-3 control-label">WebSite</label>
+														<div class="col-sm-9">
+															<input id="contact_website" class="form-control" type="text" />
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="tab-pane" id="tab6">
+												<h4 class="text-center">Vị trí trên Google map</h4>
+												<div id="map_canvas" style="width: 100%; height: 200px;"></div>
+												<p id="coord">Latitude(-34.397) Longitude(150.644)</p>
+											</div>
+											<div class="tab-pane" id="tab7">
+												<h4 class="text-center">Mã hoá URL</h4>
+												<label>URL</label>
+												<input id="link" class="form-control" type="text" />					
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="col-sm-3 control-label">Số điện thoại</label>
-											<div class="col-sm-9">
-												<input id="contact_phone" class="form-control" type="text" />
+									</div>
+									<div class="panel-footer">
+										<div class="form-horizontal clearfix">
+											<label class="col-sm-5 control-label">Kích thước hình mã hoá</label>
+											<div class="col-sm-2">
+												<input id="x" class="form-control" type="text" value="350" />
 											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-sm-3 control-label">Email</label>
-											<div class="col-sm-9">
-												<input id="contact_email" class="form-control" type="text" />
+											<div class="col-sm-1 text-center">
+												<label class="control-label">X</label>
 											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-sm-3 control-label">Địa chỉ</label>
-											<div class="col-sm-9">
-												<input id="contact_address" class="form-control" type="text" />
+											<div class="col-sm-2">
+												<input id="y" size="2" class="form-control" type="text" value="350" />
 											</div>
-										</div>
-										<div class="form-group">
-											<label class="col-sm-3 control-label">WebSite</label>
-											<div class="col-sm-9">
-												<input id="contact_website" class="form-control" type="text" />
+											<div class="col-sm-2 text-right">
+												<button id="gqr" class="btn btn-primary">Tạo mã</button>
 											</div>
 										</div>
 									</div>
 								</div>
-								<div class="tab-pane" id="tab6">
-									<h4 class="text-center">Vị trí trên Google map</h4>
-									<div id="map_canvas" style="width: 100%; height: 200px;"></div>
-									<p id="coord">Latitude(-34.397) Longitude(150.644)</p>
-								</div>
-								<div class="tab-pane" id="tab7">
-									<h4 class="text-center">Mã hoá URL</h4>
-									<label>URL</label>
-									<input id="link" class="form-control" type="text" />					
-								</div>
 							</div>
-						</div>
-						<div class="panel-footer">
-							<div class="form-horizontal clearfix">
-								<label class="col-sm-5 control-label">Kích thước hình mã hoá</label>
-								<div class="col-sm-2">
-									<input id="x" class="form-control" type="text" value="350" />
-								</div>
-								<div class="col-sm-1 text-center">
-									<label class="control-label">X</label>
-								</div>
-								<div class="col-sm-2">
-									<input id="y" size="2" class="form-control" type="text" value="350" />
-								</div>
-								<div class="col-sm-2 text-right">
-									<button id="gqr" class="btn btn-primary">Tạo mã</button>
+							<div class="col-md-4">
+								<div class="panel panel-default">
+									<div class="panel-heading text-center">Kết quả</div>
+									<div class="panel-body text-center" style="position: relative; min-height: 230px;">
+										<img id="loading" alt="Đang tải..." style="display: none;left: 120px;position: absolute;top: 120px;z-index: 1;" src="http://albumdownloader.apphb.com/Images/loading.gif" />
+										<img alt="" class="imgpreview" style="width: 230px; height: 230px;"/>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<!-- end Main-boxes -->
 				</div>
 			</div>
 		</div>
