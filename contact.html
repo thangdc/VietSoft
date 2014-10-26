@@ -60,7 +60,7 @@
 					$('#tbxPhone').val('');
 					$('#tbxContent').val('');
 				}
-				$('#status').attr('class', classstatus).html(message);
+				$('#status').html(message);
 				return false;
 			});
 		});
@@ -95,34 +95,39 @@
 	<!-- Shell -->
 	<div class="shell">		
 		<!-- Main-boxes -->
-		<div class="panel panel-default">
-			<div class="panel-heading">Liên Hệ</div>
-			<div class="panel-body">
-				<form>
-					<div class="form-group">
-						<label>Họ và Tên: (*)</label>
-						<input class="form-control" id="tbxFullName" required type="text" />
+		<div class="big-box">
+			<div class="big-box-b">
+				<div class="big-box-t">
+					<div class="container-fluid">
+						<div class="row text-justify padding-content">
+							<h2>Liên Hệ</h2>
+							<form>
+								<div class="form-group">
+									<label>Họ và Tên: (*)</label>
+									<input class="form-control" id="tbxFullName" required type="text" />
+								</div>
+								<div class="form-group">
+									<label>Email: (*)</label>
+									<input class="form-control" id="tbxEmail" required type="email" />
+								</div class="form-group">
+								<div class="form-group">
+									<label>Điện thoại: </label>
+									<input class="form-control" id="tbxPhone" type="phone" />
+								</div>
+								<div class="form-group">
+									<label>Nội dung: (*)</label>
+									<textarea class="form-control" required id="tbxContent"></textarea>
+								</div>
+							</form>
+							<div class="text-right">
+								<span id="status"></span>
+								<button id="btnSend" class="btn btn-primary">Gửi</button>
+							</div>
+						</div>
 					</div>
-					<div class="form-group">
-						<label>Email: (*)</label>
-						<input class="form-control" id="tbxEmail" required type="email" />
-					</div class="form-group">
-					<div class="form-group">
-						<label>Điện thoại: </label>
-						<input class="form-control" id="tbxPhone" type="phone" />
-					</div>
-					<div class="form-group">
-						<label>Nội dung: (*)</label>
-						<textarea class="form-control" required id="tbxContent"></textarea>
-					</div>
-				</form>
+				</div>
 			</div>
-			<div class="panel-footer text-right">
-				<span id="status"></span>
-				<button id="btnSend" class="btn btn-primary">Gửi</button>
-			</div>
-		</div>
-		
+		</div>		
 		<!-- end Main-boxes -->
 	</div>
 	<!-- end Shell -->
