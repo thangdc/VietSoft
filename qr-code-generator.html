@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 <head>
 	<title>Tạo Mã QR Code - Phần mềm Việt</title>
@@ -29,7 +29,7 @@
 </head>
 <body>
 <div id="fb-root"></div>
-<script>(function(d, s, id) {
+<script type="text/javascript">(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
@@ -89,15 +89,14 @@
 											<div class="tab-pane active form-group" id="tab1">
 												<h4 class="text-center">Văn bản</h4>
 												<label>Văn bản để mã hoá (<span id="text2encode">0</span>)</label>
-												<textarea id="textarea1" class="form-control" style="height: 170px"></textarea></p>
+												<textarea id="textarea1" class="form-control" style="height: 170px"></textarea>
 											</div>
 											<div class="tab-pane" id="tab2">
 												<h4 class="text-center">Mã hoá tin nhắn</h4>
-													<label>Số điện thoại (<span id="phonenumberbox">0</span>)</label>
-													<input id="phone" type="text" class="form-control" />
-													<label>Nội dung tin nhắn (<span id="messagebox">0</span>)</label>
-													<textarea id="textarea2" class="form-control" style="height: 120px"></textarea>
-												</p>             
+												<label>Số điện thoại (<span id="phonenumberbox">0</span>)</label>
+												<input id="phone" type="text" class="form-control" />
+												<label>Nội dung tin nhắn (<span id="messagebox">0</span>)</label>
+												<textarea id="textarea2" class="form-control" style="height: 120px"></textarea>
 											</div>
 											<div class="tab-pane" id="tab3">
 												<h4 class="text-center">Mã Hoá Email</h4>					
@@ -210,9 +209,9 @@
 			</div>
 		</div>
 	<!-- end Shell -->
+	</div>
+	<!-- end Main -->
 </div>
-<!-- end Main -->
-<br/>
 <!-- Footer -->
 <div id="footer">
 	<!-- Shell -->
@@ -230,7 +229,7 @@
 <!-- end Footer -->
 <!-- Go to www.addthis.com/dashboard to customize your tools -->
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5198d5a47312f037" async="async"></script>
-<script>
+<script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
