@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
+	<title>Tạo Mã QR Code - Phần mềm Việt</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<link rel="shortcut icon" href="css/images/favicon.ico" />
+	<link rel="stylesheet" href="css/business.css" type="text/css" media="all" />
+	<!--[if IE 6]>
+		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+	<![endif]-->
+	
+	<script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="libs/jquery/jquery.jcarousel.js"></script>
+	<script type="text/javascript" src="libs/jquery/jquery-func.js"></script>
+	
+	<script type="text/javascript" src="libs/firebase/firebase.js"></script>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap-theme.min.css">
+		
+	<script type="text/javascript" src="libs/bootstrap-3.2.0/js/tab.js"></script>
+	<script type="text/javascript" src="libs/custom/qr-code.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+</head>
+<body>
+<!-- Header -->
+<div id="header">
+	<!-- Shell -->
+	<div class="shell">
+		<h1 id="logo" style="margin-top: 0;"><a href="/">Phần Mềm Việt</a></h1>
+		<!-- Navigation -->
+		<div id="navigation">
+			<ul>
+			    <li><a href="/"><span>Trang chủ</span></a></li>
+			    <li><a href="#"><span>Dịch vụ</span></a></li>
+			    <li><a href="#"><span>Dự án</span></a></li>
+			    <li><a href="http://www.thangdc.com"><span>Blog</span></a></li>
+				<li><a class="active" href="qr-code-generator.html"><span>Tạo QR Code</span></a></li>
+			    <li><a href="contact.html"><span>Liên Hệ</span></a></li>
+			</ul>
+		</div>
+		<!-- end Navigation -->
+		
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Header -->
+
+<!-- Main -->
+<div id="main">
+	<!-- Shell -->
+	<div class="shell">		
+		<!-- Main-boxes -->
+		<div class="panel panel-default">
+			<div class="panel-heading">Tạo mã QR Code</div>
+			<div class="panel-body">
+				<div class="col-md-4">
+					<div class="panel panel-default">
+						<div class="panel-heading text-center">Kết quả</div>
+						<div class="panel-body text-center" style="position: relative">
+							<img id="loading" alt="Đang tải..." style="display: none;left: 120px;position: absolute;top: 120px;z-index: 1;" src="http://albumdownloader.apphb.com/Images/loading.gif" />
+							<img alt="" class="imgpreview" style="width: 230px; height: 230px;"/>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul id="myTabs" class="nav nav-tabs">
+								<li class="active"><a href="#tab1">Văn bản</a></li>
+								<li><a href="#tab2">Tin nhắn SMS</a></li>
+								<li><a href="#tab3">Email</a></li>
+								<li><a href="#tab4">Điện thoại</a></li>
+								<li><a href="#tab5">Liên hệ</a></li>
+								<li><a href="#tab6">Địa chỉ</a></li>
+								<li><a href="#tab7">URL</a></li>
+							</ul>
+							
+							<div class="tab-content clearfix">
+								<div class="tab-pane active form-group" id="tab1">
+									<h4 class="text-center">Văn bản</h4>
+									<label>Văn bản để mã hoá (<span id="text2encode">0</span>)</label>
+									<textarea id="textarea1" class="form-control" style="height: 170px"></textarea></p>
+								</div>
+								<div class="tab-pane" id="tab2">
+									<h4 class="text-center">Mã hoá tin nhắn</h4>
+										<label>Số điện thoại (<span id="phonenumberbox">0</span>)</label>
+										<input id="phone" type="text" class="form-control" />
+										<label>Nội dung tin nhắn (<span id="messagebox">0</span>)</label>
+										<textarea id="textarea2" class="form-control" style="height: 120px"></textarea>
+									</p>             
+								</div>
+								<div class="tab-pane" id="tab3">
+									<h4 class="text-center">Mã Hoá Email</h4>					
+									<label>Địa chỉ Email (<span id="mailadr">0</span>)</label>
+									<input id="address" type="text" class="form-control" />
+									<label>Tiêu đề Email (<span id="mailsub">0</span>)</label>
+									<input id="subject" type="text" class="form-control"/>
+									<label>Nội dung Email (<span id="mailbox">0</span>)</label>
+									<textarea id="textarea3" class="form-control" style="height: 70px"></textarea>
+								</div>
+								<div class="tab-pane" id="tab4">
+									<h4 class="text-center">Gọi Điện Thoại</h4>
+									<label>Số Điện Thoại</label>
+									<input id="phone_number" type="text" class="form-control" />
+								</div>
+								<div class="tab-pane" id="tab5">
+									<h4 class="text-center">Thông Tin Liên Hệ</h4>
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="col-sm-3 control-label">Tên đầy đủ</label>
+											<div class="col-sm-9">
+												<input id="contact_name" class="form-control" type="text" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label">Số điện thoại</label>
+											<div class="col-sm-9">
+												<input id="contact_phone" class="form-control" type="text" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label">Email</label>
+											<div class="col-sm-9">
+												<input id="contact_email" class="form-control" type="text" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label">Địa chỉ</label>
+											<div class="col-sm-9">
+												<input id="contact_address" class="form-control" type="text" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-sm-3 control-label">WebSite</label>
+											<div class="col-sm-9">
+												<input id="contact_website" class="form-control" type="text" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane" id="tab6">
+									<h4 class="text-center">Vị trí trên Google map</h4>
+									<div id="map_canvas"></div>
+									<p id="coord">Latitude(-34.397) Longitude(150.644)</p>
+								</div>
+								<div class="tab-pane" id="tab7">
+									<h4 class="text-center">Mã hoá URL</h4>
+									<label>URL</label>
+									<input id="link" class="form-control" type="text" />					
+								</div>
+							</div>
+						</div>
+						<div class="panel-footer">
+							<div class="form-horizontal clearfix">
+								<label class="col-sm-5 control-label">Kích thước hình mã hoá</label>
+								<div class="col-sm-2">
+									<input id="x" class="form-control" type="text" value="350" />
+								</div>
+								<div class="col-sm-1 text-center">
+									<label class="control-label">X</label>
+								</div>
+								<div class="col-sm-2">
+									<input id="y" size="2" class="form-control" type="text" value="350" />
+								</div>
+								<div class="col-sm-2 text-right">
+									<button id="gqr" class="btn btn-primary">Tạo mã</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end Main-boxes -->
+				</div>
+			</div>
+		</div>
+	<!-- end Shell -->
+</div>
+<!-- end Main -->
+
+<!-- Footer -->
+<div id="footer">
+	<!-- Shell -->
+	<div class="shell">
+		<p class="left">
+			<a href="#">Điều khoản sử dụng</a> <span>-</span>
+			<a href="#">Chính sách</a> <span>-</span>
+			<a href="#">Hỏi đáp</a> <span>-</span>
+			<a href="#">Về chúng tôi</a>
+		</p>
+		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Footer -->
+</body>
+</html>
