@@ -83,7 +83,7 @@ span.promo { width:175px; height:174px; background:url('images/promo.png') no-re
 
 .box h3 { padding:11px 0 8px 15px; }
 .box ul { list-style:none; min-height:150px; height: auto !important; height:150px; background:url('images/box-separator.gif') repeat-x center top; padding-top:9px;  }
-.box ul li { float:left; display:inline; padding:6px 15px; font-size:13px; color:#fff; background:url('images/box-separator.gif') no-repeat center bottom;  }
+.box ul li { /*float:left; display:inline;*/ padding:6px 15px; font-size:13px; color:#fff; background:url('images/box-separator.gif') no-repeat center bottom;  }
 .box ul li span { background:url('images/box-arrow.gif') no-repeat 0 center; padding-left:13px;  }
 .box ul span { font-size:13px; font-weight:bold; color:#adff00; }
 .box a.details { width:57px; height:22px; float:left; margin:16px 0 0 18px; background:url('images/details.gif') no-repeat 0 bottom; font-size: 0; line-height: 0; text-indent: -4000px; }
@@ -121,7 +121,7 @@ ul.social li a.rss { background-position:-104px 0; }
 
 .last { color:#898989; font-size:11px; }
 .last p.white { font-weight:bold; color:#f0f0f0; font-size:12px; }
-.last a { font-size:11px; color:#fffefe; text-decoration:underline; }
+.last a { font-size:11px; color:#fffefe; }
 .last a:hover { text-decoration:none; }
 .last a.gray { color:#b1b1b1; }
 
