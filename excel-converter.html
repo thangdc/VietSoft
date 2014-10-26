@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<head>
+	<title>Excel Converter - Phần mềm Việt</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	
+	<meta content='Phần mềm chuyển đổi font TCVN sang Unicode dành cho tập tin excel - Phần mềm Việt' name='description'/>
+	<meta content='Phần mềm việt, vietsofts, excel converter, chuyen doi font, font tcvn sang unicode, phanmemviet' name='keywords'/>
+	<meta content='index, follow' name='robots'/>
+	
+	<link rel="shortcut icon" href="css/images/favicon.ico" />
+	<link rel="stylesheet" href="css/business.css" type="text/css" media="all" />
+	<!--[if IE 6]>
+		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+	<![endif]-->
+	
+	<script type="text/javascript" src="libs/jquery/jquery-1.4.2.min.js"></script>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap.min.css"/>
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap-theme.min.css"/>
+</head>
+<body>
+<!-- Header -->
+<div id="header">
+	<!-- Shell -->
+	<div class="shell">
+		<h1 id="logo" style="margin-top: 0;"><a href="/">Phần Mềm Việt</a></h1>
+		<!-- Navigation -->
+		<div id="navigation">
+			<ul>
+			    <li><a href="/"><span>Trang chủ</span></a></li>
+			    <li><a href="services.html"><span>Dịch vụ</span></a></li>
+			    <li><a class="active" href="projects.html"><span>Dự án</span></a></li>
+			    <li><a href="http://www.thangdc.com"><span>Blog</span></a></li>
+				<li><a href="qr-code-generator.html"><span>Tạo QR Code</span></a></li>
+			    <li><a href="contact.html"><span>Liên Hệ</span></a></li>
+			</ul>
+		</div>
+		<!-- end Navigation -->
+		
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Header -->
+
+<!-- Main -->
+<div id="main">
+	<!-- Shell -->
+	<div class="shell">		
+		<!-- Main-boxes -->
+		<div class="big-box">
+			<div class="big-box-b">
+				<div class="big-box-t">
+					<div class="container-fluid">
+						<div class="row text-justify padding-content">
+							<h2>Phần mềm chuyển đổi font TCVN sang Unicode (Excel Converter)</h2>
+							<h4>Yêu cầu</h4>
+							<ol>
+								<li>Máy tính đã cài đặt <a href="http://ads.thangdc.com/6245948/dotnetframework40" target="_blank">.NET Framwork 4.0</a> trở lên</li>
+								<li>Chương trình chỉ hỗ trợ tập tin (.xls)</li>
+							</ol>
+							<p>
+								<a href="http://albumdownloader.apphb.com/Software/Download?version=ExcelConverter-1.0.0.0" class="multi-line-button">
+									<span class="title">Tải Excel Converter</span>
+									<span class="subtitle">Phiên bản 1.0.0.0 - Dung Lượng: 852Kb</span>
+								</a>
+							</p>
+							<p>
+							   Trước giờ máy mình không hề cài những font chữ .vnTimes hay .vnArial hay các font chữ thuộc font chữ TCVN, hôm nay mình do mình cần đọc một tài liệu về văn bản "Quyết định số 124/2004/QĐ-TTg ngày 08/7/2004 của Thủ tướng Chính phủ và công văn số 628/TCTK-PPCĐ ngày 06/8/2009 của Tổng cục Thống kê" nên mới lên mạng tìm và tải văn bản đó về, nhưng mà sau khi tải về thì mình không thể đọc được do máy mình không cài font chữ nên khi mở chương tập tin excel nó hiện ra như thế này:
+							</p>
+							<p class="text-center">
+								<img border="0" width="640" height="340" src="http://2.bp.blogspot.com/-XhI4Rb1kyt0/U8AVJQhSDSI/AAAAAAAAFBs/jk_CKmdFOKg/s1600/font-tcvn.png">
+							</p>
+							<p>Việc chuyển đổi font chữ TCVN sang Unicode dạng văn bản thì có thể dùng công cụ có sẵn của Unikey, nhưng mà đối với tập tin excel thì chẳng tìm thấy công cụ nào để hỗ trợ chuyển mã mà không làm thay đổi định dạng.</p>
+							<p>Do đó mình ngồi ra viết phần mềm này, trước hết là phục vụ nhu cầu của mình sau đó thì chia sẽ cho mọi người sử dụng, sau đây là giao diện chính của chương trình.</p>
+							<p class="text-center"><img border="0" width="640" height="374" src="http://1.bp.blogspot.com/-eDpDn1OshzM/U8AXKHp6dtI/AAAAAAAAFCE/cVyBNLTpTFE/s1600/excel-converter.png"></p>
+							<p>Các bước thực hiện chuyển đổi:</p>
+							<ol>
+								<li>Chọn tập tin excel cần chuyển đổi</li>
+								<li>Chọn thư mục để sau khi chuyển đổi xong sẽ lưu ra thư mục này, tên tập tin xuất ra sau khi chuyển đổi cũng giống với tên tập tin cần chuyển đổi.</li>
+								<li>Sau khi chọn tập tin excel và thư mục lưu trữ, nhấn nút <strong>"Chuyển đổi"<strong> để chương trình bắt đầu chuyển đổi tập tin excel chứa mã <strong>TCVN sang Unicode</strong></li>
+								<li>Nếu tập tin excel có chứa dữ liệu lớn thời gian chuyển đổi lâu bạn có thể nhấn nút <strong>"Hủy bỏ"</strong> để chương trình dừng lại.</li>
+								<li>Sau khi chuyển đổi xong bạn nhấn nút <strong>"Mở thư mục"</strong> để mở thư mục chứa tập tin excel đã được chuyển đổi thành công.</li>
+							</ol>
+							<p class="text-center"><img border="0" width="640" height="374" src="http://3.bp.blogspot.com/-HIyDS-VBDWY/U8AYj-zttlI/AAAAAAAAFCQ/JXyq01nAiKc/s1600/Excel-Convert-Successful.png"></p>
+							<p><strong>Kết quả</strong></p>
+							<p class="text-center"><img border="0" width="640" height="304" src="http://1.bp.blogspot.com/-G_BvGk1-GBo/VEyy-1ChDEI/AAAAAAAAGKU/KAs_d3qba_c/s1600/excel-converter.png"></p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end Main-boxes -->
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Main -->
+
+<!-- Footer -->
+<div id="footer">
+	<!-- Shell -->
+	<div class="shell">
+		<p class="left">
+			<a href="terms.html">Điều khoản sử dụng</a> <span>-</span>
+			<a href="policy.html">Chính sách</a> <span>-</span>
+			<a href="FAQs.html">Câu hỏi thường gặp</a> <span>-</span>
+			<a href="about-vietsofts.html">Về chúng tôi</a>
+		</p>
+		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Footer -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-56112101-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
