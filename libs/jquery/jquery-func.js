@@ -1,8 +1,13 @@
 function mycarousel_initCallback(carousel) {
-	    $('.slider-navigation a').bind('click', function() {
-	        carousel.scroll($.jcarousel.intval($(".hidden-id:eq(0)", this).text()));
-	        return false;
-	    });	        
+	$('.slider-navigation a').bind('click', function() {
+		carousel.scroll($.jcarousel.intval($(".hidden-id:eq(0)", this).text()));
+		return false;
+	});
+	carousel.clip.hover(function() {
+		carousel.stopAuto();
+	}, function() {
+		carousel.startAuto();
+	});
 };
 	
 function mycarousel_itemFirstInCallback(carousel, item, idx, state) {
