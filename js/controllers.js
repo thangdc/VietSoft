@@ -138,3 +138,7 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 	$scope.signedIn = Auth.signedIn;
 	$scope.logout = Auth.logout;
 });
+
+app.controller('MainCtrl', function($scope){
+	$scope.main = 'test';
+});
