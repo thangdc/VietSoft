@@ -172,11 +172,11 @@ app.factory('Main', function (){
 	var result = {
 		GetNavigation: function(page){
 			var nav = [];
-			nav.push({ Title: 'Trang chủ', Link: '/', Target: '', IsActive: page === "Trang chủ" ? true : false });
-			nav.push({ Title: 'Dịch vụ', Link: 'services.html', Target: '', IsActive: page === "Dịch vụ" ? true : false });
-			nav.push({ Title: 'Dự án', Link: 'projects.html', Target: '', IsActive: page === "Dự án" ? true : false });
-			nav.push({ Title: 'Blog', Link: 'http://www.thangdc.com', Target: '_blank', IsActive: page === "Blog" ? true : false });
-			nav.push({ Title: 'Liên hệ', Link: 'contact.html', Target: '', IsActive: page === "Liên hệ" ? true : false });
+			nav.push({ Title: 'Trang chủ', Link: '/', Target: '', Active: page === "Trang chủ" ? 'active' : '' });
+			nav.push({ Title: 'Dịch vụ', Link: 'services.html', Target: '', Active: page === "Dịch vụ" ? 'active' : '' });
+			nav.push({ Title: 'Dự án', Link: 'projects.html', Target: '', Active: page === "Dự án" ? 'active' : '' });
+			nav.push({ Title: 'Blog', Link: 'http://www.thangdc.com', Target: '_blank', Active: page === "Blog" ? 'active' : '' });
+			nav.push({ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: page === "Liên hệ" ? 'active' : '' });
 			return nav;
 		}
 	};
