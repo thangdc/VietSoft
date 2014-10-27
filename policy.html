@@ -176,7 +176,7 @@
 	<!-- Shell -->
 	<div class="shell">
 		<p class="left">
-			<span ng-repeat="nav in footer"><a ng-href="{{nav.Link}}" ng-bind="nav.Title"></a>&nbsp;<span ng-bind="nav.Minus"></span></span>
+			<span ng-repeat="nav in footer"><a ng-href="{{nav.Link}}" ng-class="(nav.Active == true) ? 'active' : ''" ng-bind="nav.Title"></a>&nbsp;<span ng-bind="nav.Minus"></span></span>
 		</p>
 		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
 	</div>
