@@ -47,7 +47,7 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
-			    <li ng-repeat="nav in navigation"><a ng-class="{{nav.Active}}" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
+			    <li ng-repeat="nav in navigation"><a ng-class="{{nav.Active ? 'active' : ''}}" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
 			    <!--<li><a href="services.html"><span>Dịch vụ</span></a></li>
 			    <li><a href="projects.html"><span>Dự án</span></a></li>
 			    <li><a href="http://www.thangdc.com"><span>Blog</span></a></li>
