@@ -180,7 +180,7 @@
 					<div class="box-t">
 						<h3>Dự án</h3>
 						<ul>
-						    <li><a href="album-downloader.html"><span>Album Downloader</span></a></li>
+						    	<li><a href="album-downloader.html"><span>Album Downloader</span></a></li>
 							<li><a href="excel-converter.html"><span>Excel Converter</span></a></li>
 							<li><a href="web-automation.html"><span>Web Automation</span></a></li>
 							<li><a href="email-marketing.html"><span>Email Marketing</span></a></li>
@@ -248,10 +248,10 @@
 	<!-- Shell -->
 	<div class="shell">
 		<p class="left">
-			<a href="terms.html">Điều khoản sử dụng</a> <span>-</span>
-			<a href="policy.html">Chính sách</a> <span>-</span>
+			<a ng-repeat="nav in footer" ng-href="{{nav.Link}}" ng-bind="nav.Title"></a> <span ng-bind="nav.Minus"></span>
+			<!--<a href="policy.html">Chính sách</a> <span>-</span>
 			<a href="FAQs.html">Câu hỏi thường gặp</a> <span>-</span>
-			<a href="about-vietsofts.html">Về chúng tôi</a>
+			<a href="about-vietsofts.html">Về chúng tôi</a>-->
 		</p>
 		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
 	</div>
