@@ -185,7 +185,7 @@ app.factory('Main', function (){
 				{ Title: 'Điều khoản sử dụng', Link: 'terms.html', Target: '', Active: path === "terms.html" ? true : false, Minus: '-' },
 				{ Title: 'Chính sách', Link: 'policy.html', Target: '', Active: path === "policy.html" ? true : false, Minus: '-' },
 				{ Title: 'Câu hỏi thường gặp', Link: 'FAQs.html', Target: '', Active: path === "FAQs.html" ? true : false, Minus: '-' },
-				{ Title: 'Về chúng tôi', Link: 'about-vietsofts.html', Target: '', Active: path === "about-vietsofts.html" ? true : false, Minus: '-' }
+				{ Title: 'Về chúng tôi', Link: 'about-vietsofts.html', Target: '', Active: path === "about-vietsofts.html" ? true : false, Minus: '' }
 			];
 			return nav;
 		}
