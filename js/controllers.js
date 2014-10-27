@@ -140,7 +140,7 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 });
 
 app.controller('MainCtrl', function($scope, $location, Tracking, Main){
-	//Tracking.Save();
+	Tracking.Save();
 	var path = window.location.pathname;
 	$scope.navigation = Main.Navigation(path);
 	$scope.footer = Main.Footer(path);
