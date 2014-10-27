@@ -156,7 +156,7 @@ app.factory('Helper', function () {
 	return helper;	
 });
 
-app.factory('Tracking', function (FIREBASE_URL, $firebase, $http) {
+app.factory('Tracking', function ($window, FIREBASE_URL, $firebase, $http) {
 	var ref = new $window.Firebase(FIREBASE_URL);
 	var tracking = {
 		Save: function(){
