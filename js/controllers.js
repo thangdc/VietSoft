@@ -141,5 +141,6 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 
 app.controller('MainCtrl', function($scope, $location, Tracking, Main){
 	//Tracking.Save();
-	$scope.navigation = Main.GetNavigation($location.path());
+	$scope.navigation = Main.Navigation($location.path());
+	$scope.footer = Main.Footer($location.path());
 });
