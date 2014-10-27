@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<html lang="en-US" ng-app="vietsofts">
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	<title>Dự án - Phần mềm Việt</title>
@@ -14,14 +14,19 @@
 		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
 	<![endif]-->
 	
-	<script type="text/javascript" src="libs/jquery/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="libs/js-compress.js"></script>
 	
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap.min.css"/>
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap-theme.min.css"/>
+	
+	<!-- Custom Main Code -->
+    	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/controllers.js"></script>
+	<script type="text/javascript" src="js/services.js"></script>
 </head>
-<body>
+<body ng-controller="MainCtrl">
 <!-- Header -->
 <div id="header">
 	<!-- Shell -->
@@ -30,12 +35,7 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
-			    <li><a href="/"><span>Trang chủ</span></a></li>
-			    <li><a href="services.html"><span>Dịch vụ</span></a></li>
-			    <li><a class="active" href="projects.html"><span>Dự án</span></a></li>
-			    <li><a href="http://www.thangdc.com"><span>Blog</span></a></li>
-				<li><a href="qr-code-generator.html"><span>Tạo QR Code</span></a></li>
-			    <li><a href="contact.html"><span>Liên Hệ</span></a></li>
+			    <li ng-repeat="nav in navigation"><a ng-class="(nav.Active == true) ? 'active' : ''" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
 			</ul>
 		</div>
 		<!-- end Navigation -->
@@ -77,10 +77,7 @@
 	<!-- Shell -->
 	<div class="shell">
 		<p class="left">
-			<a href="terms.html">Điều khoản sử dụng</a> <span>-</span>
-			<a href="policy.html">Chính sách</a> <span>-</span>
-			<a href="FAQs.html">Câu hỏi thường gặp</a> <span>-</span>
-			<a href="about-vietsofts.html">Về chúng tôi</a>
+			<span ng-repeat="nav in footer"><a ng-href="{{nav.Link}}" ng-bind="nav.Title"></a>&nbsp;<span ng-bind="nav.Minus"></span></span>
 		</p>
 		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
 	</div>
