@@ -140,5 +140,5 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 });
 
 app.controller('MainCtrl', function($scope){
-	$scope.data = 'test';
+	
 });
