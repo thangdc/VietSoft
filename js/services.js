@@ -172,20 +172,20 @@ app.factory('Main', function (){
 	var result = {
 		Navigation: function(path){
 			var nav = [
-				{ Title: 'Trang chủ', Link: '/', Target: '', Active: path === "" ? true : false },
-				{ Title: 'Dịch vụ', Link: 'services.html', Target: '', Active: path === "services.html" ? true : false },
-				{ Title: 'Dự án', Link: 'projects.html', Target: '', Active: path === "projects.html" ? true : false },
+				{ Title: 'Trang chủ', Link: '/', Target: '', Active: path === "/" ? true : false },
+				{ Title: 'Dịch vụ', Link: 'services.html', Target: '', Active: path === "/services.html" ? true : false },
+				{ Title: 'Dự án', Link: 'projects.html', Target: '', Active: path === "/projects.html" ? true : false },
 				{ Title: 'Blog', Link: 'http://www.thangdc.com', Target: '_blank', Active: path === "http://www.thangdc.com" ? true : false },
-				{ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: path === "contact.html" ? true : false }
+				{ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: path === "/contact.html" ? true : false }
 			];
 			return nav;
 		},
 		Footer: function(path){
 			var nav = [
-				{ Title: 'Điều khoản sử dụng', Link: 'terms.html', Target: '', Active: path === "terms.html" ? true : false, Minus: '-' },
-				{ Title: 'Chính sách', Link: 'policy.html', Target: '', Active: path === "policy.html" ? true : false, Minus: '-' },
-				{ Title: 'Câu hỏi thường gặp', Link: 'FAQs.html', Target: '', Active: path === "FAQs.html" ? true : false, Minus: '-' },
-				{ Title: 'Về chúng tôi', Link: 'about-vietsofts.html', Target: '', Active: path === "about-vietsofts.html" ? true : false, Minus: '' }
+				{ Title: 'Điều khoản sử dụng', Link: 'terms.html', Target: '', Active: path === "/terms.html" ? true : false, Minus: '-' },
+				{ Title: 'Chính sách', Link: 'policy.html', Target: '', Active: path === "/policy.html" ? true : false, Minus: '-' },
+				{ Title: 'Câu hỏi thường gặp', Link: 'FAQs.html', Target: '', Active: path === "/FAQs.html" ? true : false, Minus: '-' },
+				{ Title: 'Về chúng tôi', Link: 'about-vietsofts.html', Target: '', Active: path === "/about-vietsofts.html" ? true : false, Minus: '' }
 			];
 			return nav;
 		}
