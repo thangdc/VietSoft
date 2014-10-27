@@ -139,7 +139,8 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 	$scope.logout = Auth.logout;
 });
 
-app.controller('MainCtrl', function($scope, Tracking, Main){
+app.controller('MainCtrl', function($scope, $location, Tracking, Main){
 	//Tracking.Save();
 	$scope.navigation = Main.GetNavigation('Trang chủ');
+	console.log($location.path());
 });
