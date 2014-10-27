@@ -170,13 +170,13 @@ app.factory('Tracking', function ($window, FIREBASE_URL, $firebase, $http) {
 
 app.factory('Main', function (){
 	var result = {
-		GetNavigation: function(page){
+		GetNavigation: function(path){
 			var nav = [];
-			nav.push({ Title: 'Trang chủ', Link: '/', Target: '', Active: page === "Trang chủ" ? true : false });
-			nav.push({ Title: 'Dịch vụ', Link: 'services.html', Target: '', Active: page === "Dịch vụ" ? true : false });
-			nav.push({ Title: 'Dự án', Link: 'projects.html', Target: '', Active: page === "Dự án" ? true : false });
-			nav.push({ Title: 'Blog', Link: 'http://www.thangdc.com', Target: '_blank', Active: page === "Blog" ? true : false });
-			nav.push({ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: page === "Liên hệ" ? true : false });
+			nav.push({ Title: 'Trang chủ', Link: '/', Target: '', Active: path === "" ? true : false });
+			nav.push({ Title: 'Dịch vụ', Link: 'services.html', Target: '', Active: path === "services.html" ? true : false });
+			nav.push({ Title: 'Dự án', Link: 'projects.html', Target: '', Active: path === "projects.html" ? true : false });
+			nav.push({ Title: 'Blog', Link: 'http://www.thangdc.com', Target: '_blank', Active: path === "http://www.thangdc.com" ? true : false });
+			nav.push({ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: path === "contact.html" ? true : false });
 			return nav;
 		}
 	};
