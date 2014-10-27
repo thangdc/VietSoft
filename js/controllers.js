@@ -140,5 +140,7 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 });
 
 app.controller('MainCtrl', function($scope){
-	
+	$http.jsonp('http://ipinfo.io/?callback=JSON_CALLBACK').success(function(data) {
+    		console.log(data);	
+  	});
 });
