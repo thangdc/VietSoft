@@ -248,7 +248,7 @@
 	<!-- Shell -->
 	<div class="shell">
 		<p class="left">
-			<a ng-repeat="nav in footer" ng-href="{{nav.Link}}" ng-bind="nav.Title"></a> <span ng-bind="nav.Minus"></span>
+			<span ng-repeat="nav in footer"><a ng-href="{{nav.Link}}" ng-bind="nav.Title"></a>&nbsp;<span ng-bind="nav.Minus"></span></span>
 			<!--<a href="policy.html">Chính sách</a> <span>-</span>
 			<a href="FAQs.html">Câu hỏi thường gặp</a> <span>-</span>
 			<a href="about-vietsofts.html">Về chúng tôi</a>-->
