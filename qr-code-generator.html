@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+<html lang="en-US" ng-app="vietsofts">
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	<title>Tạo Mã QR Code - Phần mềm Việt</title>	
@@ -14,8 +14,7 @@
 		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
 	<![endif]-->
 	
-	<script type="text/javascript" src="libs/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="libs/firebase/firebase.js"></script>
+	<script type="text/javascript" src="libs/js-compress.js"></script>
 	
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap.min.css">
@@ -26,8 +25,12 @@
 	<script type="text/javascript" src="libs/custom/qr-code.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMBdmrD6KREL7pUD_p0P2A0WzLXzi46oQ"></script>
 
+	<!-- Custom Main Code -->
+    	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/controllers.js"></script>
+	<script type="text/javascript" src="js/services.js"></script>
 </head>
-<body>
+<body ng-controller="MainCtrl">
 <div id="fb-root"></div>
 <script type="text/javascript">(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -44,12 +47,7 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
-			    <li><a href="/"><span>Trang chủ</span></a></li>
-			    <li><a href="services.html"><span>Dịch vụ</span></a></li>
-			    <li><a href="projects.html"><span>Dự án</span></a></li>
-			    <li><a href="http://www.thangdc.com"><span>Blog</span></a></li>
-				<li><a class="active" href="qr-code-generator.html"><span>Tạo QR Code</span></a></li>
-			    <li><a href="contact.html"><span>Liên Hệ</span></a></li>
+			    <li ng-repeat="nav in navigation"><a ng-class="(nav.Active == true) ? 'active' : ''" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
 			</ul>
 		</div>
 		<!-- end Navigation -->
@@ -217,10 +215,7 @@
 	<!-- Shell -->
 	<div class="shell">
 		<p class="left">
-			<a href="terms.html">Điều khoản sử dụng</a> <span>-</span>
-			<a href="policy.html">Chính sách</a> <span>-</span>
-			<a href="FAQs.html">Câu hỏi thường gặp</a> <span>-</span>
-			<a href="about-vietsofts.html">Về chúng tôi</a>
+			<span ng-repeat="nav in footer"><a ng-href="{{nav.Link}}" ng-bind="nav.Title"></a>&nbsp;<span ng-bind="nav.Minus"></span></span>
 		</p>
 		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
 	</div>
