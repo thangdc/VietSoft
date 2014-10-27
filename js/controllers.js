@@ -141,6 +141,5 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 
 app.controller('MainCtrl', function($scope, $location, Tracking, Main){
 	//Tracking.Save();
-	$scope.navigation = Main.GetNavigation('Trang chủ');
-	console.log($location.path());
+	$scope.navigation = Main.GetNavigation($location.path());
 });
