@@ -155,3 +155,15 @@ app.factory('Helper', function () {
 	
 	return helper;	
 });
+
+app.factory('Tracking', function (FIREBASE_URL, $firebase, $http) {
+	var ref = new $window.Firebase(FIREBASE_URL);
+	var tracking = {
+		Save: function(){
+			$http.jsonp('http://ipinfo.io/?callback=JSON_CALLBACK').success(function(data) {
+				ref.child('tracking').push(data);
+			});
+		}
+	};
+	return tracking;
+});
