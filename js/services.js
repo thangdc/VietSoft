@@ -179,7 +179,7 @@ app.factory('Main', function (){
 				{ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: path === "contact.html" ? true : false }
 			];
 			return nav;
-		}
+		},
 		Footer: function(path){
 			var nav = [
 				{ Title: 'Điều khoản sử dụng', Link: 'terms.html', Target: '', Active: path === "terms.html" ? true : false, Minus: '-' },
