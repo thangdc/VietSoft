@@ -46,7 +46,7 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
-			    <li ng-repeat="nav in navigation"><a ng-class="{(nav.Active == true) ? 'active' : ''}" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
+			    <li ng-repeat="nav in navigation"><a ng-class="(nav.Active == true) ? 'active' : ''" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
 			</ul>
 		</div>
 		<!-- end Navigation -->
