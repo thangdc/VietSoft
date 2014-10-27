@@ -38,7 +38,6 @@
 	</style>
 </head>
 <body ng-controller="MainCtrl">
-{{data}}
 <!-- Header -->
 <div id="header">
 	<!-- Shell -->
@@ -48,11 +47,6 @@
 		<div id="navigation">
 			<ul>
 			    <li ng-repeat="nav in navigation"><a ng-class="{{nav.Active ? 'active' : ''}}" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
-			    <!--<li><a href="services.html"><span>Dịch vụ</span></a></li>
-			    <li><a href="projects.html"><span>Dự án</span></a></li>
-			    <li><a href="http://www.thangdc.com"><span>Blog</span></a></li>
-				<li><a href="qr-code-generator.html"><span>Tạo QR Code</span></a></li>
-			    <li><a href="contact.html"><span>Liên Hệ</span></a></li>-->
 			</ul>
 		</div>
 		<!-- end Navigation -->
