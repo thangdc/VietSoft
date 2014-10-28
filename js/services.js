@@ -178,7 +178,7 @@ app.factory('Main', function (){
 				{ Title: 'Dự án', Link: 'projects.html', Target: '', Active: path === "/projects.html" ? true : false },
 				{ Title: 'Blog', Link: 'http://www.thangdc.com', Target: '_blank', Active: path === "http://www.thangdc.com" ? true : false },
 				{ Title: 'Tạo QR Code', Link: '/qr-code-generator.html', Target: '', Active: path === "/qr-code-generator.html" ? true : false },
-				{ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: path === "/contact.html" ? true : false }
+				{ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: path === "/contact.html" ? true : false },
 				{ Title: 'Sitemap', Link: 'sitemap.html', Target: '', Active: path === "/sitemap.html" ? true : false }
 			];
 			return nav;
