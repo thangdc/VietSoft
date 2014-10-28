@@ -159,8 +159,9 @@ app.factory('Helper', function () {
 app.factory('Tracking', function ($window, FIREBASE_URL, $firebase, $http) {
 	var ref = new $window.Firebase(FIREBASE_URL);
 	var tracking = {
-		Save: function(){
+		Save: function(path){
 			$http.jsonp('http://ipinfo.io/?callback=JSON_CALLBACK').success(function(data) {
+				data.path = path;
 				ref.child('tracking').push(data);
 			});
 		}
