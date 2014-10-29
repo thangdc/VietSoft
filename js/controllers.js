@@ -166,8 +166,8 @@ app.directive('starRating', function(){
             });
         },
         scope: {
-            starRating: "=",
-            maxStarRating: "=",
+            starRating: "0",
+            maxStarRating: "5",
             ratingChanged: "&",
         }
     };
