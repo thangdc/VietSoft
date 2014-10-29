@@ -133,10 +133,13 @@ app.controller('PostViewCtrl', function ($scope, $routeParams, Post, Auth, Helpe
 	};
 });
 
-app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
+app.controller('NavCtrl', function ($scope, Auth, $location, Post, Ratings, Helper) {
 	$scope.user = Auth.user;
 	$scope.signedIn = Auth.signedIn;
 	$scope.logout = Auth.logout;
+	
+	var rating = Ratings.GetAllRatings('Album Downloader');
+        console.log(rating);
 });
 
 app.controller('MainCtrl', function($scope, $location, Tracking, Main){
@@ -146,13 +149,11 @@ app.controller('MainCtrl', function($scope, $location, Tracking, Main){
 	$scope.footer = Main.Footer(path);
 });
 
-app.directive('starRating', function(Ratings){
+app.directive('starRating', function(){
     return {
         restrict: 'E',
         templateUrl: '/template/starRating.html',
         link: function(scope){
-            var rating = Ratings.GetAllRatings('Album Downloader');
-            console.log(rating);
             scope.click = function(starRating) {
                 scope.starRating = starRating;
                 scope.ratingChanged({newRating: starRating});
