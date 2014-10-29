@@ -111,10 +111,10 @@ app.factory('Ratings', function ($window, $firebase, FIREBASE_URL, $http) {
 			return $firebase(ref.child('rating').child(name)).$asObject();
 		},
 		SetRatings: function(name, value){
-			$http.jsonp('http://ipinfo.io/?callback=JSON_CALLBACK').success(function(data) {
+			/*$http.jsonp('http://ipinfo.io/?callback=JSON_CALLBACK').success(function(data) {
 				data.value = value;
 				ref.child('rating').child(name).push(data);
-			});
+			});*/
 		}
 	};
 	return Ratings;
