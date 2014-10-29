@@ -104,6 +104,22 @@ app.factory('Post', function ($window, $firebase, FIREBASE_URL) {
 	
 });
 
+app.factory('Ratings', function ($window, $firebase, FIREBASE_URL) {
+	var ref = new $window.Firebase(FIREBASE_URL);
+	var Ratings = {
+		GetAllRatings: function(name){
+			return $firebase(ref.child('ratings').child(name))).$asArray();	
+		}
+		SetRatings: function(name, ip, value){
+			ref.child('ratings').child(name).set({ ip.relace(/\./g, '_'): value });
+		}
+		GetRatings: function(name, ip){
+			return ref.child('ratings').child(name).child(ip.replace(/\./, '_'));
+		}
+	};
+	return Ratings;
+});
+
 app.factory('Profile', function ($window, FIREBASE_URL, $firebase, Post, $q) {
 	var ref = new $window.Firebase(FIREBASE_URL);
 
