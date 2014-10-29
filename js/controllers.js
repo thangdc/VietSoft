@@ -146,7 +146,7 @@ app.controller('MainCtrl', function($scope, $location, Tracking, Main, Ratings){
 	$scope.footer = Main.Footer(path);
 	
 	var rating = Ratings.GetAllRatings('Album Downloader');
-        console.log(rating);
+        console.log(rating[0].$value);
 });
 
 app.directive('starRating', function(){
