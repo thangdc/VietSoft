@@ -108,7 +108,7 @@ app.factory('Ratings', function ($window, $firebase, FIREBASE_URL) {
 	var ref = new $window.Firebase(FIREBASE_URL);
 	var Ratings = {
 		GetAllRatings: function(name){
-			return $firebase(ref.child('ratings').child(name)).$asArray();	
+			return ref.child('ratings').child(name);
 		},
 		SetRatings: function(name, ip, value){
 			//ref.child('ratings').child(name).set({ ip.relace(/./g, '_') : value });
