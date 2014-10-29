@@ -137,9 +137,6 @@ app.controller('NavCtrl', function ($scope, Auth, $location, Post, Ratings, Help
 	$scope.user = Auth.user;
 	$scope.signedIn = Auth.signedIn;
 	$scope.logout = Auth.logout;
-	
-	var rating = Ratings.GetAllRatings('Album Downloader');
-        console.log(rating);
 });
 
 app.controller('MainCtrl', function($scope, $location, Tracking, Main){
@@ -147,6 +144,9 @@ app.controller('MainCtrl', function($scope, $location, Tracking, Main){
 	//Tracking.Save(path);
 	$scope.navigation = Main.Navigation(path);
 	$scope.footer = Main.Footer(path);
+	
+	var rating = Ratings.GetAllRatings('Album Downloader');
+        console.log(rating);
 });
 
 app.directive('starRating', function(){
