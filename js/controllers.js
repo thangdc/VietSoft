@@ -146,11 +146,13 @@ app.controller('MainCtrl', function($scope, $location, Tracking, Main){
 	$scope.footer = Main.Footer(path);
 });
 
-app.directive('starRating', function(){
+app.directive('starRating', function(Ratings){
     return {
         restrict: 'E',
         templateUrl: '/template/starRating.html',
         link: function(scope){
+            var rating = Ratings.GetAllRatings('Album Downloader');
+            console.log(rating);
             scope.click = function(starRating) {
                 scope.starRating = starRating;
                 scope.ratingChanged({newRating: starRating});
