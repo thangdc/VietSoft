@@ -96,10 +96,7 @@ app.controller('PostsCtrl', function ($scope, $location, Auth, Post, Helper) {
 
     $(window).scroll(function() { 
         if (window.scrollY == document.body.scrollHeight - window.innerHeight) {
-            /*var item = $scope.posts;
-            var id = item[item.length -1].$id;
-            var data = Post.loadMore(id);
-            console.log(data);*/
+        	
         }  
     });
 });
@@ -149,12 +146,13 @@ app.controller('MainCtrl', function($scope, $location, Tracking, Main, Ratings){
         console.log(rating.length);
 });
 
-app.directive('starRating', function(){
+app.directive('starRating', function(Ratings){
     return {
         restrict: 'E',
         templateUrl: '/template/starRating.html',
         link: function(scope){
             scope.click = function(starRating) {
+            	Ratings.SetRatings('Album Downloader', starRating)
                 scope.starRating = starRating;
                 scope.ratingChanged({newRating: starRating});
             };
