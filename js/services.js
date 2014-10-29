@@ -104,7 +104,7 @@ app.factory('Post', function ($window, $firebase, FIREBASE_URL) {
 	
 });
 
-app.factory('Ratings', function ($window, $firebase, FIREBASE_URL) {
+app.factory('Ratings', function ($window, $firebase, FIREBASE_URL, $http) {
 	var ref = new $window.Firebase(FIREBASE_URL);
 	var Ratings = {
 		GetAllRatings: function(name){
