@@ -108,13 +108,13 @@ app.factory('Ratings', function ($window, $firebase, FIREBASE_URL) {
 	var ref = new $window.Firebase(FIREBASE_URL);
 	var Ratings = {
 		GetAllRatings: function(name){
-			return $firebase(ref.child('rating').child(name)).$asArray();
+			return $firebase(ref.child('rating').child(name)).$asObject();
 		},
-		SetRatings: function(name, ip, value){
-			//ref.child('ratings').child(name).set({ ip.relace(/./g, '_') : value });
-		},
-		GetRatings: function(name, ip){
-			//return ref.child('ratings').child(name).child(ip.replace(/./g, '_'));
+		SetRatings: function(name, value){
+			$http.jsonp('http://ipinfo.io/?callback=JSON_CALLBACK').success(function(data) {
+				data.value = value;
+				ref.child('rating').child(name).push(data);
+			});
 		}
 	};
 	return Ratings;
