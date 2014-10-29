@@ -133,13 +133,13 @@ app.controller('PostViewCtrl', function ($scope, $routeParams, Post, Auth, Helpe
 	};
 });
 
-app.controller('NavCtrl', function ($scope, Auth, $location, Post, Ratings, Helper) {
+app.controller('NavCtrl', function ($scope, Auth, $location, Post, Helper) {
 	$scope.user = Auth.user;
 	$scope.signedIn = Auth.signedIn;
 	$scope.logout = Auth.logout;
 });
 
-app.controller('MainCtrl', function($scope, $location, Tracking, Main){
+app.controller('MainCtrl', function($scope, $location, Tracking, Main, Ratings){
 	var path = window.location.pathname;
 	//Tracking.Save(path);
 	$scope.navigation = Main.Navigation(path);
