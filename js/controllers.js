@@ -44,7 +44,7 @@ app.controller('ProfileCtrl', function ($scope, $routeParams, Auth, Profile, Pos
 });
 
 app.controller('PostsCtrl', function ($scope, $location, Auth, Post, Helper) {
-	
+	console.log('test');
 	$scope.user = Auth.user;
 	$scope.posts = Post.all;
 	
