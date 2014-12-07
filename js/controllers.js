@@ -142,12 +142,20 @@ app.controller('MainCtrl', function($scope, $location, Tracking, Main, Ratings){
 	$scope.navigation = Main.Navigation(path);
 	$scope.footer = Main.Footer(path);
 	
-	var rating = Ratings.GetAllRatings('Album Downloader');
-        console.log(rating.length);
-});
-
-app.controller('TopNewsCtrl', function ($scope){
-	console.log('top news');
+	//Get Top News
+	var domain = 'http://www.thangdc.com';
+	var JSONUrl = domain + '/feeds/posts/default?max-results=5&alt=json-in-script&callback=?';
+	$.getJSON(JSONUrl, function(data) {
+		var title = '';
+		var link = '';
+		var results = [];
+	  	for(var i = 0; i < data.feed.entry.length; i++){
+	    		title = data.feed.entry[i].title.$t;
+	    		link = data.feed.entry[i].link[4].href;
+	    		results.push({title: title, link: link});
+	  	}
+	  	$scope.topNews = results;
+	}); 
 });
 
 app.directive('starRating', function(Ratings){
