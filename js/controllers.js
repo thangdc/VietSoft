@@ -146,6 +146,10 @@ app.controller('MainCtrl', function($scope, $location, Tracking, Main, Ratings){
         console.log(rating.length);
 });
 
+app.controller('TopNewsCtrl', function ($scope){
+	console.log('top news');
+});
+
 app.directive('starRating', function(Ratings){
     return {
         restrict: 'E',
