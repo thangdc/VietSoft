@@ -64,7 +64,7 @@ $(document).ready(function () {
         if (ind == 0) {
             generateqr($('#textarea1').val());
         } else if (ind == 1) {
-            data = 'sms:' + $('#phone').val() + ':' + $('#textarea2').val();
+            data = 'smsto:' + $('#phone').val() + ':' + $('#textarea2').val();
             generateqr(data);
 
         } else if (ind == 2) {
