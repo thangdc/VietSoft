@@ -18,6 +18,8 @@ function generateqr(data) {
 	});
 
 }
+
+var map;
 function initialize() {
     var myLatlng = new google.maps.LatLng(11.400947, 105.934639);
 
@@ -27,7 +29,7 @@ function initialize() {
 		mapTypeId : google.maps.MapTypeId.ROADMAP
 	}
 
-	var map = new google.maps.Map(document.getElementById("map_canvas"),
+	map = new google.maps.Map(document.getElementById("map_canvas"),
 			myOptions);
 
 	var marker = new google.maps.Marker({
@@ -51,8 +53,9 @@ $(document).ready(function () {
     var regmail = /(^[a-z]([a-z_\.]*)@([a-z_\.]*)([.][a-z]{3})$)|(^[a-z]([a-z_\.]*)@([a-z_\.]*)(\.[a-z]{3})(\.[a-z]{2})*$)/i;
 
     $('#myTabs a').click(function (e) {
-		e.preventDefault()
-		$(this).tab('show')
+		e.preventDefault();
+		$(this).tab('show');
+		google.maps.event.trigger(map, "resize");
 	});
 	
     // Hide Loading
