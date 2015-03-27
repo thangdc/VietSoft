@@ -28,11 +28,9 @@ html,body {
 }
 .press a{
 	color: #FFF;
-	font-size: 31px;
+	font-size: 24px;
 	font-weight: 300;
-	padding: 0 1em .5em 1em;
 	text-decoration: none;
-	border-bottom: 2px solid #b948e5;
 }
 .press a:hover{
 	text-decoration:none;
