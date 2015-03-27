@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en-US" ng-app="vietsofts">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>Tạo mã QR Code (Android) - Phần mềm Việt</title>
+	
+	<meta content='Mã hóa và giải mã QR Code trên android, hỗ trợ mã hóa bằng mật khẩu, giới hạn thời gian chia sẽ' name='description'/>
+	<meta content='Phần mềm việt, vietsofts, qr code generator, android app, phanmemviet' name='keywords'/>
+	<meta content='index, follow' name='robots'/>
+	
+	<link rel="shortcut icon" href="css/images/favicon.ico" />
+	<script type="text/javascript" src="libs/js-compress.js"></script>
+	
+	<!-- Custom Main Code -->
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/controllers.js"></script>
+	<script type="text/javascript" src="js/services.js"></script>
+	
+	<!-- CSS -->
+
+	<link rel="stylesheet" href="themes/app-plus/css/bootstrap.min.css">
+	<link rel="stylesheet" href="themes/app-plus/css/font-awesome.min.css">
+	<link rel="stylesheet" href="themes/app-plus/css/main.css">
+	<link rel="stylesheet" href="themes/app-plus/css/animate.css">
+	<link rel="stylesheet" href="themes/app-plus/css/responsive.css">
+        
+	<!-- Js -->
+	<script src="themes/app-plus/js/vendor/modernizr-2.6.2.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="themes/app-plus/js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+	<script src="themes/app-plus/js/bootstrap.min.js"></script>
+	<script src="themes/app-plus/js/plugins.js"></script>
+	<script src="themes/app-plus/js/main.js"></script>
+	<script src="themes/app-plus/js/wow.min.js"></script>
+	<script type="text/javascript">
+		new WOW().init();
+	</script>
+</head>
+<body ng-controller="MainCtrl">
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=198119906913529&version=v2.0";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+
+	
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-xs-6 col-sm-3">
+                    <a href="#" class="logo">
+                        <img src="themes/app-plus/images/logo.png" alt="">
+                    </a>
+                </div>
+                <div class="col-md-6 col-xs-6 col-sm-6">
+                    <div class="menu">
+                        <nav class="navbar navbar-default" role="navigation">
+                            <div class="container-fluid">
+                                <!-- Brand and toggle get grouped for better mobile display -->
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    </button>
+                                </div>
+
+                                <!-- Collect the nav links, forms, and other content for toggling -->
+                                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                                    <ul class="nav navbar-nav">
+                                        <li><a href="#banner">Trang chủ</a></li>
+                                        <li><a href="#service">Chức năng</a></li>
+                                        <li><a href="#feature">Tính năng</a></li>
+                                        <li><a href="#utility">Tiện ích</a></li>
+                                    </ul>
+                                  
+                                </div><!-- /.navbar-collapse -->
+                            </div><!-- /.container-fluid -->
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xs-12 col-sm-3">
+                    <ul class="social-info">
+                        <li><a href="https://www.facebook.com/tinhyeu24h"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="https://www.twitter.com/thangdc"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="https://www.linkedin.com/in/thangdc"><i class="fa fa-linkedin"></i></a></li>
+                        <li><a href="https://plus.google.com/+DinhCongThang"><i class="fa fa-google-plus"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="banner" class="wow fadeInUp">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="block">
+                        <img class="app-img img-responsive" src="themes/app-plus/images/app.png" alt="">
+                    </div>
+                </div>
+                <div class="col-md-6 col-md-offset-1 col-sm-6">
+                    <div class="block">
+                        <h1>
+                            Dễ dàng tạo, giải mã và chia sẽ mã QR Code
+                        </h1>
+                        <p>
+                            Hỗ trợ bạn trong việc tạo mã QR Code, mã hóa chúng, hoặc giới hạn thời gian trước khi chia sẽ cho bạn bè.
+                        </p>
+
+                        <ul class="download-btn">
+                            <li>
+                                <a href="https://play.google.com/store/apps/details?id=com.thangdc.qrcode" class="btn btn-default btn-andriod"><i class="fa fa-android"></i>Tải từ Play Store</a>
+                            </li>
+                        </ul>
+                        
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="service">
+        <div class="container">
+            <div class="service-wrapper">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="block wow fadeInRight" data-wow-delay="1s">
+                            <div class="icon">
+                               <i class="fa fa-desktop"></i> 
+                            </div>
+                            
+                            <h3>Tạo mã nhanh chóng</h3>
+                            <p>Nhập nội dung cần tạo mã QR Code, nhấn nút "Tạo mã" và thưởng thức kết quả trước khi chia sẽ.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="block wow fadeInRight" data-wow-delay="1.3s">
+                            <div class="icon">
+                                <i class="fa  fa-paper-plane"></i>
+                            </div>
+                            <h3>Mã hóa dễ dàng</h3>
+                            <p>Việc mã hóa rất dễ dàng và nhanh chóng bạn chỉ cần nhập nội dung, chọn chức năng mã hóa, nhập mật khẩu hoặc thời gian là có thể mã hóa được thông điệp của mình.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="block wow fadeInRight" data-wow-delay="1.6s">
+                            <div class="icon">
+                                <i class="fa  fa-file-text"></i>
+                            </div>
+                            <h3>Giới hạn thời gian tồn tại QR Code</h3>
+                            <p>Thiết lập thời gian hết hạn cho mã QR Code chỉ bằng việc nhập thời gian tồn tại và mật khẩu là bạn có thể yên tâm về nội dung mình muốn nhắn gửi.</p>
+                        </div>
+                    </div>
+                     <div class="col-md-3 col-sm-6">
+                        <div class="block wow fadeInRight" data-wow-delay="1.9s">
+                            <div class="icon">
+                                <i class="fa  fa-laptop"></i>
+                            </div>
+                            <h3>Chia sẽ dễ dàng.</h3>
+                            <p>Dễ dàng chia sẽ qua Email cho bạn bè và người thân, nhanh chóng tiện lợi an toàn và hiệu quả.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="feature">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 wow fadeInRight" data-wow-delay=".8s">
+                    <h2 class="title">Giao diện gọn gàng thân thiện</h2>
+
+                    <div class="feature-item">
+
+                        <div class="media">
+                            <div class="pull-left icon" href="#">
+                                <i class="fa fa-paint-brush"></i>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading"></h4>
+                                <p>Với giao diện đơn giản và dễ sử dụng và làm quen đối với bất cứ người dùng phổ thông nào, chức năng được bố trí đơn giản tập trung vào tính năng mã hóa và giải mã QR Code tiện lợi</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+
+                        <div class="media">
+                            <div class="pull-left icon" href="#">
+                                <i class="fa fa-qrcode"></i>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">Không cần đăng ký bất kỳ tài khoản nào để sử dụng</h4>
+                                <p>Sử dụng thoải mái và nhanh chóng, không cần phải tạo tài khoản để dùng, chỉ cần tải về và sử dụng một cách nhanh chóng</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-item">
+
+                        <div class="media">
+                            <div class="pull-left icon" href="#">
+                                <i class="fa fa-recycle"></i>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">Hoạt động mượt mà</h4>
+                                <p>Không yêu cầu cấu hình phải mạnh, hỗ trợ nhiều phiên bản của hệ điều hành android từ 2.3.3 trở lên, do chỉ có 2 tính năng chính nên ứng dụng đáp ứng một cách nhanh chóng và thuận tiện</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 wow fadeInLeft" data-wow-delay=".8s">
+                    <div class="block">
+                        <img class="img-responsive" src="themes/app-plus/images/featured-app.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="utility">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 wow fadeInUp" data-wow-delay=".8s">
+                    <img class="img-responsive" src="themes/app-plus/images/mockup.png" alt="">
+                </div>
+                <div class="col-md-6 col-sm-6 wow fadeInDown" data-wow-delay=".8s">
+                    <div class="block">
+                        <h2>Mã hóa nhanh chóng.</h2>
+                        <p>
+                            Bạn muốn gửi mã QR Code cho người khác nhưng không muốn họ đọc được nội dung, chỉ cần chọn tính năng mã hóa sau đó nhập mật khẩu và thông điệp của bạn sẽ được mã hóa chỉ mình bạn và những người có mật khẩu mới có thể giải mã được chúng
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="utility-2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 wow fadeInLeft" data-wow-delay=".8s">
+                    <div class="block">
+                        <h2>Giải mã dễ dàng</h2>
+                        <p>
+                            Nhập mật khẩu cho nội dung muốn giải mã, sau đó chọn tính năng giải mã và quét mã QR Code bạn sẽ có được nội dung mà bạn cần thật nhanh chóng và hữu ích. 
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 wow fadeInRight" data-wow-delay=".8s">
+                    <img class="img-responsive" src="themes/app-plus/images/app-screen.png" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="wow fadeInUp" data-wow-delay=".8s">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-md-12">
+                        <a class="footer-logo"href="#">
+                            <img class="img-responsive" src="themes/app-plus/images/footer-logo.png" alt="">
+                        </a>
+                    <p>Copyright © 2014 Themefisher. All rights reserved. Designed & developed by themefisher.com</p>
+                    
+                </div>
+            </div>
+        </div>
+    </footer>
+	
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-56112101-1', 'auto');
+		ga('send', 'pageview');
+
+	</script>
+</body>
+</html>
