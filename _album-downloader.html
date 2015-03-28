@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en-US" ng-app="vietsofts">
+<head>
+	<title>Album Downloader - Phần mềm Việt</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	
+	<meta content='Album Downloader - Tải toàn bộ album nhạc số VN - Phần mềm Việt' name='description'/>
+	<meta content='Phần mềm việt, vietsofts, album downloader, tai toan bo album nhac so, phanmemviet' name='keywords'/>
+	<meta content='index, follow' name='robots'/>
+	
+	<link rel="shortcut icon" href="css/images/favicon.ico" />
+	<link rel="stylesheet" href="css/business.css" type="text/css" media="all" />
+	<!--[if IE 6]>
+		<link rel="stylesheet" href="css/ie6.css" type="text/css" media="all" />
+	<![endif]-->
+	
+	<script type="text/javascript" src="libs/js-compress.js"></script>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap.min.css"/>
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="libs/bootstrap-3.2.0/css/bootstrap-theme.min.css"/>
+	
+	<!-- Custom Main Code -->
+    	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/controllers.js"></script>
+	<script type="text/javascript" src="js/services.js"></script>
+</head>
+<body ng-controller="MainCtrl">
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=198119906913529&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<!-- Header -->
+<div id="header">
+	<!-- Shell -->
+	<div class="shell">
+		<h1 id="logo" style="margin-top: 0;"><a href="/">Phần Mềm Việt</a></h1>
+		<!-- Navigation -->
+		<div id="navigation">
+			<ul>
+			    <li ng-repeat="nav in navigation"><a ng-class="(nav.Active == true) ? 'active' : ''" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
+			</ul>
+		</div>
+		<!-- end Navigation -->
+		
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Header -->
+
+<!-- Main -->
+<div id="main">
+	<!-- Shell -->
+	<div class="shell">
+		<!-- Go to www.addthis.com/dashboard to customize your tools -->
+		<div class="addthis_native_toolbox"></div>
+		<!-- Main-boxes -->
+		<div class="big-box">
+			<div class="big-box-b">
+				<div class="big-box-t">
+					<div class="container-fluid">
+						<div class="row text-justify padding-content">
+							<h2>Album Downloader</h2>
+							<p>
+								Với mong muốn tạo ra một phần mềm Việt đơn giản dễ sử dụng nên mình viết phần mềm tải nhạc từ các trang nhạc số của Việt Nam, để giúp mọi người có thể tải nhạc nhanh chóng đơn giản và tiện lợi.
+							</p>
+							<p>
+								Do mục đích của mình như vậy nên phần mềm chỉ tập trung chức năng chính là tải nhạc, và những chức năng cơ bản để bất cứ ai có thể dùng một cách dễ dàng, thật ra phần mềm mình viết ra không mới, đã từng có nhiều phần mềm viết trước mình cũng phục vụ mục đích tải nhạc, những phần mềm đó có nhiều tính năng hay hơn, đáp ứng nhiều yêu cầu đối với các bạn, nên các bạn có thể chọn lựa cho mình một phần mềm phù hợp với mục đích của mình.
+							</p>
+							<p>
+								Nói dài dòng như thế để cho mọi người thấy hướng của mình sẽ không làm mọi thứ trở nên phức tạp, nên các ý kiến về việc thêm chức năng nếu mình thấy nó không làm chương trình trở nên phức tạp thì mình sẽ cập nhật phiên bản mới cho mọi người dùng.
+							</p>
+							<p>
+								Hiện tại do phần mềm của mình vẫn chưa cung cấp chức năng tự động cập nhật phiên bản mới thì mọi người cũng thông cảm, do mình vẫn chưa có thời gian, mình sẽ cập nhật bản mới với chức năng tự động cập nhật trong thời gian sắp tới.
+							</p>
+							<p class="text-center">
+								<a href="https://albumdownloader.apphb.com/Software/Download?version=Album-Downloader-1.4.0.6" class="multi-line-button">
+									<span class="title">Tải Album Downloader</span>
+									<span class="subtitle">Phiên bản 1.4.0.6 - Dung Lượng: 1.1Mb</span>
+								</a>
+							</p>
+							<h2>Hướng dẫn sử dụng Album Downloader</h2>
+							<p>Chào các bạn, mình rất vui vì phần mềm Album Downloader của mình nhận được sự ủng hộ từ mọi người, hôm nay mình xin dành ra ít phút để soạn lại hướng dẫn sử dụng để mọi người có thể nắm rõ đồng thời cũng giải thích các thắc mắc mà mọi người gửi đến mình trong quá trình sử dụng phần mềm. </p>
+							<p><b>1. Trước khi vào nội dung chính thì mình có một số lưu ý để mọi người có thể nắm: </b></p>
+							<p>- Vì từ phiên bản <strong>Album Downloader 1.2.8</strong> trở đi mình không còn sử dụng <strong>.NET 2.0</strong> nữa nên các phiên bản trước các bạn sử dụng không bị lỗi, nhưng đến phiên bản <strong>Album Downloader 1.2.8</strong> trở đi nếu các bạn chưa cài đặt <strong>.NET 4.0 (hoặc cài .NET 4.0 Client Profile)</strong> thì chương trình sẽ không thể hoạt động một cách đúng đắn, nên các bạn cần phải tải <strong>.NET 4.0</strong> trước khi sử dụng <strong>Album Downloader</strong> phiên bản 1.2.8 trở đi. </p>
+							<p>
+								- Link download <strong>.NET 4.0</strong> các bạn tải tại đây: <a href="http://ads.thangdc.com/6245948/dotnetframework40" target="_blank">.NET 4.0</a>
+							</p>
+							<p><strong>2. Hướng dẫn sử dụng</strong></p>
+							<p>Giao diện chính đã có nhiều sự điều chỉnh hơn so với phiên bản trước, như loại bỏ phần menu trên cùng, giữ lại thanh toolbar và các tabs.</p>
+							<p class="text-center"><img border="0" width="640" height="342" src="http://1.bp.blogspot.com/-tBMDgC43KK4/VEOv9gpPc0I/AAAAAAAAGEs/SckKAYi8rwY/s1600/Album-Downloader-1.4.0.5-Main.png" alt="Album Downloader"></p>
+							<p>Có 2 cách để thêm một album mới:</p>
+							<ul>
+								<li>Cách 1: Nhấn <strong>"Thêm Album"</strong> trên thanh toolbar trên cùng, một hộp thoại mới sẽ xuất hiện, bạn chỉ cần dán link album vào chương trình sẽ tự động liệt kê những bài hát có trong album, nhấn <strong>OK</strong> để thêm album vào danh sách album</li>
+							</ul>
+							<p class="text-center"><img border="0" width="640" height="322" src="http://4.bp.blogspot.com/-oQoWY8QvBks/VEOwr6JVbMI/AAAAAAAAGE0/zRz0BEP02GA/s1600/Album-Downloader-1.4.0.5-Add-Album.png" alt="Album Downloader"></p>
+							<ul>
+								<li>Cách 2: Nhấn vào tab <strong>"Danh Sách Album"</strong> cũng có nút <strong>"Thêm mới"</strong> với chức năng tương tự</li>
+							</ul>
+							<p class="text-center">
+								<img border="0" width="640" height="340" src="http://2.bp.blogspot.com/-Xvhk8aHbNO0/VEOx0r7LspI/AAAAAAAAGFA/1Gp5-Mr6Zls/s1600/Album-Downloader-1.4.0.5-Albums.png">
+							</p>
+							<p>
+								Như vậy là đã xong cách thêm mới một album, tiếp theo nếu bạn không muốn thêm từng album bằng tay bạn có thể dùng chức năng tìm album trong phần mềm bằng cách nhấn vào tab <strong>"Tìm Kiếm"</strong>, nhập nội dung cần tìm kiếm vào khung tìm kiếm rồi nhấn nút <strong>"Tìm kiếm"</strong> hoặc <strong>"Enter"</strong>, đợi chương trình tìm những album có liên quan.
+							</p>
+							<p class="text-center">
+								<img border="0" width="640" height="340" src="http://2.bp.blogspot.com/-rZ7CXemFIVo/VEOy14O2yLI/AAAAAAAAGFM/6_nwyITAV5s/s1600/Album-Downloader-1.4.0.5-Searching.png">
+							</p>
+							<p>
+								Sau khi tìm xong những album cần thiết bạn có thể chọn những album nào muốn lấy về thì chọn checkbox bên tay trái rồi nhấn nút <strong>"Lấy bài hát"</strong>, chương trình sẽ lấy tấc cả bài hát trong những album mà bạn đã chọn, hoặc bạn muốn thêm một số album vào <strong>"Danh sách Album"</strong> rồi sau đó mới lấy bài hát sau thì bạn chọn những album cần thêm vào <strong>"Danh sách Album"</strong> sau đó nhấn nút <strong>"Thêm vào Album"</strong>
+							</p>
+							<p class="text-center"><img border="0" width="640" height="342" src="http://2.bp.blogspot.com/-a31XFa5qYKg/VEOz020PV3I/AAAAAAAAGFY/WTVnQa1OZns/s1600/Album-Downloader-1.4.0.5-Add-Album-To-List.png"></p>
+							<p>
+							Một hộp thoại xác nhận bạn có muốn thêm những album được chọn hay không nếu đồng ý nhấn <strong>"Yes"</strong> nếu chưa đồng ý  nhấn <strong>"No"</strong>
+							</p>
+							<p class="text-center">
+								<img border="0" width="640" height="340" src="http://3.bp.blogspot.com/-LIqkhSf7bMA/VEO0OLiYg6I/AAAAAAAAGFg/fa2qU524aJM/s1600/Album-Downloader-1.4.0.5-Album-List.png">
+							</p>
+							<p>Sau khi thêm vào <strong>"Danh sách Album"</strong> bạn có thể chỉnh sửa, thêm mới, xóa hoặc tìm kiếm những album bạn đang có nếu như bạn có quá nhiều album cần quản lý, sau đó để lấy bài hát cho những album bạn muốn lấy bạn nhấn vào checkbox bên tay trái sau đó nhấn nút <strong>"Lấy bài hát"</strong>, chương trình sẽ lấy tấc cả các bài hát trong các album mà bạn đã chọn.</p>
+							<p class="text-center"><img border="0" width="640" height="340" src="http://2.bp.blogspot.com/-egCWCEBrGkE/VEO0yJ-OHvI/AAAAAAAAGFs/bt93h3dzKAw/s1600/Album-Downloader-1.4.0.5-Get-Song.png"></p>
+							<p>
+								Khi các bài hát được lấy xong, bạn có thể tải về, gửi qua IDM, xóa hoặc tìm kiếm những bài hát mà bạn cần. Hiện tại khi bạn nhấn nút <strong>"Tải Album"</strong> thì chương trình sẽ tải tấc cả bài hát chứ không phải những bài hát được chọn (mình sẽ cập nhật bản sau), bản này mình đã cho phép tải về cùng lúc 5 bài hát 1 lượt, con số này bạn có thể thay đổi trong phần <strong>"Cấu Hình"</strong> mình sẽ giới thiệu bên dưới.
+							</p>
+							<p>Để vào mục cấu hình bạn nhấn nút "Cấu Hình" như hình trên, chúng ta sẽ có 4 mục cấu hình khác nhau:</p>
+							<ul>
+								<li>Đầu tiên là <strong>"Tự động tải"</strong> -> Cái này thật ra là cấu hình số bài hát được tải trong một lượt, mặc định là 5</li>
+							</ul>
+							<p class="text-center"><img border="0" width="640" height="520" src="http://3.bp.blogspot.com/-qpV8TDE_xsE/VEO3tybjnjI/AAAAAAAAGGE/6SEfEbnSohc/s1600/Album-Downloader-1.4.0.5-Auto.png"></p>
+							<ul>
+								<li>Thứ 2 là <strong>"HTTP/FPT" proxy</strong> -> Phần này dùng để chỉnh proxy (nếu các bạn có dùng thì bật nó lên, còn không thì để mặc định ), cái này chẳng biết phải việt hóa thế nào cho dễ hiểu nên mình vẫn để tiếng Anh đọc dễ hiểu hơn :D</li>
+							</ul>
+							<p class="text-center"><img border="0" src="http://2.bp.blogspot.com/-bJl8e7o5Dbw/VEO3-gTtjtI/AAAAAAAAGGM/Xg7txeEuRJE/s1600/Album-Downloader-1.4.0.5-Proxy.png"></p>
+							<p>Thứ 3 là <strong>"Thư mục lưu trữ"</strong> -> Cái này là nơi sẽ lưu những album mà tải về</p>
+							<p class="text-center"><img border="0" width="640" height="520" src="http://1.bp.blogspot.com/-2kvqKdv_2FM/VEO4UYVeugI/AAAAAAAAGGU/Ovx-unXdEl0/s1600/Album-Downloader-1.4.0.5-Save-Location.png"></p>
+							<ul>
+								<li>Cuối cùng là cấu hình cho từng trang nhạc:</li>
+							</ul>
+							<p class="text-center"><img border="0" width="640" height="340" src="http://3.bp.blogspot.com/-RECUEpfV6OA/VEO1uKyrx-I/AAAAAAAAGF4/yCSHMFB5oCg/s1600/Album-Downloader-1.4.0.5-Config.png"></p>
+							<ul>
+								<li>
+									<ul>
+										<li>Sử dụng tiếng việt cho thư mục tải về: cái này nếu bạn muốn thư mục của bạn có dấu tiếng việt thì đánh dấu check vào đó</li>
+										<li>Tách thư mục theo album: hiện tại các bài hát sẽ được đặt theo từng thư mục theo từng album, nếu bạn không muốn đặt cho các thư mục khác nhau thì bỏ chọn chức năng này, thì tấc cả các bài hát sẽ nằm chung một thư mục.</li>
+										<li>Đối với m3.zing.vn và nhaccuatui.com thì chúng ta có 2 lựa chọn: Chất lượng cao là 320kbps, và bình thường là 128kbps</li>
+										<li>Đối với chiasenhac.com thì để tải nhạc lossless thì bạn cần chọn vào checkbox "Tải nhạc lossless" và nhập tên đăng nhập và mật khẩu của chiasenhac.com, trên chiasenhac có 4 lựa chọn tải nhạc "32kbps", "128kbps", "320kbps", "500kbps" và "Lossless" chọn chất lượng bạn muốn (Lưu ý Lossless chỉ xuất hiện nếu bạn bật tính năng tải nhạc lossess và cung cấp tài khoản đăng nhập)
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</div>							
+						<div class="panel panel-default">
+							<div class="panel-heading">Bình Luận</div>
+							<div class="panel-body">
+								<div class="fb-comments" data-href="http://vietsofts.thangdc.com/album-downloader.html" data-width="100%" data-numposts="5" data-colorscheme="light"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- end Main-boxes -->
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Main -->
+
+<!-- Footer -->
+<div id="footer">
+	<!-- Shell -->
+	<div class="shell">
+		<p class="left">
+			<span ng-repeat="nav in footer"><a ng-href="{{nav.Link}}" ng-bind="nav.Title"></a>&nbsp;<span ng-bind="nav.Minus"></span></span>
+		</p>
+		<p class="text-right"> &copy; 2014 by <a href="http://www.thangdc.com" target="_blank">ThangDC</a>. Thiết kế bởi <a href="http://chocotemplates.com" target="_blank" title="The Sweetest CSS Templates WorldWide">ChocoTemplates.com</a></p>
+	</div>
+	<!-- end Shell -->
+</div>
+<!-- end Footer -->
+<!-- Go to www.addthis.com/dashboard to customize your tools -->
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5198d5a47312f037" async="async"></script>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-56112101-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
