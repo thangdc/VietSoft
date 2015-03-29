@@ -41,7 +41,7 @@
 		* { margin: 0; padding: 0; outline:0; }
 	</style>
 </head>
-<body ng-controller="MainCtrl">
+<body data-ng-controller="MainCtrl">
 <!-- Header -->
 <div id="header">
 	<!-- Shell -->
@@ -50,7 +50,7 @@
 		<!-- Navigation -->
 		<div id="navigation">
 			<ul>
-			    <li ng-repeat="nav in navigation"><a ng-class="(nav.Active == true) ? 'active' : ''" ng-href="{{nav.Link}}"><span ng-bind="nav.Title"></span></a></li>
+			    <li data-ng-repeat="nav in navigation"><a data-ng-class="(nav.Active == true) ? 'active' : ''" data-ng-href="{{nav.Link}}"><span data-ng-bind="nav.Title"></span></a></li>
 			</ul>
 		</div>
 		<!-- end Navigation -->
@@ -305,7 +305,7 @@
 	<!-- Shell -->
 	<div class="shell">
 		<p class="left">
-			<span ng-repeat="nav in footer"><a ng-href="{{nav.Link}}" ng-bind="nav.Title"></a>&nbsp;<span ng-bind="nav.Minus"></span></span>
+			<span data-ng-repeat="nav in footer"><a data-ng-href="{{nav.Link}}" data-ng-bind="nav.Title"></a>&nbsp;<span data-ng-bind="nav.Minus"></span></span>
 			<!--<a href="policy.html">Chính sách</a> <span>-</span>
 			<a href="FAQs.html">Câu hỏi thường gặp</a> <span>-</span>
 			<a href="about-vietsofts.html">Về chúng tôi</a>-->
