@@ -2,7 +2,7 @@ jQuery(function($) {'use strict';
 
 	// Navigation Scroll
 	$(window).scroll(function(event) {
-		Scroll();
+		//Scroll();
 	});
 
 	$('.navbar-collapse ul li a').on('click', function() {  
@@ -18,8 +18,8 @@ jQuery(function($) {'use strict';
 		var rangeTop    =   200;
 		var rangeBottom =   500;
 		$('.navbar-collapse').find('.scroll a').each(function(){
-			/*contentTop.push( $( $(this).attr('href') ).offset().top);
-			contentBottom.push( $( $(this).attr('href') ).offset().top + $( $(this).attr('href') ).height() );*/
+			contentTop.push( $( $(this).attr('href') ).offset().top);
+			contentBottom.push( $( $(this).attr('href') ).offset().top + $( $(this).attr('href') ).height() );
 		})
 		$.each( contentTop, function(i){
 			if ( winTop > contentTop[i] - rangeTop ){
