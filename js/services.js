@@ -191,8 +191,7 @@ app.factory('Main', function (){
 			var nav = [
 				{ Title: 'Trang chủ', Link: '/', Target: '', Active: path === "/" ? true : false },
 				{ Title: 'Blog', Link: 'http://www.thangdc.com', Target: '_blank', Active: path === "http://www.thangdc.com" ? true : false },
-				{ Title: 'Tạo QR Code', Link: '/qr-code-generator.html', Target: '', Active: path === "/qr-code-generator.html" ? true : false },
-				{ Title: 'Liên hệ', Link: 'contact.html', Target: '', Active: path === "/contact.html" ? true : false }
+				{ Title: 'Tạo QR Code', Link: '/qr-code-generator.html', Target: '', Active: path === "/qr-code-generator.html" ? true : false }
 			];
 			return nav;
 		},
