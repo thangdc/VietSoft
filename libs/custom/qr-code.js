@@ -20,6 +20,8 @@ function generateqr(data) {
 }
 
 var map;
+var latitude = 10.78778;
+var longitude = 106.662483;
 function initialize() {
     var myLatlng = new google.maps.LatLng(11.400947, 105.934639);
 
@@ -42,7 +44,8 @@ function initialize() {
 	google.maps.event.addListener(marker, 'drag', function() {
 		lat = Math.round(marker.position.lat() * 1000) / 1000;
 		lng = Math.round(marker.position.lng() * 1000) / 1000;
-				
+		latitude = lat;
+		longitude = lng;
 		$('#coord').data('lat', lat).data('lng', lng);
 		$('#coord').text('Latitude(' + lat + ') Longitude(' + lng + ')');
 	});
@@ -85,8 +88,8 @@ $(document).ready(function () {
 					+ $('#contact_address').val() + ';;';
             generateqr(data);
         } else if (ind == 5) {
-            data = 'geo:' + $('#coord').data('lat') + ','
-					+ $('#coord').data('lng');
+            data = 'geo:' + latitude + ',' + longitude;
+	    console.log(data);
             generateqr(data);
         }
         else if (ind == 6) {
