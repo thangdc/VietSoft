@@ -67,20 +67,20 @@ $(document).ready(function () {
     // Generate Qr Code
     $('#gqr').click(function () {
         var ind = $("ul#myTabs li.active").index();
-        if (ind == 0) {
+        if (ind == 1) {
             generateqr($('#textarea1').val());
-        } else if (ind == 1) {
+        } else if (ind == 2) {
             data = 'smsto:' + $('#phone').val() + ':' + $('#textarea2').val();
             generateqr(data);
 
-        } else if (ind == 2) {
+        } else if (ind == 3) {
             data = 'MATMSG:TO:' + $('#address').val() + ';SUB:'
 					+ $('#subject').val() +';BODY:'+ $('#textarea3').val() +';;';
             generateqr(data);
-        } else if (ind == 3) {
+        } else if (ind == 4) {
             data = 'tel:' + $('#phone_number').val();
             generateqr(data);
-        } else if (ind == 4) {
+        } else if (ind == 0) {
             data = 'MECARD:N:' + $('#contact_name').val() + ';TEL:'
 					+ $('#contact_phone').val() + ';TEL:'
 					+ $('#contact_phone1').val() + ';TEL:'
