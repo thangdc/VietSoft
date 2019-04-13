@@ -85,10 +85,12 @@ $(document).ready(function () {
 					+ $('#contact_phone').val() + ';TEL:'
 					+ $('#contact_phone1').val() + ';TEL:'
 		    			+ $('#contact_phone2').val() + ';URL:'
-					+ $('#contact_website').val() + ';URL:'+
+					+ $('#contact_website').val() + ';URL:'
 		    			+ $('#contact_facebook').val() + ';EMAIL:'
-					+ $('#contact_email').val() + ';ADR:'
-					+ $('#contact_address').val() + ';;';
+					+ $('#contact_email').val() + ';EMAIL:' 
+		    			+ $('#contact_email1').val() + ';ADR:'
+					+ $('#contact_address').val() + ';NOTE:'
+					+ $('#textare2').val() + ';;';
             generateqr(data);
         } else if (ind == 5) {
             data = 'geo:' + latitude + ',' + longitude;
