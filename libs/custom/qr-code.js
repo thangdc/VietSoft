@@ -82,8 +82,11 @@ $(document).ready(function () {
             generateqr(data);
         } else if (ind == 4) {
             data = 'MECARD:N:' + $('#contact_name').val() + ';TEL:'
-					+ $('#contact_phone').val() + ';URL:'
-					+ $('#contact_website').val() + ';EMAIL:'
+					+ $('#contact_phone').val() + ';TEL:'
+					+ $('#contact_phone1').val() + ';TEL:'
+		    			+ $('#contact_phone2').val() + ';URL:'
+					+ $('#contact_website').val() + ';URL:'+
+		    			+ $('#contact_facebook').val() + ';EMAIL:'
 					+ $('#contact_email').val() + ';ADR:'
 					+ $('#contact_address').val() + ';;';
             generateqr(data);
