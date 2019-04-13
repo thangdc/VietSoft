@@ -90,7 +90,7 @@ $(document).ready(function () {
 					+ $('#contact_email').val() + ';EMAIL:' 
 		    			+ $('#contact_email1').val() + ';ADR:'
 					+ $('#contact_address').val() + ';NOTE:'
-					+ $('#textare2').val() + ';;';
+					+ $('#textarea2').val() + ';;';
             generateqr(data);
         } else if (ind == 5) {
             data = 'geo:' + latitude + ',' + longitude;
