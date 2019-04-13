@@ -87,8 +87,7 @@ $(document).ready(function () {
 		    			+ $('#contact_phone2').val() + ';URL:'
 					+ $('#contact_website').val() + ';FBURL:'
 		    			+ $('#contact_facebook').val() + ';EMAIL:'
-					+ $('#contact_email').val() + ';EMAIL:' 
-		    			+ $('#contact_email1').val() + ';ADR:'
+					+ $('#contact_email').val() + ';ADR:'
 					+ $('#contact_address').val() + ';NOTE:'
 					+ $('#textarea4').val() + ';;';
             generateqr(data);
