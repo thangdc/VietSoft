@@ -10,8 +10,9 @@ function generateqr(data) {
 	var data = encodeURIComponent(data);
 	
 	// Generate the URL (Get current domain self.request.path
-	var curl = 'http://albumdownloader.apphb.com/TienIch/QRCodeGeneratorImage?content=' + data + '&width=' + $('#x').val() + '&height=' + $('#y').val();
-
+	//var curl = 'http://albumdownloader.apphb.com/TienIch/QRCodeGeneratorImage?content=' + data + '&width=' + $('#x').val() + '&height=' + $('#y').val();
+	var curl = 'https://zxing.org/w/chart?cht=qr&chs=' + $('#x').val() + 'x' + $('#y').val() + '&chld=L&choe=UTF-8&chl=' + data;
+	
 	// Change the image
 	$('.imgpreview').attr('src', curl).load(function() {
 		$('#loading').hide();
