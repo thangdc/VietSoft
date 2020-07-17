@@ -48,7 +48,7 @@
 					<h3>Giới thiệu phần mềm quản lý mã QR Code</h3>
 					<h1>Tạo và quản lý mã QR Code tiện lợi nhanh chóng.</h1>
 					<p>Bạn mất nhiều thời gian để nhập từng mã QR Code, bạn lưu từng ảnh QR Code sau khi tạo, với phần mềm tạo và quản lý QR Code giúp bạn dễ dàng tạo số lượng lớn QR Code dễ dàng từ tập tin excel, giúp bạn tiết kiệm được nhiều thời gian hơn cho bản thân.</p>
-					<button class="download-btn"><a href="https://vietstore.herokuapp.com/api/download/qr-code-generator-premium" target="_blank" style="color: #fff;">Giá: 3.000.000 vnđ</a></button>
+					<button class="download-btn" onclick="openUrl('https://vietstore.herokuapp.com/api/download/qr-code-generator-premium')"><a href="#" style="color: #fff;">Giá: 3.000.000 vnđ</a></button>
 					<button class="features-btn">Bảo hành 1 năm</button>
 				</div>
 				<div class="col-xs-6 banner-img wow fadeInRight animated animated">
@@ -154,7 +154,7 @@
 							</div>
 							<div class="table-description">
 								<p>Bạn chỉ có thể tạo và quản lý mã QR Code không hỗ trợ nhập và xuất dữ liệu từ tập tin excel.</p>
-								<button><a href="https://vietstore.herokuapp.com/api/download/qr-code-generator-free" target="_blank">Tải về</a></button>
+								<button onclick="openUrl('https://vietstore.herokuapp.com/api/download/qr-code-generator-free')"><a href="#">Tải về</a></button>
 							</div>
 						</div>
 					</div>
@@ -169,7 +169,7 @@
 							</div>
 							<div class="table-description">
 								<p>Bao gồm đầy đủ tính năng tạo và quản lý mã QR Code, nhập xuất dữ liệu từ tập tin excel.</p>
-								<button><a href="https://vietstore.herokuapp.com/api/download/qr-code-generator-premium" target="_blank">Tải về</a></button>
+								<button onclick="openUrl('https://vietstore.herokuapp.com/api/download/qr-code-generator-premium')"><a href="#">Tải về</a></button>
 							</div>
 						</div>
 					</div>
@@ -242,5 +242,10 @@
 	<script src="themes/lucid/js/bootstrap.min.js"></script>
 	<script src="themes/lucid/js/custom.js"></script>
 	<script src="themes/lucid/js/wow.js"></script>
+	<script type="text/javascript">
+		function openUrl(url) {
+			window.location.href = url;
+		}
+	</script>
 
 </body></html>
