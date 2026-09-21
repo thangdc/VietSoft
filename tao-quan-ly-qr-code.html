@@ -1,251 +1,1045 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="description" content="">
-		<meta name="author" content="">
-		<title>Tạo và quản lý mã QR Code - VietSofts</title>
-		<link rel="stylesheet" href="themes/lucid/css/font-awesome.min.css">
-		<link rel="stylesheet" href="themes/lucid/css/bootstrap.min.css">
-		<link rel="stylesheet" href="themes/lucid/css/animate.min.css">
-		<link rel="stylesheet" href="themes/lucid/css/style.css">
-		<link rel="stylesheet" href="themes/lucid/css/responsive.css">
-		<script src="themes/lucid/js/modernizr.js"></script>
-		<!--[if lt IE 9]>
-			<script src="themes/lucid/js/html5shiv.js"></script>
-			<script src="themes/lucid/js/respond.min.js"></script>
-		<![endif]-->
-	</head>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Phần mềm tạo và quản lý QR Code hàng loạt từ Excel. Nhập dữ liệu, tạo QR Code, thiết kế mẫu, xuất Excel, Word, hình ảnh và in ấn. Có bản miễn phí để trải nghiệm.">
+  <meta name="author" content="VietSofts">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://vietsofts.thangdc.com/tao-quan-ly-qr-code.html">
+  <meta property="og:title" content="Tạo hàng loạt QR Code từ Excel - VietSofts">
+  <meta property="og:description" content="Import Excel, tạo QR Code hàng loạt, thiết kế mẫu, xuất và in dữ liệu với phần mềm QR Code của VietSofts.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vietsofts.thangdc.com/tao-quan-ly-qr-code.html">
+  <title>Tạo hàng loạt QR Code từ Excel | VietSofts</title>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-soft: #eff6ff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --surface: #f8fafc;
+      --white: #ffffff;
+      --success: #15803d;
+      --shadow: 0 20px 60px rgba(15, 23, 42, .10);
+      --radius: 18px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--white);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(calc(100% - 40px), var(--max));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid rgba(226,232,240,.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      font-size: 20px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--primary);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a:hover { color: var(--primary); }
+
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-weight: 750;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      color: white;
+      background: var(--primary);
+      box-shadow: 0 8px 22px rgba(37,99,235,.22);
+    }
+
+    .btn-primary:hover { background: var(--primary-dark); }
+
+    .btn-secondary {
+      color: var(--text);
+      background: white;
+      border-color: var(--border);
+    }
+
+    .btn-large {
+      min-height: 52px;
+      padding: 0 24px;
+      font-size: 15px;
+    }
+
+    .hero {
+      padding: 76px 0 82px;
+      background:
+        radial-gradient(circle at 80% 10%, rgba(37,99,235,.08), transparent 34%),
+        linear-gradient(#fff, #fff);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      background: var(--primary-soft);
+      border: 1px solid #dbeafe;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 18px 0 18px;
+      max-width: 650px;
+      font-size: clamp(42px, 5vw, 64px);
+      line-height: 1.06;
+      letter-spacing: -.045em;
+    }
+
+    .hero-copy {
+      max-width: 610px;
+      color: var(--muted);
+      font-size: 18px;
+      margin: 0 0 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .product-window {
+      background: #0f172a;
+      border-radius: 20px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+      transform: rotate(.3deg);
+    }
+
+    .window-bar {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+    }
+
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: #64748b; }
+
+    .window-content {
+      overflow: hidden;
+      border-radius: 12px;
+      background: white;
+      min-height: 390px;
+      padding: 20px;
+    }
+
+    .app-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .app-title strong { font-size: 17px; }
+
+    .app-badge {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-radius: 7px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 16px;
+    }
+
+    .fake-table, .fake-preview {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+    }
+
+    .fake-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      margin-bottom: 9px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr .65fr;
+      gap: 8px;
+      padding: 9px 6px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 11px;
+    }
+
+    .table-row:first-of-type {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .qr-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .qr {
+      aspect-ratio: 1;
+      border: 8px solid white;
+      outline: 1px solid var(--border);
+      background:
+        linear-gradient(90deg, #111 12%, transparent 12% 24%, #111 24% 36%, transparent 36% 48%, #111 48% 64%, transparent 64% 76%, #111 76%),
+        linear-gradient(#111 12%, transparent 12% 24%, #111 24% 36%, transparent 36% 48%, #111 48% 64%, transparent 64% 76%, #111 76%);
+      background-size: 22px 22px;
+    }
+
+    section { scroll-margin-top: 88px; }
+
+    .section {
+      padding: 90px 0;
+    }
+
+    .section-soft {
+      background: var(--surface);
+      border-top: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .section-heading {
+      max-width: 700px;
+      margin: 0 auto 46px;
+      text-align: center;
+    }
+
+    .section-heading .eyebrow { margin-bottom: 12px; }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .workflow:before {
+      content: "";
+      position: absolute;
+      left: 16%;
+      right: 16%;
+      top: 31px;
+      border-top: 1px dashed #bfdbfe;
+      z-index: 0;
+    }
+
+    .step {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .step-number {
+      width: 62px;
+      height: 62px;
+      margin: 0 auto 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: white;
+      border: 1px solid #bfdbfe;
+      color: var(--primary);
+      font-weight: 850;
+      box-shadow: 0 5px 18px rgba(37,99,235,.08);
+    }
+
+    .step h3 { margin: 0 0 7px; font-size: 18px; }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .showcase {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 54px;
+      align-items: center;
+    }
+
+    .showcase-copy h2 { margin-top: 8px; }
+
+    .showcase-copy > p {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 24px 0 0;
+    }
+
+    .check-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 12px 0;
+      font-size: 15px;
+    }
+
+    .check {
+      flex: 0 0 auto;
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      margin-top: 2px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: var(--success);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .real-image {
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: white;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .real-image img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .feature-card {
+      padding: 24px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .feature-card h3 { margin: 0 0 8px; font-size: 18px; }
+
+    .feature-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .use-case-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .use-case {
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+    }
+
+    .use-case strong { display: block; margin-bottom: 5px; }
+
+    .use-case span { color: var(--muted); font-size: 14px; }
+
+    .video-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #0f172a;
+      padding: 10px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .video-ratio {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .video-ratio iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .pricing {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .price-card {
+      padding: 34px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: white;
+    }
+
+    .price-card.featured {
+      border: 2px solid var(--primary);
+      box-shadow: 0 16px 50px rgba(37,99,235,.12);
+    }
+
+    .price-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .price {
+      margin: 10px 0 6px;
+      font-size: 42px;
+      line-height: 1.1;
+      letter-spacing: -.04em;
+      font-weight: 850;
+    }
+
+    .price-desc { color: var(--muted); margin: 0 0 22px; }
+
+    .price-card .check-list { margin-bottom: 26px; }
+
+    .payment-box {
+      margin-top: 28px;
+      padding: 22px;
+      border-radius: 14px;
+      background: var(--primary-soft);
+      border: 1px solid #dbeafe;
+    }
+
+    .payment-box strong { display: block; margin-bottom: 7px; }
+
+    .payment-box p {
+      margin: 0;
+      color: #334155;
+      font-size: 14px;
+    }
+
+    .payment-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .payment-step {
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .payment-step b {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .payment-step strong { display: block; margin-bottom: 5px; }
+
+    .payment-step span { color: var(--muted); font-size: 13px; }
+
+    .faq {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    details {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 750;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary:after { content: "+"; color: var(--primary); font-size: 20px; }
+
+    details[open] summary:after { content: "−"; }
+
+    details p {
+      color: var(--muted);
+      margin: 10px 30px 0 0;
+      font-size: 14px;
+    }
+
+    .final-cta {
+      padding: 86px 0;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    .final-cta h2 { max-width: 720px; margin: 0 auto 14px; }
+
+    .final-cta p {
+      max-width: 620px;
+      margin: 0 auto 24px;
+      color: #cbd5e1;
+    }
+
+    .footer {
+      padding: 28px 0;
+      color: #94a3b8;
+      background: #020617;
+      font-size: 13px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer a { color: #cbd5e1; }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hero-grid, .showcase, .pricing { grid-template-columns: 1fr; }
+      .hero { padding-top: 52px; }
+      .hero-copy { font-size: 17px; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .use-case-grid { grid-template-columns: repeat(2, 1fr); }
+      .payment-steps { grid-template-columns: 1fr; }
+      .workflow:before { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .container { width: min(calc(100% - 28px), var(--max)); }
+      .nav { min-height: 62px; }
+      .brand small { display: none; }
+      .nav-actions .btn-secondary { display: none; }
+      .nav-actions .btn { min-height: 40px; padding: 0 13px; font-size: 12px; }
+      .hero { padding: 42px 0 58px; }
+      h1 { font-size: 40px; }
+      .hero-actions { display: grid; grid-template-columns: 1fr; }
+      .btn-large { width: 100%; }
+      .window-content { min-height: 300px; padding: 12px; }
+      .app-layout { grid-template-columns: 1fr; }
+      .fake-preview { display: none; }
+      .section { padding: 66px 0; }
+      .feature-grid, .use-case-grid { grid-template-columns: 1fr; }
+      .workflow { grid-template-columns: 1fr; gap: 30px; }
+      .step { padding: 0; }
+      .pricing { gap: 14px; }
+      .price-card { padding: 25px; }
+      .price { font-size: 36px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "VietSofts QR Code",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Windows",
+    "description": "Phần mềm tạo và quản lý QR Code, hỗ trợ nhập dữ liệu từ Excel, tạo QR hàng loạt, xuất dữ liệu và in ấn.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Bản miễn phí",
+        "price": "0",
+        "priceCurrency": "VND",
+        "url": "https://drive.google.com/file/d/1SBuwFrWmvRqEUVH5rRb5onQZgUaz8WfM/view?usp=sharing"
+      },
+      {
+        "@type": "Offer",
+        "name": "Bản đầy đủ",
+        "price": "3000000",
+        "priceCurrency": "VND",
+        "url": "https://vietsofts.thangdc.com/tao-quan-ly-qr-code.html"
+      }
+    ]
+  }
+  </script>
+</head>
+
 <body>
-	<header class="top-header">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">					
-					<nav class="navbar navbar-default">
-						<div class="container-fluid nav-bar">
-						    <div class="navbar-header">
-						      <button type="button" class="navbar-toggle collapsed">
-						        <span class="sr-only">Toggle navigation</span>
-						        <span class="icon-bar"></span>
-						        <span class="icon-bar"></span>
-						        <span class="icon-bar"></span>
-						      </button>
-						      <a href="/"><img src="http://vietsofts.thangdc.com/themes/multi-free-responsive-onepage/images/logo.png" alt="VietSofts - Phần Mềm Việt" class="img-responsive logo"></a>
-						    </div>
-						</div>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</header><!-- end of header section -->
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="/">
+        <span class="brand-mark">V</span>
+        <span>VietSofts<small>QR Code Generator</small></span>
+      </a>
 
-	<!-- banner section starts here -->
-	<section class="banner">
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-6 wow fadeInLeft animated animated">
-					<h3>Giới thiệu phần mềm quản lý mã QR Code</h3>
-					<h1>Tạo và quản lý mã QR Code tiện lợi nhanh chóng.</h1>
-					<p>Bạn mất nhiều thời gian để nhập từng mã QR Code, bạn lưu từng ảnh QR Code sau khi tạo, với phần mềm tạo và quản lý QR Code giúp bạn dễ dàng tạo số lượng lớn QR Code dễ dàng từ tập tin excel, giúp bạn tiết kiệm được nhiều thời gian hơn cho bản thân.</p>
-					<button class="download-btn" onclick="openUrl('https://vietstore.herokuapp.com/api/download/qr-code-generator-premium')"><a href="#" style="color: #fff;">Giá: 3.000.000 vnđ</a></button>
-					<button class="features-btn">Bảo hành 1 năm</button>
-				</div>
-				<div class="col-xs-6 banner-img wow fadeInRight animated animated">
-					<h3>Video giới thiệu</h3>
-					<iframe width="560" height="315" src="https://www.youtube.com/embed/7r9N29qAh5o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-				</div>
-			</div>
-		</div>
-	</section><!-- end of banner section -->
+      <nav class="nav-links" aria-label="Điều hướng">
+        <a href="#workflow">Quy trình</a>
+        <a href="#features">Tính năng</a>
+        <a href="#video">Demo</a>
+        <a href="#pricing">Giá</a>
+        <a href="#faq">FAQ</a>
+      </nav>
 
-	<!-- feature sectiona -->
-	<section class="features text-center">
-		<div class="container">
-			<div class="row">
-				<h4>Tính năng sản phẩm</h4>
-				<h2>Những tính năng nổi bật</h2>
-				<img class="img-responsive" src="themes/lucid/img/daag.png" alt="">
-				<div class="col-md-3 wow zoomIn animated animated lucid">
-					<i class="fa fa-desktop"></i>
-					<h3>Tự thiết kế QR Code</h3>
-					<p>Phần mềm cho phép bạn tự thiết kế cho mình một mẫu QR Code phù hợp</p>
-				</div>
-				<div class="col-md-3 wow zoomIn animated animated lucid">
-					<i class="fa fa-cog"></i>
-					<h3>Dễ quản lý</h3>
-					<p>Bạn có thể dễ dàng quản lý tấc cả các mã QR Code mà bạn đã tạo ra một cách tiện lợi, như thêm xóa sửa, tìm kiếm những mã QR Code mà bạn đã tạo.</p>
-				</div>
-				<div class="col-md-3 wow zoomIn animated animated lucid">
-					<i class="fa fa-facebook"></i>
-					<h3>Nhập mã QR Code từ file excel</h3>
-					<p>hần mềm cho phép bạn tạo mã QR Code với số lượng lớn nhanh chóng dễ dàng và tiện lợi từ file excel.</p>
-				</div>
-				<div class="col-md-3 wow zoomIn animated animated lucid">
-					<i class="fa fa-mobile"></i>
-					<h3>Dễ dàng xuất dữ liệu</h3>
-					<p>Bạn có thể xuất mã QR Code ra file excel, hình ảnh, word để sử dụng cho các mục đích khác.</p>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- end of features section -->
-	<hr>
-	<!-- details section -->
-	<section class="details" id="about">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-5 col-xs-6 col-sm-6 wow slideInUp animated animated" style="visibility: visible; animation-name: slideInUp;">
-					<img class="img-responsive details-phone" src="themes/lucid/img/QR-Code.png" alt="">
-				</div>
-				<div class="col-md-6 col-md-offset-1 col-xs-6 col-sm-6 wow slideInUp animated animated" style="visibility: visible; animation-name: slideInUp;">
-					<h4>Tính năng đặc biệt</h4>
-					<h2>Nhập dữ liệu từ file excel</h2>
-					<img class="img-responsive" src="themes/lucid/img/daag.png" alt="">
-					<p>Tính năng nhập dữ liệu từ file excel, xuất ra word, hình ảnh hoặc in ấn từ phần mềm thì chỉ trong bản tính phí mới có, ngoài ra các tính năng còn lại thì mình có cho bản miễn phí để các bạn trải nghiệm.</p>
-					<ul>
-						<li><i class="fa fa-trophy"></i>Quản lý hiệu quả</li>
-						<li><i class="fa fa-mobile"></i>Cài đặt nhanh chóng</li>
-						<li><i class="fa fa-bolt"></i>Dễ sử dụng và làm quen</li>
-						<li><i class="fa fa-tachometer"></i>Giao diện hoàn toàn bằng tiếng Việt</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- end of details section -->
+      <div class="nav-actions">
+        <a class="btn btn-secondary" href="https://drive.google.com/file/d/1SBuwFrWmvRqEUVH5rRb5onQZgUaz8Wf/view?usp=sharing">Tải miễn phí</a>
+        <a class="btn btn-primary" href="#pricing">Mua bản đầy đủ</a>
+      </div>
+    </div>
+  </header>
 
-	<!-- features details section -->
-	<!--<section class="feature-detail">
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-5 wow fadeInLeft animated animated" style="visibility: visible; animation-name: fadeInLeft;">
-					<h4>Phần mềm Quản Lý Mã QR Code</h4>
-					<h2>Giá cả phải chăng, đáp ứng nhiều nhu cầu khác nhau</h2>
-					<img src="themes/lucid/img/daag.png" alt="">
-					<p>Phần mềm quản lý mã QR Code dễ sử dụng, dễ làm nắm bắt làm quen, giao diện đơn giản và hoàn toàn bằng tiếng Việt, được bảo hành 30 ngày nếu có bất kỳ lỗi nào của phần mềm khi sử dụng (Lưu ý: nếu tính năng của phần mềm không phù hợp với yêu cầu của bạn bên mình có thể cập nhật phần mềm theo yêu cầu nhưng sẽ tính thêm phụ phí).</p>
-				</div>
-				<div class="col-xs-7 horizontal-phone wow fadeInRight animated animated" style="visibility: visible; animation-name: fadeInRight;">
-					<img class="img-responsive" src="themes/lucid/img/laid-phone2.png" alt="phone">
-				</div>
-			</div>
-		</div>
-	</section>-->
-	<!-- end of features-detail section -->
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Phần mềm QR Code cho dữ liệu Excel</span>
+          <h1>Tạo hàng trăm mã QR Code từ Excel trong vài phút.</h1>
+          <p class="hero-copy">
+            Import dữ liệu → tạo QR hàng loạt → thiết kế mẫu → xuất hoặc in.
+            Không cần tạo và lưu từng mã QR thủ công.
+          </p>
 
-	<!-- price-plan section -->
-	<section class="price-plan text-center" id="pricing">
-		<div class="container">
-			<div class="row">
-				<div class="pricing-heading">
-					<h4>Chất lượng và giá cả</h4>
-					<h2>Giá cả</h2>
-					<img class="img-responsive" src="themes/lucid/img/daag.png" alt="">
-				</div>
-				<div class="pricing-tables">
-					<div class="col-md-6 col-sm-6 wow zoomIn animated animated">
-						<div class="single-table free">
-							<div class="table-heading">
-								<h3>Miễn phí</h3>
-							</div>
-							<div class="table-price">
-								<h5>0 đồng</h5>
-								<p></p>
-							</div>
-							<div class="table-description">
-								<p>Bạn chỉ có thể tạo và quản lý mã QR Code không hỗ trợ nhập và xuất dữ liệu từ tập tin excel.</p>
-								<button onclick="openUrl('https://vietstore.herokuapp.com/api/download/qr-code-generator-free')"><a href="#">Tải về</a></button>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-6 col-sm-6 wow zoomIn animated animated">
-						<div class="single-table personal">
-							<div class="table-heading">
-								<h3>Tính phí</h3>
-							</div>
-							<div class="table-price">
-								<h5>3.000.000 đồng</h5>
-								<p></p>
-							</div>
-							<div class="table-description">
-								<p>Bao gồm đầy đủ tính năng tạo và quản lý mã QR Code, nhập xuất dữ liệu từ tập tin excel.</p>
-								<button onclick="openUrl('https://vietstore.herokuapp.com/api/download/qr-code-generator-premium')"><a href="#">Tải về</a></button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	<!-- end of price-plan section -->
-	
-	<section class="details">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12 col-md-offset-1 col-xs-12 col-sm-12 wow slideInUp animated animated" style="visibility: visible; animation-name: slideInUp;">
-					<h2>Các bước thanh toán</h2>
-					<img class="img-responsive" src="themes/lucid/img/daag.png" alt="">
-					<p>Lưu ý: Vui lòng xem kỹ các tính năng, nếu thấy phần mềm đáp ứng được nhu cầu thì hãy tiến hành thanh toán, chúng tôi không nhận chỉnh sửa phần mềm theo nhu cầu riêng.</p>
-					<ul>
-						<li><i class="fa fa-bolt"></i>Bước 1: Chuyển (3 triệu) vào số tài khoản ACB: 1709878 với nội dung: Mua QR Code, email: email@cuaban.com</li>
-						<li><i class="fa fa-bolt"></i>Bước 2: Sau khi mình nhận được tiền thì mình sẽ gửi liên kết tải phần mềm qua email mà bạn đã nhập ở Bước 1</li>
-						<li><i class="fa fa-bolt"></i>Bước 3: Liên hệ qua email: thang@thangdc.com hoặc số điện thoại: 0898489110 nếu bạn chưa nhận được email chứa liên kết tải về</li>
-					</ul>
-					<p>Ghi chú: lưu ý: nếu chuyển tiền cùng ngân hàng thì sẽ nhanh, còn nếu khác ngân hàng thì sẽ lâu hơn, còn thứ 7 hoặc chủ nhật là ngày nghĩ nên nếu khác ngân hàng thì thứ 2 mình nhận được tiền sẽ gửi email.</p>
-				</div>
-			</div>
-		</div>
-	</section>
-	
-	<div id="disqus_thread" class="container"></div>
-	<script>
+          <div class="hero-actions">
+            <a class="btn btn-primary btn-large" href="https://drive.google.com/file/d/1SBuwFrWmvRqEUVH5rRb5onQZgUaz8Wf/view?usp=sharing">Tải bản miễn phí</a>
+            <a class="btn btn-secondary btn-large" href="#pricing">Xem bản đầy đủ · 3.000.000đ</a>
+          </div>
 
-	/**
-	*  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-	*  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-	/*
-	var disqus_config = function () {
-	this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-	this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-	};
-	*/
-	(function() { // DON'T EDIT BELOW THIS LINE
-	var d = document, s = d.createElement('script');
-	s.src = 'https://qrcode-2.disqus.com/embed.js';
-	s.setAttribute('data-timestamp', +new Date());
-	(d.head || d.body).appendChild(s);
-	})();
-	</script>
-	<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+          <p class="hero-note">Bản đầy đủ được bảo hành 1 năm.</p>
+        </div>
 
-	
-	<!-- footer starts here -->
-	<footer class="footer text-center">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="icons">
-						<a href="#"><i class="fa fa-behance"></i></a>
-						<a href="#"><i class="fa fa-dribbble"></i></a>
-						<a href="#"><i class="fa fa-twitter"></i></a>
-						<a href="#"><i class="fa fa-facebook"></i></a>
-						<a href="#"><i class="fa fa-linkedin"></i></a>
-					</div>
-					<p>COPYRIGHT © 2015 <a href="http://mostafiz.me/demo/lucid/#">Mostafizur Rahman</a></p>
-				</div>
-			</div>
-		</div>
-	</footer>
+        <div class="product-window" aria-label="Minh họa giao diện phần mềm QR Code">
+          <div class="window-bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+          <div class="window-content">
+            <div class="app-title">
+              <strong>QR Code Generator</strong>
+              <span class="app-badge">Excel Import</span>
+            </div>
+            <div class="app-layout">
+              <div class="fake-table">
+                <div class="fake-label">Dữ liệu Excel</div>
+                <div class="table-row"><span>Tên</span><span>Mã</span><span>Loại</span></div>
+                <div class="table-row"><span>Sản phẩm A</span><span>SP-001</span><span>QR</span></div>
+                <div class="table-row"><span>Sản phẩm B</span><span>SP-002</span><span>QR</span></div>
+                <div class="table-row"><span>Sản phẩm C</span><span>SP-003</span><span>QR</span></div>
+                <div class="table-row"><span>Sản phẩm D</span><span>SP-004</span><span>QR</span></div>
+              </div>
+              <div class="fake-preview">
+                <div class="fake-label">QR Preview</div>
+                <div class="qr-grid">
+                  <div class="qr"></div>
+                  <div class="qr"></div>
+                  <div class="qr"></div>
+                  <div class="qr"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-	<script src="themes/lucid/js/jquery-2.1.1.js"></script>
-	<script src="themes/lucid/js/smoothscroll.js"></script>
-	<script src="themes/lucid/js/bootstrap.min.js"></script>
-	<script src="themes/lucid/js/custom.js"></script>
-	<script src="themes/lucid/js/wow.js"></script>
-	<script type="text/javascript">
-		function openUrl(url) {
-			window.location.href = url;
-		}
-	</script>
+    <section class="section section-soft" id="workflow">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Đơn giản hóa công việc</span>
+          <h2>Excel → QR → Print</h2>
+          <p>Một quy trình rõ ràng thay cho việc tạo từng mã QR thủ công.</p>
+        </div>
 
-</body></html>
+        <div class="workflow">
+          <div class="step">
+            <div class="step-number">01</div>
+            <h3>Import Excel</h3>
+            <p>Đưa danh sách dữ liệu vào phần mềm.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">02</div>
+            <h3>Tạo QR hàng loạt</h3>
+            <p>Mapping dữ liệu và tạo nhiều mã QR cùng lúc.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">03</div>
+            <h3>Xuất / In</h3>
+            <p>Xuất dữ liệu hoặc hình ảnh để tiếp tục sử dụng và in ấn.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container showcase">
+        <div class="showcase-copy">
+          <span class="eyebrow">Tập trung vào dữ liệu</span>
+          <h2>Không chỉ tạo QR. Bạn còn quản lý được dữ liệu phía sau mỗi mã.</h2>
+          <p>
+            Phần mềm được thiết kế cho nhu cầu tạo và quản lý nhiều mã QR,
+            đặc biệt khi dữ liệu ban đầu đã có trong Excel.
+          </p>
+          <ul class="check-list">
+            <li><span class="check">✓</span><span>Tạo và quản lý nhiều mã QR Code.</span></li>
+            <li><span class="check">✓</span><span>Nhập dữ liệu hàng loạt từ Excel.</span></li>
+            <li><span class="check">✓</span><span>Tự thiết kế mẫu QR phù hợp.</span></li>
+            <li><span class="check">✓</span><span>Xuất Excel, Word, hình ảnh và hỗ trợ in ấn.</span></li>
+          </ul>
+        </div>
+
+        <div class="real-image">
+          <img src="themes/lucid/img/QR-Code.png" alt="Giao diện phần mềm tạo và quản lý QR Code">
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="features">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Tính năng</span>
+          <h2>Các công cụ bạn cần để xử lý QR hàng loạt</h2>
+          <p>Không tập trung vào những tính năng không cần thiết. Chỉ những phần phục vụ quy trình QR.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon">QR</div>
+            <h3>Tạo QR hàng loạt</h3>
+            <p>Tạo nhiều mã QR từ dữ liệu có sẵn thay vì xử lý từng mã một.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">EX</div>
+            <h3>Nhập từ Excel</h3>
+            <p>Đưa dữ liệu từ file Excel vào phần mềm để tạo QR theo danh sách.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">UI</div>
+            <h3>Thiết kế mẫu</h3>
+            <p>Tạo mẫu QR phù hợp với cách bạn muốn trình bày dữ liệu.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">OUT</div>
+            <h3>Xuất và in</h3>
+            <p>Xuất dữ liệu ra Excel, Word, hình ảnh hoặc sử dụng cho in ấn.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Ứng dụng thực tế</span>
+          <h2>Phù hợp khi bạn phải xử lý nhiều QR Code</h2>
+          <p>Đặc biệt hữu ích khi danh sách dữ liệu đã được quản lý bằng Excel.</p>
+        </div>
+
+        <div class="use-case-grid">
+          <div class="use-case"><strong>Sản phẩm</strong><span>Tạo QR cho danh sách sản phẩm và mã hàng.</span></div>
+          <div class="use-case"><strong>Kho hàng</strong><span>Quản lý mã QR theo danh sách dữ liệu kho.</span></div>
+          <div class="use-case"><strong>Tài sản</strong><span>Tạo mã cho danh sách tài sản hoặc thiết bị.</span></div>
+          <div class="use-case"><strong>Nhãn</strong><span>Chuẩn bị dữ liệu QR phục vụ thiết kế và in nhãn.</span></div>
+          <div class="use-case"><strong>Hồ sơ</strong><span>Gắn mã QR với danh sách hồ sơ và thông tin liên quan.</span></div>
+          <div class="use-case"><strong>Dữ liệu tùy chỉnh</strong><span>Làm việc với danh sách dữ liệu đã có trong Excel.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="video">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Demo</span>
+          <h2>Xem phần mềm hoạt động</h2>
+          <p>Xem video giới thiệu trước khi quyết định phiên bản phù hợp.</p>
+        </div>
+
+        <div class="video-wrap">
+          <div class="video-ratio">
+            <iframe src="https://www.youtube.com/embed/7r9N29qAh5o" title="Video giới thiệu phần mềm QR Code VietSofts" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Phiên bản</span>
+          <h2>Chọn phiên bản phù hợp với nhu cầu</h2>
+          <p>Bản miễn phí để trải nghiệm. Bản đầy đủ dành cho nhu cầu nhập, xuất và in dữ liệu.</p>
+        </div>
+
+        <div class="pricing">
+          <article class="price-card">
+            <div class="price-label">Miễn phí</div>
+            <div class="price">0đ</div>
+            <p class="price-desc">Tạo và quản lý QR Code cơ bản.</p>
+            <ul class="check-list">
+              <li><span class="check">✓</span><span>Tạo QR Code</span></li>
+              <li><span class="check">✓</span><span>Quản lý QR Code</span></li>
+              <li><span class="check">✓</span><span>Phù hợp để trải nghiệm</span></li>
+            </ul>
+            <a class="btn btn-secondary" href="https://drive.google.com/file/d/1SBuwFrWmvRqEUVH5rRb5onQZgUaz8Wf/view?usp=sharing">Tải bản miễn phí</a>
+          </article>
+
+          <article class="price-card featured">
+            <div class="price-label">Bản đầy đủ</div>
+            <div class="price">3.000.000đ</div>
+            <p class="price-desc">Đầy đủ tính năng tạo, quản lý, nhập xuất dữ liệu và in ấn.</p>
+            <ul class="check-list">
+              <li><span class="check">✓</span><span>Tất cả tính năng của bản miễn phí</span></li>
+              <li><span class="check">✓</span><span>Nhập dữ liệu từ Excel</span></li>
+              <li><span class="check">✓</span><span>Xuất Excel, Word và hình ảnh</span></li>
+              <li><span class="check">✓</span><span>Hỗ trợ in ấn</span></li>
+              <li><span class="check">✓</span><span>Bảo hành 1 năm</span></li>
+            </ul>
+            <a class="btn btn-primary" href="#purchase">Mua bản đầy đủ</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="purchase">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Mua bản đầy đủ</span>
+          <h2>Quy trình mua và nhận phần mềm</h2>
+          <p>Quy trình thủ công hiện tại giúp bạn kiểm soát việc cấp quyền tải bản Premium.</p>
+        </div>
+
+        <div class="payment-steps">
+          <div class="payment-step">
+            <b>01</b>
+            <strong>Thanh toán</strong>
+            <span>Chuyển 3.000.000đ vào tài khoản ACB 1709878 với nội dung: Mua QR Code, email: email@cuaban.com</span>
+          </div>
+          <div class="payment-step">
+            <b>02</b>
+            <strong>Gửi xác nhận</strong>
+            <span>Sau khi thanh toán, gửi thông tin xác nhận để VietSofts kiểm tra giao dịch.</span>
+          </div>
+          <div class="payment-step">
+            <b>03</b>
+            <strong>Nhận quyền tải</strong>
+            <span>Bạn nhận link Google Drive bản Premium và request quyền truy cập để được cấp quyền tải.</span>
+          </div>
+        </div>
+
+        <div class="payment-box">
+          <strong>Trước khi thanh toán</strong>
+          <p>Vui lòng xem kỹ tính năng và video demo để chắc chắn phần mềm đáp ứng nhu cầu. Sản phẩm không nhận chỉnh sửa theo yêu cầu riêng.</p>
+        </div>
+
+        <div style="text-align:center;margin-top:28px;">
+          <p style="color:var(--muted);margin:0 0 10px;">Nếu chưa nhận được hướng dẫn sau khi thanh toán:</p>
+          <a class="btn btn-primary" href="mailto:thang@thangdc.com">Liên hệ VietSofts</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">FAQ</span>
+          <h2>Câu hỏi thường gặp</h2>
+        </div>
+
+        <div class="faq">
+          <details>
+            <summary>Bản miễn phí có thể làm gì?</summary>
+            <p>Bản miễn phí cho phép tạo và quản lý QR Code. Tính năng nhập và xuất dữ liệu từ Excel là một phần của bản đầy đủ.</p>
+          </details>
+          <details>
+            <summary>Bản đầy đủ có hỗ trợ Excel không?</summary>
+            <p>Có. Bản đầy đủ hỗ trợ nhập dữ liệu từ file Excel để tạo QR Code hàng loạt và xuất dữ liệu theo các định dạng được hỗ trợ.</p>
+          </details>
+          <details>
+            <summary>Có thể xuất QR Code ra hình ảnh hoặc Word không?</summary>
+            <p>Có. Bản đầy đủ hỗ trợ xuất QR Code ra hình ảnh và Word, ngoài ra có thể xuất dữ liệu ra Excel.</p>
+          </details>
+          <details>
+            <summary>Có thể in QR Code không?</summary>
+            <p>Có. Chức năng in ấn thuộc bản đầy đủ.</p>
+          </details>
+          <details>
+            <summary>Tôi có thể thử trước khi mua không?</summary>
+            <p>Có. Bạn có thể tải bản miễn phí để trải nghiệm các chức năng tạo và quản lý QR Code trước khi quyết định mua bản đầy đủ.</p>
+          </details>
+          <details>
+            <summary>Sau khi mua bản Premium, tôi tải phần mềm như thế nào?</summary>
+            <p>Sau khi xác nhận thanh toán, bạn sẽ nhận hướng dẫn và link Google Drive bản Premium. Nếu file đang giới hạn quyền truy cập, hãy request access để được cấp quyền tải.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-cta">
+      <div class="container">
+        <h2>Cần tạo nhiều QR Code từ dữ liệu Excel?</h2>
+        <p>Hãy thử bản miễn phí trước. Nếu cần nhập dữ liệu hàng loạt, xuất và in, bạn có thể nâng lên bản đầy đủ.</p>
+        <div class="hero-actions" style="justify-content:center;">
+          <a class="btn btn-primary btn-large" href="https://drive.google.com/file/d/1SBuwFrWmvRqEUVH5rRb5onQZgUaz8Wf/view?usp=sharing">Tải bản miễn phí</a>
+          <a class="btn btn-secondary btn-large" href="#pricing">Xem bản đầy đủ · 3.000.000đ</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© 2026 VietSofts · QR Code Generator</span>
+      <a href="/">Về VietSofts</a>
+    </div>
+  </footer>
+</body>
+</html>
