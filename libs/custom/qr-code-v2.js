@@ -623,7 +623,7 @@ function renderHistoryQrs(){
         for(var i=0;i<items.length;i++) if(String(items[i].historyId||'')===historyId){item=items[i];break;}
         if(!item || !item.data) return;
         renderQrImage(String(item.data), normalizeDesign(item.design), 56, function(imageUrl){
-            element.innerHTML='<img src="'+esc(imageUrl)+'" alt="QR Code">';
+            $(element).empty().append($('<img>', {src:imageUrl, alt:'QR Code'}));
         });
     });
 }
@@ -897,6 +897,8 @@ $(function(){
     $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
     $('#vsCopy').on('click',async function(){if(!currentImage)return;try{var blob=await (await fetch(currentImage)).blob();await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setStatus('✓ Đã sao chép ảnh QR');track('qr_copy',{qr_type:currentType});}catch(e){setStatus('Trình duyệt không hỗ trợ sao chép ảnh. Hãy dùng Tải PNG.');}});
     $('#vsOpen').on('click',function(){if(currentImage)window.open(currentImage,'_blank');});
+    $(window).off('resize.qrLocation').on('resize.qrLocation', function(){
+        if (locationMap) locationMap.invalidateSize(true);
+    });
 });
 })();
-$(window).on('resize', function(){ if (locationMap) locationMap.invalidateSize(true); });
