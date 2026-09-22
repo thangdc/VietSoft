@@ -964,7 +964,63 @@ function exportExcel() {
 
 function setStatus(text) { $('#vsStatus').text(text); }
 
+function isValidEmail(email) {
+    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(String(email || '').trim());
+}
+
+function isValidUrl(url) {
+    try {
+        var parsed = new URL(String(url || '').trim());
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
+function isValidPhone(phone) {
+    var normalized = String(phone || '').trim();
+    return /^[+]?[-()\\s\\d]{6,25}$/.test(normalized) && /\\d{6,}/.test(normalized);
+}
+
+function validateRecord(record) {
+    var f = record.fields;
+    switch (currentType) {
+        case 'url':
+            if (!isValidUrl(f.url)) return 'Vui lòng nhập URL hợp lệ bắt đầu bằng http:// hoặc https://';
+            break;
+        case 'contact':
+            if (!String(f.name || '').trim()) return 'Vui lòng nhập họ tên.';
+            if (f.phone && !isValidPhone(f.phone)) return 'Số điện thoại không hợp lệ.';
+            if (f.email && !isValidEmail(f.email)) return 'Email không hợp lệ.';
+            if (f.website && !isValidUrl(f.website)) return 'Website phải là URL http:// hoặc https:// hợp lệ.';
+            break;
+        case 'wifi':
+            if (!String(f.ssid || '').trim()) return 'Vui lòng nhập tên mạng (SSID).';
+            break;
+        case 'email':
+            if (!isValidEmail(f.email)) return 'Vui lòng nhập địa chỉ email hợp lệ.';
+            break;
+        case 'phone':
+            if (!isValidPhone(f.phone)) return 'Vui lòng nhập số điện thoại hợp lệ.';
+            break;
+        case 'sms':
+            if (!isValidPhone(f.phone)) return 'Vui lòng nhập số điện thoại hợp lệ.';
+            break;
+        case 'location':
+            var lat = Number(f.latitude);
+            var lng = Number(f.longitude);
+            if (!isFinite(lat) || lat < -90 || lat > 90 || !isFinite(lng) || lng < -180 || lng > 180) {
+                return 'Tọa độ vị trí không hợp lệ.';
+            }
+            break;
+    }
+    return '';
+}
+
 function generate() {
+    var record = getRecord();
+    var validationError = validateRecord(record);
+    if (validationError) { setStatus(validationError); return; }
     var record = getRecord();
     var data;
     try {
@@ -975,11 +1031,6 @@ function generate() {
     }
 
     if (!data.trim()) { setStatus('Vui lòng nhập nội dung.'); return; }
-    if (currentType === 'url' && data.toLowerCase().indexOf('http://') !== 0 && data.toLowerCase().indexOf('https://') !== 0) {
-        setStatus('URL nên bắt đầu bằng http:// hoặc https://');
-        return;
-    }
-
     saveQrConfig();
     var preview = document.getElementById('vsPreview');
     preview.innerHTML = '<div class="vs-empty">Đang tạo QR...</div>';
