@@ -401,7 +401,10 @@ function getRecord() {
     return {fields:{}};
 }
 
-function buildData(record) {
+function escapeQrField(value, characters) {
+    var escaped = String(value == null ? '' : value);
+    escaped = escaped.replace(/\\/g, '\\\\');
+    return escaped.replace(characters, '\\\\function buildData(record) {
     var f = record.fields;
     switch(currentType) {
         case 'url': return f.url.trim();
@@ -409,6 +412,34 @@ function buildData(record) {
         case 'contact': return 'MECARD:N:' + f.name + ';TEL:' + f.phone + ';EMAIL:' + f.email + ';URL:' + f.website + ';ADR:' + f.address + ';;';
         case 'wifi': return 'WIFI:T:' + f.auth + ';S:' + f.ssid.replace(/[;,:]/g,'\\$&') + ';P:' + f.password.replace(/[;,:]/g,'\\$&') + ';H:' + (f.hidden ? 'true' : 'false') + ';;';
         case 'email': return 'MATMSG:TO:' + f.email + ';SUB:' + f.subject + ';BODY:' + f.body + ';;';
+        case 'phone': return 'tel:' + f.phone;
+        case 'sms': return 'SMSTO:' + f.phone + ':' + f.body;
+        case 'location': return 'geo:' + f.latitude + ',' + f.longitude;
+    }
+    return '';
+}');
+}
+
+function buildData(record) {
+    var f = record.fields;
+    switch(currentType) {
+        case 'url': return f.url.trim();
+        case 'text': return f.text;
+        case 'contact':
+            return 'MECARD:N:' + escapeQrField(f.name, /[;:]/g) +
+                ';TEL:' + escapeQrField(f.phone, /[;:]/g) +
+                ';EMAIL:' + escapeQrField(f.email, /[;:]/g) +
+                ';URL:' + escapeQrField(f.website, /[;:]/g) +
+                ';ADR:' + escapeQrField(f.address, /[;:]/g) + ';;';
+        case 'wifi':
+            return 'WIFI:T:' + escapeQrField(f.auth, /[;,:]/g) +
+                ';S:' + escapeQrField(f.ssid, /[;,:" ]/g) +
+                ';P:' + escapeQrField(f.password, /[;,:" ]/g) +
+                ';H:' + (f.hidden ? 'true' : 'false') + ';;';
+        case 'email':
+            return 'mailto:' + encodeURIComponent(f.email || '') +
+                '?subject=' + encodeURIComponent(f.subject || '') +
+                '&body=' + encodeURIComponent(f.body || '');
         case 'phone': return 'tel:' + f.phone;
         case 'sms': return 'SMSTO:' + f.phone + ':' + f.body;
         case 'location': return 'geo:' + f.latitude + ',' + f.longitude;
