@@ -414,8 +414,19 @@ function renderHistory() {
     }
     html += '<button type="button" data-history-page="' + (historyPage + 1) + '"' + (historyPage === pageCount ? ' disabled' : '') + '>›</button></div></div>';
 
+    var searchInput = document.getElementById('vsHistorySearch');
+    var hadSearchFocus = document.activeElement === searchInput;
+    var searchSelectionStart = searchInput ? searchInput.selectionStart : null;
+    var searchSelectionEnd = searchInput ? searchInput.selectionEnd : null;
     container.html(html);
     $('#vsHistoryPageSize').val(String(historyPageSize));
+    if (hadSearchFocus) {
+        var restoredSearch = document.getElementById('vsHistorySearch');
+        if (restoredSearch) {
+            restoredSearch.focus();
+            try { restoredSearch.setSelectionRange(searchSelectionStart, searchSelectionEnd); } catch (e) {}
+        }
+    }
     $('#vsExportExcel').prop('disabled', !template);
 }
 
