@@ -178,13 +178,18 @@ function syncDesignColorControls() {
     });
     $('#vsApplyDesign').on('click', applyDesign);
     $('#vsResetDesign').on('click', function(){
-        $('#vsDesignForeground').val('#111827').trigger('input');
-        $('#vsDesignBackground').val('#FFFFFF').trigger('input');
-        $('#vsDesignStyle').val('square');
+        currentDesign = normalizeDesign({foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''});
+        syncDesignFields(currentDesign);
         $('#vsDesignLogo').val('');
-        $('#vsDesignLogoName').text('Chưa chọn logo');
-        if (currentData) renderCustomQr();
-        currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
+        if (currentData) {
+            renderCustomQr();
+            persistCurrentDesign(currentDesign);
+            saveCurrentQrState();
+        } else {
+            $('#vsApplyDesign').prop('disabled', true);
+            $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
+        }
+        setStatus('✓ Đã đặt lại thiết kế QR');
     });
 }
 
