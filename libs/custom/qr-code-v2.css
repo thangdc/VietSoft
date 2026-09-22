@@ -125,3 +125,54 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   .vs-modern .vs-form,.vs-modern .vs-result{padding:20px}
   .vs-modern .vs-tabs{padding:8px}
 }
+
+
+/* App-shell redesign v2: make the working area visibly feel like an application */
+.vs-modern .header{
+  padding-left:max(12px,calc((100vw - 1120px)/2));
+  padding-right:max(12px,calc((100vw - 1120px)/2));
+}
+.vs-modern .header .vs-brand{padding-left:8px!important;padding-right:18px!important}
+.vs-modern .content{min-height:calc(100vh - 56px)!important;background:#f4f6fa!important}
+.vs-modern .vs-hero{
+  max-width:1120px;margin:0 auto;padding:34px 16px 20px!important;text-align:left!important;background:transparent!important;
+}
+.vs-modern .vs-hero:before{content:'VietSoft QR';display:block;width:max-content;color:#2563eb;background:#eff6ff;border:1px solid #dbeafe;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.vs-modern .vs-hero h1{font-size:30px!important;line-height:1.15!important;margin:10px 0 5px!important;letter-spacing:-.03em!important}
+.vs-modern .vs-hero p{margin:0!important;font-size:14px!important;color:#667085!important;max-width:680px}
+.vs-modern .vs-app{max-width:1120px!important;padding:8px 16px 40px!important}
+.vs-modern .vs-card{
+  border:1px solid #dfe3ea!important;border-radius:18px!important;box-shadow:0 12px 35px rgba(16,24,40,.08)!important;background:#fff!important;
+}
+.vs-modern .vs-tabs{
+  padding:8px!important;gap:4px!important;background:#fff!important;border-bottom:1px solid #eaecf0!important;
+}
+.vs-modern .vs-tabs a{padding:10px 13px!important;border:1px solid transparent;font-size:12px!important;font-weight:700!important;color:#667085!important}
+.vs-modern .vs-tabs a:hover{background:#f8fafc!important;color:#344054!important}
+.vs-modern .vs-tabs a.active{background:#eff6ff!important;border-color:#dbeafe!important;color:#175cd3!important;box-shadow:none!important}
+.vs-modern .vs-generator{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)!important}
+.vs-modern .vs-form{padding:30px!important;background:#fff!important}
+.vs-modern .vs-result{padding:30px!important;background:linear-gradient(180deg,#f9fbff 0%,#f5f7fb 100%)!important;border-left:1px solid #eaecf0!important;position:relative}
+.vs-modern .vs-form h2,.vs-modern .vs-result h2{font-size:18px!important;margin-bottom:20px!important;color:#101828!important}
+.vs-modern .vs-form h2:after{content:' ';display:block;width:34px;height:3px;background:#2563eb;border-radius:99px;margin-top:9px}
+.vs-modern .vs-result h2{text-align:center!important;width:100%}
+.vs-modern .vs-preview{width:300px!important;height:300px!important;border-radius:18px!important;border:1px solid #d8dee8!important;box-shadow:0 14px 36px rgba(16,24,40,.10)!important;background:#fff!important}
+.vs-modern .vs-result .vs-actions{justify-content:center!important;width:100%!important;margin-top:18px!important}
+.vs-modern .vs-result .vs-btn{min-width:104px!important}
+.vs-modern .vs-custom{margin-top:24px!important;padding-top:22px!important;border-top:1px solid #eaecf0!important}
+.vs-modern .vs-history{margin-top:24px!important;padding:24px 28px 28px!important;border-top:1px solid #eaecf0!important;background:#fff!important}
+.vs-modern .vs-history-header{margin-bottom:14px!important}
+.vs-modern .vs-history-header h3{font-size:16px!important;font-weight:750!important;color:#101828!important}
+.vs-modern .vs-history-toolbar{padding:10px;background:#f8fafc;border:1px solid #eaecf0;border-radius:10px;margin:0 0 10px!important}
+.vs-modern .vs-history-search{background:#fff!important}
+.vs-modern .vs-history-table-wrap{border-radius:10px!important;box-shadow:0 1px 2px rgba(16,24,40,.03)!important}
+.vs-modern .vs-history-table th{background:#f8fafc!important;color:#475467!important;font-size:11px!important;padding:11px 10px!important}
+.vs-modern .vs-history-table td{padding:11px 10px!important}
+.vs-modern .vs-history-footer{padding-top:4px!important}
+@media(max-width:800px){
+ .vs-modern .header{padding-left:8px;padding-right:8px}
+ .vs-modern .vs-generator{grid-template-columns:1fr!important}
+ .vs-modern .vs-result{border-left:0!important;border-top:1px solid #eaecf0!important}
+ .vs-modern .vs-form,.vs-modern .vs-result{padding:22px!important}
+ .vs-modern .vs-history{padding:20px!important}
+}
