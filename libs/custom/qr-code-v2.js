@@ -472,7 +472,7 @@ function getCurrentDesign(callback) {
 function saveCurrentQrState() {
     if (!currentData) return;
     try {
-        localStorage.setItem(currentQrKey, JSON.stringify({data:currentData, design:normalizeDesign(currentDesign), type:currentType}));
+        localStorage.setItem(currentQrKey, JSON.stringify({data:currentData, design:normalizeDesign(currentDesign), type:currentType, historyId:currentHistoryId}));
     } catch (e) {}
 }
 
@@ -481,6 +481,8 @@ function restoreCurrentQrState() {
         var saved = JSON.parse(localStorage.getItem(currentQrKey) || 'null');
         if (!saved || !saved.data) return;
         currentData = String(saved.data);
+        currentType = String(saved.type || currentType);
+        currentHistoryId = String(saved.historyId || '');
         currentDesign = normalizeDesign(saved.design);
         renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
             currentImage = imageUrl;
