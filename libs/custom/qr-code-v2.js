@@ -10,6 +10,7 @@ var historyPageSize = 10;
 var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
+var currentQrKey = 'vietsoft_qr_current_v1';
 var qrConfig = {size:300, level:'M'};
 var designMode = false;
 var currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
@@ -392,6 +393,35 @@ function buildData(record) {
     return '';
 }
 
+function saveCurrentQrState() {
+    if (!currentData) return;
+    localStorage.setItem(currentQrKey, JSON.stringify({
+        data: currentData,
+        design: normalizeDesign(currentDesign),
+        type: currentType
+    }));
+}
+
+function restoreCurrentQrState() {
+    try {
+        var saved = JSON.parse(localStorage.getItem(currentQrKey) || 'null');
+        if (!saved || !saved.data) return;
+        currentData = String(saved.data);
+        currentDesign = normalizeDesign(saved.design);
+        renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
+            currentImage = imageUrl;
+            var preview = document.getElementById('vsPreview');
+            if (!preview) return;
+            preview.innerHTML = '';
+            var img = new Image();
+            img.alt = 'QR Code';
+            img.src = currentImage;
+            preview.appendChild(img);
+            $('#vsDownload,#vsCopy,#vsOpen').prop('disabled', false);
+        });
+    } catch (e) {}
+}
+
 function saveHistory(data, record) {
     var items = getHistory();
     items.unshift({
@@ -404,6 +434,7 @@ function saveHistory(data, record) {
     });
     localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
     renderHistory();
+    saveCurrentQrState();
 }
 
 function normalizeDesign(design) {
@@ -440,6 +471,7 @@ function getCurrentDesign(callback) {
 
 function persistCurrentDesign(design) {
     currentDesign = normalizeDesign(design);
+    saveCurrentQrState();
     if (!currentData) return;
     var items = getHistory();
     for (var i = 0; i < items.length; i++) {
@@ -600,6 +632,7 @@ function showHistoryQrResult(item) {
     var design = normalizeDesign(item.design);
     currentData = String(item.data);
     currentDesign = design;
+    saveCurrentQrState();
     renderQrImage(currentData, design, qrConfig.size || 300, function(imageUrl) {
         currentImage = imageUrl;
         var preview=document.getElementById('vsPreview'); preview.innerHTML='';
@@ -822,6 +855,7 @@ function generate() {
     image.onload = function () {
         currentData = data;
         currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
+        saveCurrentQrState();
         currentImage = imageUrl;
         preview.innerHTML = '';
         preview.appendChild(image);
@@ -848,6 +882,7 @@ $(function(){
         if (queryType && fields[queryType]) initialType = queryType;
     } catch (e) {}
     renderFields(initialType);
+    restoreCurrentQrState();
     $('#vsTabs').off('click.qrTabs').on('click.qrTabs', 'a[data-type]', function(e){
         e.preventDefault();
         e.stopPropagation();
