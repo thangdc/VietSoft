@@ -931,39 +931,30 @@ function generate() {
     }
 
     saveQrConfig();
-    var size = qrConfig.size;
-    var level = qrConfig.level;
-    var encoded = encodeURIComponent(data);
-    var imageUrl = 'https://zxing.org/w/chart?cht=qr&chs=' + size + 'x' + size + '&chld=' + level + '&choe=UTF-8&chl=' + encoded;
     var preview = document.getElementById('vsPreview');
     preview.innerHTML = '<div class="vs-empty">Đang tạo QR...</div>';
     setStatus('');
 
-    var image = new Image();
-    image.alt = 'QR Code';
-    image.onload = function () {
-        currentData = data;
-        currentHistoryId = '';
-        currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
-        syncDesignFields(currentDesign);
-        $('#vsApplyDesign').prop('disabled', false);
-        $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
+    currentData = data;
+    currentHistoryId = '';
+    currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
+    syncDesignFields(currentDesign);
+    $('#vsApplyDesign').prop('disabled', false);
+    $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
+
+    renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
         currentImage = imageUrl;
         preview.innerHTML = '';
+        var image = new Image();
+        image.alt = 'QR Code';
+        image.src = currentImage;
         preview.appendChild(image);
         $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
         setStatus('✓ QR Code đã được tạo');
         saveHistory(data, record);
         saveCurrentQrState();
         track('qr_generate',{qr_type:currentType});
-    };
-    image.onerror = function () {
-        currentImage = '';
-        preview.innerHTML = '<div class="vs-empty">Không thể tạo QR Code. Vui lòng thử lại.</div>';
-        $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',true);
-        setStatus('Không thể kết nối dịch vụ tạo QR.');
-    };
-    image.src = imageUrl;
+    });
 }
 
 $(function(){
@@ -1000,7 +991,23 @@ $(function(){
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
     $('#vsExportExcel').on('click',exportExcel);
-    $('#vsSize,#vsLevel').on('change', function(){ saveQrConfig(); if (designMode && currentData) renderCustomQr(); });
+    $('#vsSize,#vsLevel').on('change', function(){
+        saveQrConfig();
+        if (currentData) {
+            renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
+                currentImage = imageUrl;
+                var preview = document.getElementById('vsPreview');
+                if (!preview) return;
+                preview.innerHTML = '';
+                var image = new Image();
+                image.alt = 'QR Code';
+                image.src = currentImage;
+                preview.appendChild(image);
+                $('#vsDownload,#vsCopy,#vsOpen').prop('disabled', false);
+                saveCurrentQrState();
+            });
+        }
+    });
     $('#vsHistory').on('input', '#vsHistorySearch', function(){
         historySearch = $(this).val();
         historyPage = 1;
