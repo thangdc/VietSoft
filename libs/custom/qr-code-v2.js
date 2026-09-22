@@ -186,7 +186,7 @@ function renderQrImage(data, design, size, callback, onError) {
     if (!data || typeof qrcode !== 'function') return false;
     onError = onError || function() {};
     design = normalizeDesign(design);
-    var level = qrConfig.level || 'M';
+    var level = design.logoDataUrl ? 'H' : (qrConfig.level || 'M');
     var qr;
     try {
         qr = qrcode(0, level);
@@ -215,8 +215,9 @@ function renderQrImage(data, design, size, callback, onError) {
     drawFinder(ctx, offset, offset + (count-7)*moduleSize, moduleSize, foreground, background);
     var done = function(logo){
         if (logo) {
-            var logoSize=size*.18, lx=(size-logoSize)/2, ly=(size-logoSize)/2;
-            ctx.fillStyle=background; ctx.fillRect(lx-8,ly-8,logoSize+16,logoSize+16);
+            var logoSize=size*.16, lx=(size-logoSize)/2, ly=(size-logoSize)/2;
+            var padding=Math.max(4, Math.round(size*.012));
+            ctx.fillStyle=background; ctx.fillRect(lx-padding,ly-padding,logoSize+padding*2,logoSize+padding*2);
             ctx.drawImage(logo,lx,ly,logoSize,logoSize);
         }
         callback(canvas.toDataURL('image/png'));
