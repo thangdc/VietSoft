@@ -109,7 +109,8 @@ var fields = {
     email: {title:'Tạo QR cho Email', html:'<div class="vs-field"><label>Email</label><input id="vsEmailTo" type="email"></div><div class="vs-field"><label>Tiêu đề</label><input id="vsEmailSubject"></div><div class="vs-field"><label>Nội dung</label><textarea id="vsEmailBody" rows="5"></textarea></div>'},
     phone: {title:'Tạo QR cho số điện thoại', html:'<div class="vs-field"><label>Số điện thoại</label><input id="vsPhoneNumber" type="tel" placeholder="+84..."></div>'},
     sms: {title:'Tạo QR cho SMS', html:'<div class="vs-field"><label>Số điện thoại</label><input id="vsSmsPhone" type="tel"></div><div class="vs-field"><label>Nội dung</label><textarea id="vsSmsBody" rows="5"></textarea></div>'},
-    location: {title:'Tạo QR cho vị trí', html:'<div class="vs-location-search"><input id="vsLocationSearch" type="search" placeholder="Tìm địa chỉ hoặc địa điểm..." aria-label="Tìm địa chỉ hoặc địa điểm"><button class="vs-btn vs-btn-secondary" id="vsLocationSearchButton" type="button">Tìm</button></div><div id="vsLocationMap" class="vs-location-map"></div><div class="vs-location-selected"><span id="vsLocationAddress">Chọn một điểm trên bản đồ</span><span id="vsLocationCoords">10.787780, 106.662483</span></div><input id="vsLat" type="hidden" value="10.78778"><input id="vsLng" type="hidden" value="106.662483"><p class="vs-location-help">Nhấp vào bản đồ hoặc kéo ghim để chọn vị trí. Có thể tìm địa chỉ ở ô phía trên.</p>'}
+    location: {title:'Tạo QR cho vị trí', html:'<div class="vs-location-search"><input id="vsLocationSearch" type="search" placeholder="Tìm địa chỉ hoặc địa điểm..." aria-label="Tìm địa chỉ hoặc địa điểm"><button class="vs-btn vs-btn-secondary" id="vsLocationSearchButton" type="button">Tìm</button></div><div id="vsLocationMap" class="vs-location-map"></div><div class="vs-location-selected"><span id="vsLocationAddress">Chọn một điểm trên bản đồ</span><span id="vsLocationCoords">10.787780, 106.662483</span></div><input id="vsLat" type="hidden" value="10.78778"><input id="vsLng" type="hidden" value="106.662483"><p class="vs-location-help">Nhấp vào bản đồ hoặc kéo ghim để chọn vị trí. Có thể tìm địa chỉ ở ô phía trên.</p>'},
+    payment: {title:'Tạo QR thanh toán', html:'<div class="vs-field"><label>Ngân hàng</label><select id="vsPaymentBank"><option value="">Đang tải danh sách ngân hàng...</option></select></div><div class="vs-grid2"><div class="vs-field"><label>Số tài khoản</label><input id="vsPaymentAccount" inputmode="numeric" placeholder="Số tài khoản nhận tiền"></div><div class="vs-field"><label>Tên tài khoản</label><input id="vsPaymentAccountName" placeholder="NGUYEN VAN A"></div></div><div class="vs-grid2"><div class="vs-field"><label>Số tiền <span class="vs-label-muted">(tùy chọn)</span></label><input id="vsPaymentAmount" inputmode="numeric" placeholder="299000"></div><div class="vs-field"><label>Nội dung chuyển khoản</label><input id="vsPaymentDescription" maxlength="25" placeholder="THANH TOAN DON HANG"></div></div><div class="vs-field"><label><input id="vsPaymentLockAmount" type="checkbox" style="width:auto"> Khóa số tiền trong QR</label><p class="vs-location-help">Bật để QR tự điền số tiền. Tắt để khách nhập số tiền khi thanh toán.</p></div><p class="vs-location-help">QR được tạo theo định dạng VietQR/EMVCo và xử lý ngay trên trình duyệt.</p>'}
 };
 
 
@@ -405,8 +406,91 @@ function getRecord() {
         case 'phone': return {fields:{phone:value('vsPhoneNumber')}};
         case 'sms': return {fields:{phone:value('vsSmsPhone'),body:value('vsSmsBody')}};
         case 'location': return {fields:{latitude:value('vsLat'),longitude:value('vsLng')}};
+        case 'payment': return {fields:{bankBin:value('vsPaymentBank'),bankName:$('#vsPaymentBank option:selected').text(),account:value('vsPaymentAccount'),accountName:value('vsPaymentAccountName'),amount:value('vsPaymentAmount'),description:value('vsPaymentDescription'),lockAmount:$('#vsPaymentLockAmount').prop('checked')}};
     }
     return {fields:{}};
+}
+
+
+function normalizePaymentText(value, maxLength) {
+    var text = String(value == null ? '' : value).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');
+    text = text.toUpperCase().replace(/[^A-Z0-9 .\\-_/]/g, ' ').replace(/\\s+/g, ' ').trim();
+    return maxLength ? text.substring(0, maxLength) : text;
+}
+
+function paymentTlv(id, value) {
+    value = String(value == null ? '' : value);
+    return id + String(value.length).padStart(2, '0') + value;
+}
+
+function crc16CcittFalse(value) {
+    var crc = 0xFFFF;
+    for (var i = 0; i < value.length; i++) {
+        crc ^= value.charCodeAt(i) << 8;
+        for (var bit = 0; bit < 8; bit++) {
+            crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+        }
+    }
+    return crc.toString(16).toUpperCase().padStart(4, '0');
+}
+
+function buildPaymentData(f) {
+    var bankBin = String(f.bankBin || '').trim();
+    var account = String(f.account || '').trim();
+    var accountName = normalizePaymentText(f.accountName, 25);
+    var description = normalizePaymentText(f.description, 25);
+    var amount = String(f.amount || '').replace(/[^0-9]/g, '');
+    var bankAccount = paymentTlv('00', bankBin) + paymentTlv('01', account);
+    var merchantInfo = paymentTlv('00', 'A000000727') + paymentTlv('01', bankAccount) + paymentTlv('02', 'QRIBFTTA');
+    var payload = paymentTlv('00', '01') +
+        paymentTlv('01', f.lockAmount && amount ? '12' : '11') +
+        paymentTlv('38', merchantInfo) +
+        paymentTlv('53', '704');
+    if (f.lockAmount && amount) payload += paymentTlv('54', amount);
+    payload += paymentTlv('58', 'VN') + paymentTlv('59', accountName);
+    if (description) payload += paymentTlv('62', paymentTlv('08', description));
+    return payload + '6304' + crc16CcittFalse(payload + '6304');
+}
+
+function loadPaymentBanks() {
+    var fallback = [
+        {bin:'970436',name:'Vietcombank'},
+        {bin:'970415',name:'VietinBank'},
+        {bin:'970418',name:'BIDV'},
+        {bin:'970422',name:'MBBank'},
+        {bin:'970407',name:'Techcombank'},
+        {bin:'970432',name:'VPBank'},
+        {bin:'970416',name:'ACB'},
+        {bin:'970423',name:'TPBank'},
+        {bin:'970441',name:'VIB'},
+        {bin:'970403',name:'Sacombank'},
+        {bin:'970437',name:'HDBank'},
+        {bin:'970405',name:'Agribank'}
+    ];
+    var select = $('#vsPaymentBank');
+    if (!select.length) return;
+    var render = function(banks) {
+        var selected = select.val() || '';
+        select.empty().append('<option value="">Chọn ngân hàng</option>');
+        banks.filter(function(bank) { return bank && bank.bin && bank.name; })
+            .sort(function(a,b) { return String(a.name).localeCompare(String(b.name), 'vi'); })
+            .forEach(function(bank) {
+                $('<option>').val(String(bank.bin)).text(String(bank.name)).appendTo(select);
+            });
+        if (selected) select.val(selected);
+    };
+    render(fallback);
+    if (window.fetch) {
+        fetch('https://api.vietqr.io/v2/banks')
+            .then(function(response) { if (!response.ok) throw new Error('Bank API'); return response.json(); })
+            .then(function(result) {
+                var banks = (result && Array.isArray(result.data)) ? result.data.map(function(bank) {
+                    return {bin:bank.bin,name:bank.shortName || bank.name};
+                }) : [];
+                if (banks.length) render(banks);
+            })
+            .catch(function() {});
+    }
 }
 
 function escapeQrField(value, characters) {
@@ -446,6 +530,7 @@ function buildData(record) {
         case 'phone': return 'tel:' + f.phone;
         case 'sms': return 'SMSTO:' + f.phone + ':' + String(f.body || '').replace(/([\\:])/g, '\\$1');
         case 'location': return 'geo:' + f.latitude + ',' + f.longitude;
+        case 'payment': return buildPaymentData(f);
     }
     return '';
 }
@@ -665,6 +750,9 @@ function fieldsFromHistoryData(type, data) {
         case 'location':
             var geo = data.replace(/^geo:/i, '').split(',');
             return {latitude:geo[0] || '',longitude:geo[1] || ''};
+
+        case 'payment':
+            return {};
     }
 
     return {};
@@ -685,6 +773,9 @@ function getHistoryTable(item, id) {
     }
     if (item.type === 'location') {
         return {columns:['ID','Latitude','Longitude'],row:[id,f.latitude || '',f.longitude || '']};
+    }
+    if (item.type === 'payment') {
+        return {columns:['ID','Ngân hàng','Số tài khoản','Tên tài khoản','Số tiền','Nội dung','Khóa số tiền'],row:[id,f.bankName || f.bankBin || '',f.account || '',f.accountName || '',f.amount || '',f.description || '',f.lockAmount ? 'Có' : 'Không']};
     }
     return {columns:['ID','Nội dung'],row:[id,item.data || '']};
 }
@@ -734,7 +825,8 @@ function populateFieldsFromHistory(item) {
         email: {email:'vsEmailTo',subject:'vsEmailSubject',body:'vsEmailBody'},
         phone: {phone:'vsPhoneNumber'},
         sms: {phone:'vsSmsPhone',body:'vsSmsBody'},
-        location: {latitude:'vsLat',longitude:'vsLng'}
+        location: {latitude:'vsLat',longitude:'vsLng'},
+        payment: {bankBin:'vsPaymentBank',account:'vsPaymentAccount',accountName:'vsPaymentAccountName',amount:'vsPaymentAmount',description:'vsPaymentDescription',lockAmount:'vsPaymentLockAmount'}
     };
     var typeMap = map[type] || {};
     Object.keys(typeMap).forEach(function(key) {
@@ -744,6 +836,9 @@ function populateFieldsFromHistory(item) {
             else $(selector).val(values[key] == null ? '' : values[key]);
         }
     });
+    if (type === 'payment') {
+        $('#vsPaymentBank').val(values.bankBin || '');
+    }
     if (type === 'location') {
         var lat = values.latitude || '';
         var lng = values.longitude || '';
@@ -1036,6 +1131,13 @@ function validateRecord(record) {
         case 'sms':
             if (!isValidPhone(f.phone)) return 'Vui lòng nhập số điện thoại hợp lệ.';
             break;
+        case 'payment':
+            if (!/^\\d{6}$/.test(String(f.bankBin || ''))) return 'Vui lòng chọn ngân hàng.';
+            if (!/^.{6,19}$/.test(String(f.account || '').trim())) return 'Số tài khoản phải có từ 6 đến 19 ký tự.';
+            if (!String(f.accountName || '').trim()) return 'Vui lòng nhập tên tài khoản.';
+            if (f.lockAmount && !/^\\d{1,13}$/.test(String(f.amount || '').replace(/[^0-9]/g, ''))) return 'Vui lòng nhập số tiền hợp lệ.';
+            if (String(f.description || '').length > 25) return 'Nội dung chuyển khoản tối đa 25 ký tự.';
+            break;
         case 'location':
             var lat = Number(f.latitude);
             var lng = Number(f.longitude);
@@ -1148,6 +1250,7 @@ $(function(){
     } catch (e) {}
     renderFields(initialType);
     renderResultDesignPanel();
+    loadPaymentBanks();
     restoreCurrentQrState();
     $('#vsTabs').off('click.qrTabs').on('click.qrTabs', 'a[data-type]', function(e){
         e.preventDefault();
