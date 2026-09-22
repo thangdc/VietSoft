@@ -184,3 +184,8 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-history-qr a:hover{transform:scale(1.06);box-shadow:0 4px 10px rgba(16,24,40,.10)}
 .vs-modern .vs-history-qr img{width:56px;height:56px;display:block}
 @media(max-width:640px){.vs-modern .vs-history-table th.vs-history-qr-column,.vs-modern .vs-history-table td.vs-history-qr{width:66px!important;min-width:66px!important;max-width:66px!important;padding:4px!important}.vs-modern .vs-history-qr a,.vs-modern .vs-history-qr img{width:52px;height:52px}}
+
+
+/* QR design editor */
+.vs-modern .vs-design-intro{margin:-4px 0 18px;color:#667085;font-size:12px;line-height:1.5}
+.vs-modern .vs-color-control{display:flex;gap:8px;align-items:center}.vs-modern .vs-color-control input[type=color]{width:44px;height:40px;padding:3px;border:1px solid #d0d5dd;border-radius:8px;background:#fff}.vs-modern .vs-color-control input[type=text]{flex:1;height:40px;box-sizing:border-box;border:1px solid #d0d5dd;border-radius:8px;padding:0 10px;font-family:monospace;text-transform:uppercase}.vs-modern .vs-label-muted{font-weight:400;color:#98a2b3}.vs-modern .vs-design-file-name{margin-top:7px;color:#667085;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vs-modern .vs-design-warning{padding:10px 12px;border:1px solid #dbeafe;background:#eff6ff;color:#175cd3;border-radius:8px;font-size:12px;line-height:1.45}.vs-modern .vs-design-panel .vs-actions{margin-top:16px}.vs-modern .vs-design-panel .vs-btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
