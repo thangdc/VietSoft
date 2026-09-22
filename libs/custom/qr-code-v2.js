@@ -78,7 +78,7 @@ function renderFields(type) {
     $('#vsFields').html(fields[type].html);
     $('#vsStatus').text('');
     $('#vsTabs a').removeClass('active').filter('[data-type="' + type + '"]').addClass('active');
-    if (exportTemplates[type]) $('#vsExportType').val(type);
+    renderHistory();
     track('qr_type_select', {qr_type:type});
 }
 
@@ -134,17 +134,57 @@ function getHistory() {
     }
 }
 
+function getHistoryTable(item, id) {
+    var template = exportTemplates[item.type];
+    if (template) {
+        return {
+            columns: template.columns,
+            row: template.getRow(item, id)
+        };
+    }
+
+    var f = item.fields || {};
+    if (item.type === 'wifi') {
+        return {columns:['ID','Tên mạng (SSID)','Mật khẩu','Bảo mật','Mạng ẩn'],row:[id,f.ssid || '',f.password || '',f.auth || '',f.hidden ? 'Có' : 'Không']};
+    }
+    if (item.type === 'location') {
+        return {columns:['ID','Latitude','Longitude'],row:[id,f.latitude || '',f.longitude || '']};
+    }
+    return {columns:['ID','Nội dung'],row:[id,item.data || '']};
+}
+
 function renderHistory() {
-    var items = getHistory();
-    $('#vsHistory').html(items.length ? items.map(function(x) {
-        return '<div class="vs-history-item"><span><strong>' + esc(x.type) + '</strong><br>' + esc(x.data.substring(0,38)) + '</span><span>' + esc(x.time) + '</span></div>';
-    }).join('') : '<span style="color:#98a2b3;font-size:12px">Chưa có mã QR nào.</span>');
+    var items = getHistory().filter(function(item) { return item.type === currentType; });
+    var container = $('#vsHistory');
+
+    if (!items.length) {
+        container.html('<div class="vs-history-empty">Chưa có dữ liệu lịch sử cho ' + esc(fields[currentType].title.replace('Tạo QR cho ','')) + '.</div>');
+        $('#vsExportExcel').prop('disabled', !exportTemplates[currentType]);
+        return;
+    }
+
+    var sample = getHistoryTable(items[0], 1);
+    var html = '<div class="vs-history-table-wrap"><table class="vs-history-table"><thead><tr>';
+    sample.columns.forEach(function(column) { html += '<th>' + esc(column) + '</th>'; });
+    html += '</tr></thead><tbody>';
+
+    items.forEach(function(item, index) {
+        var table = getHistoryTable(item, index + 1);
+        html += '<tr>';
+        table.row.forEach(function(value) { html += '<td>' + esc(value) + '</td>'; });
+        html += '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    container.html(html);
+    $('#vsExportExcel').prop('disabled', !exportTemplates[currentType]);
 }
 
 function exportExcel() {
-    var type = $('#vsExportType').val();
+    var type = currentType;
     var template = exportTemplates[type];
     var status = $('#vsExportStatus');
+    var button = $('#vsExportExcel');
 
     if (!template) {
         status.text('Loại QR này chưa hỗ trợ xuất Excel cho phần mềm desktop.');
@@ -156,28 +196,40 @@ function exportExcel() {
     });
 
     if (!items.length) {
-        status.text('Không có dữ liệu "' + template.templateName + '" trong lịch sử.');
+        status.text('Chưa có dữ liệu để xuất cho loại QR hiện tại.');
         return;
     }
 
     if (typeof XLSX === 'undefined') {
-        status.text('Không thể tải thư viện Excel. Vui lòng thử lại.');
+        status.text('Không thể tải thư viện Excel. Kiểm tra kết nối mạng rồi tải lại trang.');
         return;
     }
 
-    var rows = [template.columns];
-    items.slice().reverse().forEach(function(item, index) {
-        rows.push(template.getRow(item, index + 1));
-    });
+    button.prop('disabled', true).text('Đang xuất...');
+    status.text('');
 
-    var worksheet = XLSX.utils.aoa_to_sheet(rows);
-    worksheet['!cols'] = template.columns.map(function() { return {wch: 24}; });
-    var workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, template.templateName.substring(0, 31));
-    XLSX.writeFile(workbook, 'QR-Code-' + template.templateName + '.xlsx');
+    try {
+        var rows = [template.columns];
+        items.slice().reverse().forEach(function(item, index) {
+            rows.push(template.getRow(item, index + 1));
+        });
 
-    status.text('✓ Đã xuất ' + items.length + ' bản ghi theo template "' + template.templateName + '".');
-    track('qr_excel_export', {qr_type:type, template_id:template.templateId, record_count:items.length});
+        var worksheet = XLSX.utils.aoa_to_sheet(rows);
+        worksheet['!cols'] = template.columns.map(function(column) {
+            return {wch: Math.max(16, Math.min(40, column.length + 8))};
+        });
+
+        var workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, template.templateName.substring(0, 31));
+        XLSX.writeFile(workbook, 'QR-Code-' + template.templateName + '.xlsx');
+
+        status.text('✓ Đã xuất ' + items.length + ' bản ghi.');
+        track('qr_excel_export', {qr_type:type, template_id:template.templateId, record_count:items.length});
+    } catch (e) {
+        status.text('Không thể xuất Excel. Vui lòng thử lại.');
+    } finally {
+        button.prop('disabled', false).text('Xuất Excel');
+    }
 }
 
 function setStatus(text) { $('#vsStatus').text(text); }
@@ -222,11 +274,9 @@ function generate() {
 
 $(function(){
     renderFields('url');
-    renderHistory();
     $('#vsTabs a').click(function(e){e.preventDefault();renderFields($(this).attr('data-type'));});
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
-    $('#vsExportType').on('change',function(){$('#vsExportStatus').text('');});
     $('#vsExportExcel').on('click',exportExcel);
     $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
     $('#vsCopy').on('click',async function(){if(!currentImage)return;try{var blob=await (await fetch(currentImage)).blob();await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setStatus('✓ Đã sao chép ảnh QR');track('qr_copy',{qr_type:currentType});}catch(e){setStatus('Trình duyệt không hỗ trợ sao chép ảnh. Hãy dùng Tải PNG.');}});
