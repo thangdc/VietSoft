@@ -11,6 +11,8 @@ var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
 var qrConfig = {size:300, level:'M'};
+var locationMap = null;
+var locationMarker = null;
 
 var exportTemplates = {
     url: {
@@ -104,11 +106,92 @@ function renderFields(type) {
     $('#vsFields').html(fields[type].html);
     $('#vsStatus').text('');
     $('#vsTabs a').removeClass('active').filter('[data-type="' + type + '"]').addClass('active');
+    if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
     renderHistory();
+    if (type === 'location') initLocationMap();
     track('qr_type_select', {qr_type:type});
 }
 
 function value(id) { return $('#' + id).val() || ''; }
+
+function setLocation(lat, lng, address) {
+    lat = parseFloat(lat);
+    lng = parseFloat(lng);
+    if (!isFinite(lat) || !isFinite(lng)) return;
+
+    $('#vsLat').val(lat.toFixed(6));
+    $('#vsLng').val(lng.toFixed(6));
+    $('#vsLocationCoords').text(lat.toFixed(6) + ', ' + lng.toFixed(6));
+    if (address) $('#vsLocationAddress').text(address);
+
+    var point = [lat, lng];
+    if (locationMarker) {
+        locationMarker.setLatLng(point);
+    } else if (locationMap) {
+        locationMarker = L.marker(point, {draggable:true}).addTo(locationMap);
+        locationMarker.on('dragend', function () {
+            var p = locationMarker.getLatLng();
+            setLocation(p.lat, p.lng);
+            reverseGeocode(p.lat, p.lng);
+        });
+    }
+    if (locationMap) locationMap.setView(point, Math.max(locationMap.getZoom(), 15));
+}
+
+function reverseGeocode(lat, lng) {
+    var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' + encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lng) + '&accept-language=vi';
+    fetch(url, {headers:{'Accept':'application/json'}}).then(function(response) {
+        if (!response.ok) throw new Error('Reverse geocoding failed');
+        return response.json();
+    }).then(function(result) {
+        if (result && result.display_name) $('#vsLocationAddress').text(result.display_name);
+    }).catch(function(){});
+}
+
+function searchLocation() {
+    var query = value('vsLocationSearch').trim();
+    if (!query) return;
+    var button = $('#vsLocationSearchButton');
+    button.prop('disabled', true).text('Đang tìm...');
+    var url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=vi&q=' + encodeURIComponent(query);
+    fetch(url, {headers:{'Accept':'application/json'}}).then(function(response) {
+        if (!response.ok) throw new Error('Search failed');
+        return response.json();
+    }).then(function(results) {
+        if (!results.length) {
+            $('#vsLocationAddress').text('Không tìm thấy địa điểm.');
+            return;
+        }
+        var result = results[0];
+        setLocation(result.lat, result.lon, result.display_name);
+    }).catch(function() {
+        $('#vsLocationAddress').text('Không thể tìm địa điểm lúc này.');
+    }).finally(function() {
+        button.prop('disabled', false).text('Tìm');
+    });
+}
+
+function initLocationMap() {
+    var element = document.getElementById('vsLocationMap');
+    if (!element || typeof L === 'undefined') return;
+    locationMap = L.map(element).setView([10.78778, 106.662483], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(locationMap);
+    locationMap.on('click', function(e) {
+        setLocation(e.latlng.lat, e.latlng.lng);
+        reverseGeocode(e.latlng.lat, e.latlng.lng);
+    });
+    $('#vsLocationSearchButton').on('click', searchLocation);
+    $('#vsLocationSearch').on('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchLocation();
+        }
+    });
+    setTimeout(function(){ locationMap.invalidateSize(); }, 100);
+}
 
 function getRecord() {
     switch(currentType) {
