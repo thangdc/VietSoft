@@ -894,6 +894,7 @@ function deleteHistoryItem(historyId) {
     items.splice(targetIndex, 1);
     if (String(currentHistoryId || '') === String(historyId || '')) {
         currentHistoryId = '';
+        saveCurrentQrState();
     }
     localStorage.setItem(historyKey, JSON.stringify(items));
     renderHistory();
@@ -902,6 +903,15 @@ function deleteHistoryItem(historyId) {
 function clearCurrentHistory() {
     if (!confirm('Xóa toàn bộ lịch sử của loại QR này?')) return;
     var items = getHistory().filter(function(item) { return item.type !== currentType; });
+    if (currentHistoryId) {
+        var currentItem = getHistory().filter(function(item) {
+            return String(item.historyId || '') === String(currentHistoryId || '');
+        })[0];
+        if (currentItem && currentItem.type === currentType) {
+            currentHistoryId = '';
+            saveCurrentQrState();
+        }
+    }
     localStorage.setItem(historyKey, JSON.stringify(items));
     historyPage = 1;
     renderHistory();
