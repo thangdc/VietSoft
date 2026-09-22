@@ -503,7 +503,11 @@ function restoreCurrentQrState() {
         var saved = JSON.parse(localStorage.getItem(currentQrKey) || 'null');
         if (!saved || !saved.data) return;
         currentData = String(saved.data);
-        currentType = String(saved.type || currentType);
+        var savedType = String(saved.type || currentType);
+        if (fields[savedType] && savedType !== currentType) {
+            renderFields(savedType);
+        }
+        currentType = savedType;
         currentHistoryId = String(saved.historyId || '');
         currentDesign = normalizeDesign(saved.design);
         renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
