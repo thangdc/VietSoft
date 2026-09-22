@@ -12,6 +12,7 @@ var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
 var qrConfig = {size:300, level:'M'};
 var designMode = false;
+var currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
 var locationMap = null;
 var locationMarker = null;
 var locationTileLayer = null;
@@ -162,6 +163,7 @@ function syncDesignColorControls() {
         $('#vsDesignLogo').val('');
         $('#vsDesignLogoName').text('Chưa chọn logo');
         if (currentData) renderCustomQr();
+        currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
     });
 }
 
@@ -180,17 +182,15 @@ function drawFinder(ctx, x, y, moduleSize, foreground, background) {
     ctx.fillStyle = foreground; ctx.fillRect(x + moduleSize * 2, y + moduleSize * 2, moduleSize * 3, moduleSize * 3);
 }
 
-function renderCustomQr() {
-    if (!currentData || typeof qrcode !== 'function') return false;
-    var size = qrConfig.size || 300;
+function renderQrImage(data, design, size, callback) {
+    if (!data || typeof qrcode !== 'function') return false;
+    design = normalizeDesign(design);
     var level = qrConfig.level || 'M';
-    var qr = qrcode(0, level); qr.addData(currentData); qr.make();
+    var qr = qrcode(0, level); qr.addData(data); qr.make();
     var count = qr.getModuleCount();
     var canvas = document.createElement('canvas'); canvas.width = size; canvas.height = size;
     var ctx = canvas.getContext('2d');
-    var foreground = $('#vsDesignForeground').val() || '#111827';
-    var background = $('#vsDesignBackground').val() || '#FFFFFF';
-    var style = $('#vsDesignStyle').val() || 'square';
+    var foreground = design.foreground, background = design.background, style = design.style;
     ctx.fillStyle = background; ctx.fillRect(0, 0, size, size);
     var quiet = 4, total = count + quiet * 2, moduleSize = size / total, offset = quiet * moduleSize;
     for (var row=0; row<count; row++) for (var col=0; col<count; col++) {
@@ -204,20 +204,55 @@ function renderCustomQr() {
     drawFinder(ctx, offset, offset, moduleSize, foreground, background);
     drawFinder(ctx, offset + (count-7)*moduleSize, offset, moduleSize, foreground, background);
     drawFinder(ctx, offset, offset + (count-7)*moduleSize, moduleSize, foreground, background);
-    var file = document.getElementById('vsDesignLogo');
-    var logoFile = file && file.files && file.files[0];
     var done = function(logo){
-        if (logo) { var logoSize=size*.18, lx=(size-logoSize)/2, ly=(size-logoSize)/2; ctx.fillStyle=background; ctx.fillRect(lx-8,ly-8,logoSize+16,logoSize+16); ctx.drawImage(logo,lx,ly,logoSize,logoSize); }
-        currentImage = canvas.toDataURL('image/png');
-        var preview=document.getElementById('vsPreview'); preview.innerHTML=''; var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
-        $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false); setStatus('✓ Thiết kế QR đã được áp dụng');
+        if (logo) {
+            var logoSize=size*.18, lx=(size-logoSize)/2, ly=(size-logoSize)/2;
+            ctx.fillStyle=background; ctx.fillRect(lx-8,ly-8,logoSize+16,logoSize+16);
+            ctx.drawImage(logo,lx,ly,logoSize,logoSize);
+        }
+        callback(canvas.toDataURL('image/png'));
     };
-    if (logoFile) { var reader=new FileReader(); reader.onload=function(e){var logo=new Image(); logo.onload=function(){done(logo);}; logo.src=e.target.result;}; reader.readAsDataURL(logoFile); }
-    else done(null);
+    if (design.logoDataUrl) {
+        var logo=new Image();
+        logo.onload=function(){done(logo);};
+        logo.onerror=function(){done(null);};
+        logo.src=design.logoDataUrl;
+    } else done(null);
     return true;
 }
 
-function applyDesign() { renderCustomQr(); }
+function renderCustomQr() {
+    if (!currentData) return false;
+    var design = normalizeDesign({
+        foreground: $('#vsDesignForeground').val(),
+        background: $('#vsDesignBackground').val(),
+        style: $('#vsDesignStyle').val()
+    });
+    getCurrentDesign(function(captured) {
+        currentDesign = captured;
+        renderQrImage(currentData, captured, qrConfig.size || 300, function(imageUrl) {
+            currentImage = imageUrl;
+            var preview=document.getElementById('vsPreview'); preview.innerHTML='';
+            var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
+            $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
+            setStatus('✓ Thiết kế QR đã được áp dụng');
+        });
+    });
+    return true;
+}
+function applyDesign() {
+    getCurrentDesign(function(design) {
+        currentDesign = design;
+        renderQrImage(currentData, design, qrConfig.size || 300, function(imageUrl) {
+            currentImage = imageUrl;
+            var preview=document.getElementById('vsPreview'); preview.innerHTML='';
+            var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
+            $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
+            persistCurrentDesign(design);
+            setStatus('✓ Thiết kế QR đã được áp dụng và lưu');
+        });
+    });
+}
 
 function renderFields(type) {
     currentType = type;
@@ -364,9 +399,56 @@ function saveHistory(data, record) {
         type: currentType,
         fields: record.fields,
         data: data,
+        design: $.extend({}, currentDesign),
         time: new Date().toLocaleString()
     });
     localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+    renderHistory();
+}
+
+function normalizeDesign(design) {
+    design = design || {};
+    return {
+        foreground: /^#[0-9a-fA-F]{6}$/.test(String(design.foreground || '')) ? String(design.foreground) : '#111827',
+        background: /^#[0-9a-fA-F]{6}$/.test(String(design.background || '')) ? String(design.background) : '#FFFFFF',
+        style: ['square','rounded','dot'].indexOf(String(design.style || '')) !== -1 ? String(design.style) : 'square',
+        logoDataUrl: String(design.logoDataUrl || '')
+    };
+}
+
+function getCurrentDesign(callback) {
+    var design = {
+        foreground: $('#vsDesignForeground').val() || '#111827',
+        background: $('#vsDesignBackground').val() || '#FFFFFF',
+        style: $('#vsDesignStyle').val() || 'square',
+        logoDataUrl: ''
+    };
+    var file = document.getElementById('vsDesignLogo');
+    var logoFile = file && file.files && file.files[0];
+    if (!logoFile) {
+        callback(normalizeDesign(design));
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        design.logoDataUrl = e.target.result || '';
+        callback(normalizeDesign(design));
+    };
+    reader.onerror = function() { callback(normalizeDesign(design)); };
+    reader.readAsDataURL(logoFile);
+}
+
+function persistCurrentDesign(design) {
+    currentDesign = normalizeDesign(design);
+    if (!currentData) return;
+    var items = getHistory();
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].data === currentData && items[i].type === (designMode ? items[i].type : currentType)) {
+            items[i].design = $.extend({}, currentDesign);
+            localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+            break;
+        }
+    }
     renderHistory();
 }
 
@@ -380,6 +462,7 @@ function getHistory() {
             if (!normalized.fields || typeof normalized.fields !== 'object') {
                 normalized.fields = fieldsFromHistoryData(normalized.type, normalized.data || '');
             }
+            normalized.design = normalizeDesign(normalized.design);
             if (!normalized.historyId) {
                 normalized.historyId = 'legacy-' + index;
             }
@@ -512,20 +595,36 @@ function openHistoryQrModalFromData(data){
     }catch(e){container.remove();}
 }
 function closeHistoryQrModal(){$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
-$(document).on('click','.vs-history-qr-trigger',function(e){e.preventDefault();var data=$(this).find('.vs-history-qr-code').attr('data-qr-data')||'';try{data=decodeURIComponent(data);}catch(err){data='';}openHistoryQrModalFromData(data);});
+function showHistoryQrResult(item) {
+    if (!item || !item.data) return;
+    var design = normalizeDesign(item.design);
+    currentData = String(item.data);
+    currentDesign = design;
+    renderQrImage(currentData, design, qrConfig.size || 300, function(imageUrl) {
+        currentImage = imageUrl;
+        var preview=document.getElementById('vsPreview'); preview.innerHTML='';
+        var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
+        $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
+        setStatus('✓ Đã tải QR từ lịch sử theo thiết kế đã lưu');
+    });
+}
+
+$(document).on('click','.vs-history-qr-trigger',function(e){
+    e.preventDefault();
+    var historyId=$(this).attr('data-history-id')||'';
+    var items=getHistory();
+    for(var i=0;i<items.length;i++) {
+        if(String(items[i].historyId||'')===historyId) { showHistoryQrResult(items[i]); break; }
+    }
+});
 function renderHistoryQrs(){
-    if(typeof window.QRCode==='undefined')return;
-    var correctLevel=window.QRCode.CorrectLevel||{}, level=correctLevel[qrConfig.level||'M']||correctLevel.M;
     $('.vs-history-qr-code').each(function(){
-        var element=this, encoded=$(element).attr('data-qr-data')||'', data='';
-        if(!encoded)return;
-        try{data=decodeURIComponent(encoded);}catch(e){return;}
-        if(!data)return;
-        element.innerHTML='';
-        try{
-            new window.QRCode(element,{text:data,width:56,height:56,correctLevel:level});
-            setTimeout(function(){var link=$(element).closest('a'),canvas=element.querySelector('canvas'),image=element.querySelector('img'),imageUrl=canvas?canvas.toDataURL('image/png'):(image?image.src:'');if(imageUrl)link.attr('href',imageUrl);},0);
-        }catch(e){element.text('QR');}
+        var element=this, historyId=$(element).attr('data-history-id')||'', items=getHistory(), item=null;
+        for(var i=0;i<items.length;i++) if(String(items[i].historyId||'')===historyId){item=items[i];break;}
+        if(!item || !item.data) return;
+        renderQrImage(String(item.data), normalizeDesign(item.design), 56, function(imageUrl){
+            element.innerHTML='<img src="'+esc(imageUrl)+'" alt="QR Code">';
+        });
     });
 }
 function renderHistory() {
@@ -568,8 +667,7 @@ function renderHistory() {
         var absoluteIndex = start + index;
         var table = getHistoryTable(item, absoluteIndex + 1);
         html += '<tr>';
-        var qrData = encodeURIComponent(String(item.data || ''));
-        html += '<td class="vs-history-qr"><a href="#" class="vs-history-qr-trigger" title="Xem QR Code"><div class="vs-history-qr-code" data-qr-data="' + esc(qrData) + '" aria-label="QR Code"></div></a></td>';
+        html += '<td class="vs-history-qr"><a href="#" class="vs-history-qr-trigger" data-history-id="' + esc(item.historyId) + '" title="Xem QR Code"><div class="vs-history-qr-code" data-history-id="' + esc(item.historyId) + '" aria-label="QR Code"></div></a></td>';
         table.row.forEach(function(value, cellIndex) { html += '<td class="' + (cellIndex === 0 ? 'vs-history-id' : '') + '">' + esc(value) + '</td>'; });
         html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
             '<svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2h-2v13H6V7H4V5h4l1-2zm-1 4v11h8V7H8zm2 2h2v7h-2V9zm4 0h2v7h-2V9z"/></svg>' +
@@ -723,6 +821,7 @@ function generate() {
     image.alt = 'QR Code';
     image.onload = function () {
         currentData = data;
+        currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
         currentImage = imageUrl;
         preview.innerHTML = '';
         preview.appendChild(image);
