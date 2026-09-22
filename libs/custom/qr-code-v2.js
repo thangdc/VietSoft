@@ -11,7 +11,6 @@ var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
 var qrConfig = {size:300, level:'M'};
-var tabStateKey = 'vietsoft_qr_active_tab_v1';
 var locationMap = null;
 var locationMarker = null;
 
@@ -103,7 +102,6 @@ var fields = {
 
 function renderFields(type) {
     currentType = type;
-    try { localStorage.setItem(tabStateKey, type); } catch (e) {}
     $('#vsFormTitle').text(fields[type].title);
     $('#vsFields').html(fields[type].html);
     $('#vsStatus').text('');
@@ -569,11 +567,20 @@ $(function(){
     applyQrConfig();
     var initialType = 'url';
     try {
-        var savedType = localStorage.getItem(tabStateKey);
-        if (savedType && fields[savedType]) initialType = savedType;
+        var queryType = new URLSearchParams(window.location.search).get('type');
+        if (queryType && fields[queryType]) initialType = queryType;
     } catch (e) {}
     renderFields(initialType);
-    $('#vsTabs a').click(function(e){e.preventDefault();renderFields($(this).attr('data-type'));});
+    $('#vsTabs a').click(function(e){
+        e.preventDefault();
+        var type = $(this).attr('data-type');
+        renderFields(type);
+        try {
+            var url = new URL(window.location.href);
+            url.searchParams.set('type', type);
+            window.history.replaceState(null, '', url.toString());
+        } catch (e) {}
+    });
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
     $('#vsExportExcel').on('click',exportExcel);
