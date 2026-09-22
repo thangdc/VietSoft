@@ -1,6 +1,12 @@
 var fb = new Firebase("https://vietsofts.firebaseio.com/");
 
-function generateqr(data) {
+function trackQrEvent(name, params) {
+    if (window.vietsoftAnalytics) {
+        window.vietsoftAnalytics.track(name, params);
+    }
+}
+
+function generateqr(data, qrType) {
 	$('#loading').show();
 	var encoding = $('#enc').val();
 	
@@ -16,6 +22,9 @@ function generateqr(data) {
 	// Change the image
 	$('.imgpreview').attr('src', curl).load(function() {
 		$('#loading').hide();
+		trackQrEvent('qr_generate', {
+			qr_type: qrType || 'unknown'
+		});
 	});
 
 }
@@ -68,19 +77,25 @@ $(document).ready(function () {
     // Generate Qr Code
     $('#gqr').click(function () {
         var ind = $("ul#myTabs li.active").index();
+        var qrType = 'contact';
+
         if (ind == 1) {
-            generateqr($('#textarea1').val());
+            qrType = 'text';
+            generateqr($('#textarea1').val(), qrType);
         } else if (ind == 2) {
+            qrType = 'sms';
             data = 'smsto:' + $('#phone').val() + ':' + $('#textarea2').val();
-            generateqr(data);
+            generateqr(data, qrType);
 
         } else if (ind == 3) {
+            qrType = 'email';
             data = 'MATMSG:TO:' + $('#address').val() + ';SUB:'
 					+ $('#subject').val() +';BODY:'+ $('#textarea3').val() +';;';
-            generateqr(data);
+            generateqr(data, qrType);
         } else if (ind == 4) {
+            qrType = 'phone';
             data = 'tel:' + $('#phone_number').val();
-            generateqr(data);
+            generateqr(data, qrType);
         } else if (ind == 0) {
             data = 'MECARD:N:' + $('#contact_name').val() + ';TEL:'
 					+ $('#contact_phone').val() + ';TEL:'
@@ -92,15 +107,17 @@ $(document).ready(function () {
 					+ $('#contact_email').val() + ';ADR:'
 					+ $('#contact_address').val() + ';NOTE:'
 					+ $('#textarea4').val() + ';;';
-            generateqr(data);
+            generateqr(data, qrType);
         } else if (ind == 5) {
+            qrType = 'location';
             data = 'geo:' + latitude + ',' + longitude;
 	    console.log(data);
-            generateqr(data);
+            generateqr(data, qrType);
         }
         else if (ind == 6) {
+            qrType = 'url';
             data =  $('#link').val();
-            generateqr(data);
+            generateqr(data, qrType);
         }
     });
 
