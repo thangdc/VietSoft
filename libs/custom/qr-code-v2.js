@@ -97,7 +97,7 @@ function generate() {
 $(function(){
     renderFields('url');
     renderHistory();
-    $('#vsTabs').on('click','a',function(e){e.preventDefault();renderFields($(this).data('type'));});
+    $('#vsTabs a').click(function(e){e.preventDefault();renderFields($(this).attr('data-type'));});
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
     $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
