@@ -203,11 +203,20 @@ function drawFinder(ctx, x, y, moduleSize, foreground, background) {
     ctx.fillStyle = foreground; ctx.fillRect(x + moduleSize * 2, y + moduleSize * 2, moduleSize * 3, moduleSize * 3);
 }
 
-function renderQrImage(data, design, size, callback) {
+function renderQrImage(data, design, size, callback, onError) {
     if (!data || typeof qrcode !== 'function') return false;
+    onError = onError || function() {};
     design = normalizeDesign(design);
     var level = qrConfig.level || 'M';
-    var qr = qrcode(0, level); qr.addData(data); qr.make();
+    var qr;
+    try {
+        qr = qrcode(0, level);
+        qr.addData(data);
+        qr.make();
+    } catch (e) {
+        onError(e);
+        return false;
+    }
     var count = qr.getModuleCount();
     var canvas = document.createElement('canvas'); canvas.width = size; canvas.height = size;
     var ctx = canvas.getContext('2d');
@@ -924,7 +933,13 @@ function setStatus(text) { $('#vsStatus').text(text); }
 
 function generate() {
     var record = getRecord();
-    var data = buildData(record);
+    var data;
+    try {
+        data = buildData(record);
+    } catch (e) {
+        setStatus('Không thể tạo dữ liệu QR. Vui lòng kiểm tra lại nội dung.');
+        return;
+    }
 
     if (!data.trim()) { setStatus('Vui lòng nhập nội dung.'); return; }
     if (currentType === 'url' && data.toLowerCase().indexOf('http://') !== 0 && data.toLowerCase().indexOf('https://') !== 0) {
@@ -937,6 +952,10 @@ function generate() {
     preview.innerHTML = '<div class="vs-empty">Đang tạo QR...</div>';
     setStatus('');
 
+    var previousData = currentData;
+    var previousImage = currentImage;
+    var previousHistoryId = currentHistoryId;
+    var previousDesign = currentDesign;
     currentData = data;
     currentHistoryId = '';
     currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
@@ -956,6 +975,27 @@ function generate() {
         saveHistory(data, record);
         saveCurrentQrState();
         track('qr_generate',{qr_type:currentType});
+    }, function() {
+        currentData = previousData;
+        currentImage = previousImage;
+        currentHistoryId = previousHistoryId;
+        currentDesign = previousDesign;
+        if (previousImage) {
+            preview.innerHTML = '';
+            var previousQr = new Image();
+            previousQr.alt = 'QR Code';
+            previousQr.src = previousImage;
+            preview.appendChild(previousQr);
+            syncDesignFields(currentDesign);
+            $('#vsDownload,#vsCopy,#vsOpen').prop('disabled', false);
+            $('#vsApplyDesign').prop('disabled', false);
+            $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
+        } else {
+            preview.innerHTML = '<div class="vs-empty">Chưa có mã QR</div>';
+            $('#vsDownload,#vsCopy,#vsOpen,#vsApplyDesign').prop('disabled', true);
+            $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
+        }
+        setStatus('Không thể tạo QR. Nội dung có thể quá dài hoặc không phù hợp với mức sửa lỗi hiện tại.');
     });
 }
 
