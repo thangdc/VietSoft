@@ -364,6 +364,12 @@ function historySortValue(item, key) {
     return index >= 0 ? String(table.row[index] == null ? '' : table.row[index]).toLowerCase() : '';
 }
 
+function getHistoryQrUrl(item) {
+    var data = String(item && item.data || '');
+    if (!data) return '';
+    return 'https://zxing.org/w/chart?cht=qr&chs=56x56&chld=' + encodeURIComponent(qrConfig.level || 'M') + '&choe=UTF-8&chl=' + encodeURIComponent(data);
+}
+
 function renderHistory() {
     var allItems = getHistoryViewItems();
     var container = $('#vsHistory');
@@ -392,6 +398,7 @@ function renderHistory() {
     var html = toolbar +
         '<div class="vs-history-table-wrap"><table class="vs-history-table"><thead><tr>';
 
+    html += '<th class="vs-history-qr-column" data-sortable="false">QR</th>';
     columns.forEach(function(column) {
         var sortable = column !== 'ID';
         var arrow = sortable && historySort.key === column ? (historySort.direction === 'asc' ? ' ▲' : ' ▼') : '';
@@ -403,6 +410,8 @@ function renderHistory() {
         var absoluteIndex = start + index;
         var table = getHistoryTable(item, absoluteIndex + 1);
         html += '<tr>';
+        var qrUrl = getHistoryQrUrl(item);
+        html += '<td class="vs-history-qr"><a href="' + esc(qrUrl) + '" target="_blank" rel="noopener" title="Mở QR Code"><img src="' + esc(qrUrl) + '" alt="QR Code"></a></td>';
         table.row.forEach(function(value) { html += '<td>' + esc(value) + '</td>'; });
         html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
             '<svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2h-2v13H6V7H4V5h4l1-2zm-1 4v11h8V7H8zm2 2h2v7h-2V9zm4 0h2v7h-2V9z"/></svg>' +
