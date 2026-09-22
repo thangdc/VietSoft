@@ -13,6 +13,23 @@ var configKey = 'vietsoft_qr_config_v1';
 var qrConfig = {size:300, level:'M'};
 var locationMap = null;
 var locationMarker = null;
+var locationTileLayer = null;
+var locationTileLayerIndex = 0;
+var locationTileLayerErrors = 0;
+var locationTileLayers = [
+    {
+        url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        attribution: '&copy; OpenStreetMap contributors'
+    },
+    {
+        url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+        attribution: '&copy; OpenStreetMap contributors, Tiles style by HOT'
+    },
+    {
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        attribution: 'Sources: Esri, DeLorme, HERE, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom'
+    }
+];
 
 var exportTemplates = {
     url: {
@@ -171,14 +188,45 @@ function searchLocation() {
     });
 }
 
+function addLocationTileLayer() {
+    if (!locationMap || typeof L === 'undefined') return;
+    if (locationTileLayer) {
+        locationMap.removeLayer(locationTileLayer);
+        locationTileLayer = null;
+    }
+
+    var config = locationTileLayers[locationTileLayerIndex];
+    if (!config) return;
+
+    locationTileLayerErrors = 0;
+    locationTileLayer = L.tileLayer(config.url, {
+        maxZoom: 19,
+        crossOrigin: true,
+        attribution: config.attribution
+    });
+
+    locationTileLayer.on('tileerror', function () {
+        locationTileLayerErrors += 1;
+        if (locationTileLayerErrors >= 3 && locationTileLayerIndex < locationTileLayers.length - 1) {
+            locationTileLayerIndex += 1;
+            addLocationTileLayer();
+        }
+    });
+
+    locationTileLayer.addTo(locationMap);
+}
+
 function initLocationMap() {
     var element = document.getElementById('vsLocationMap');
     if (!element || typeof L === 'undefined') return;
-    locationMap = L.map(element).setView([10.78778, 106.662483], 13);
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 19,
-        attribution: 'Sources: Esri, DeLorme, HERE, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom'
-    }).addTo(locationMap);
+
+    locationTileLayerIndex = 0;
+    locationMap = L.map(element, {
+        preferCanvas: true
+    }).setView([10.78778, 106.662483], 13);
+
+    addLocationTileLayer();
+
     locationMap.on('click', function(e) {
         setLocation(e.latlng.lat, e.latlng.lng);
         reverseGeocode(e.latlng.lat, e.latlng.lng);
@@ -190,13 +238,13 @@ function initLocationMap() {
             searchLocation();
         }
     });
+
     function refreshLocationMap() {
         if (!locationMap) return;
         locationMap.invalidateSize(true);
-        locationMap.eachLayer(function(layer) {
-            if (layer instanceof L.TileLayer) layer.redraw();
-        });
+        if (locationTileLayer) locationTileLayer.redraw();
     }
+
     setTimeout(refreshLocationMap, 100);
     setTimeout(refreshLocationMap, 500);
     setTimeout(refreshLocationMap, 1000);
@@ -364,10 +412,46 @@ function historySortValue(item, key) {
     return index >= 0 ? String(table.row[index] == null ? '' : table.row[index]).toLowerCase() : '';
 }
 
-function getHistoryQrUrl(item) {
-    var data = String(item && item.data || '');
-    if (!data) return '';
-    return 'https://zxing.org/w/chart?cht=qr&chs=56x56&chld=' + encodeURIComponent(qrConfig.level || 'M') + '&choe=UTF-8&chl=' + encodeURIComponent(data);
+function renderHistoryQrs() {
+    if (typeof window.QRCode === 'undefined') return;
+
+    var correctLevel = (window.QRCode.CorrectLevel || {});
+    var level = correctLevel[qrConfig.level || 'M'] || correctLevel.M;
+
+    $('.vs-history-qr-code').each(function () {
+        var element = this;
+        var encoded = $(element).attr('data-qr-data') || '';
+        if (!encoded) return;
+
+        var data = '';
+        try {
+            data = decodeURIComponent(encoded);
+        } catch (e) {
+            return;
+        }
+
+        if (!data) return;
+
+        element.innerHTML = '';
+        try {
+            new window.QRCode(element, {
+                text: data,
+                width: 56,
+                height: 56,
+                correctLevel: level
+            });
+
+            setTimeout(function () {
+                var link = $(element).closest('a');
+                var canvas = element.querySelector('canvas');
+                var image = element.querySelector('img');
+                var imageUrl = canvas ? canvas.toDataURL('image/png') : (image ? image.src : '');
+                if (imageUrl) link.attr('href', imageUrl);
+            }, 0);
+        } catch (e) {
+            element.text('QR');
+        }
+    });
 }
 
 function renderHistory() {
@@ -410,8 +494,8 @@ function renderHistory() {
         var absoluteIndex = start + index;
         var table = getHistoryTable(item, absoluteIndex + 1);
         html += '<tr>';
-        var qrUrl = getHistoryQrUrl(item);
-        html += '<td class="vs-history-qr"><a href="' + esc(qrUrl) + '" target="_blank" rel="noopener" title="Mở QR Code"><img src="' + esc(qrUrl) + '" alt="QR Code"></a></td>';
+        var qrData = encodeURIComponent(String(item.data || ''));
+        html += '<td class="vs-history-qr"><a href="#" target="_blank" rel="noopener" title="Mở QR Code"><div class="vs-history-qr-code" data-qr-data="' + esc(qrData) + '" aria-label="QR Code"></div></a></td>';
         table.row.forEach(function(value) { html += '<td>' + esc(value) + '</td>'; });
         html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
             '<svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2h-2v13H6V7H4V5h4l1-2zm-1 4v11h8V7H8zm2 2h2v7h-2V9zm4 0h2v7h-2V9z"/></svg>' +
@@ -453,6 +537,7 @@ function renderHistory() {
         }, 0);
     }
     $('#vsExportExcel').prop('disabled', !template);
+    renderHistoryQrs();
 }
 
 function deleteHistoryItem(historyId) {
