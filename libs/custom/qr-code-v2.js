@@ -4,6 +4,10 @@
 var currentType = 'url';
 var currentData = '';
 var currentImage = '';
+var historySort = {key:'id', direction:'desc'};
+var historyPage = 1;
+var historyPageSize = 10;
+var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
 
 var exportTemplates = {
@@ -211,32 +215,117 @@ function getHistoryTable(item, id) {
     return {columns:['ID','Nội dung'],row:[id,item.data || '']};
 }
 
-function renderHistory() {
+function getHistoryViewItems() {
     var items = getHistory().filter(function(item) { return item.type === currentType; });
-    var container = $('#vsHistory');
 
-    if (!items.length) {
-        container.html('<div class="vs-history-empty">Chưa có dữ liệu lịch sử cho ' + esc(fields[currentType].title.replace('Tạo QR cho ','')) + '.</div>');
-        $('#vsExportExcel').prop('disabled', !getExportTemplate(currentType));
+    if (historySearch) {
+        var query = historySearch.toLowerCase();
+        items = items.filter(function(item) {
+            var table = getHistoryTable(item, 0);
+            return table.row.some(function(value) {
+                return String(value == null ? '' : value).toLowerCase().indexOf(query) !== -1;
+            });
+        });
+    }
+
+    items.sort(function(a, b) {
+        var av = historySortValue(a, historySort.key);
+        var bv = historySortValue(b, historySort.key);
+        var result = av < bv ? -1 : (av > bv ? 1 : 0);
+        return historySort.direction === 'asc' ? result : -result;
+    });
+
+    return items;
+}
+
+function historySortValue(item, key) {
+    if (key === 'time') return String(item.time || '');
+    if (key === 'id') return 0;
+    var table = getHistoryTable(item, 0);
+    var index = exportTemplates[currentType] ? exportTemplates[currentType].columns.indexOf(key) : -1;
+    return index >= 0 ? String(table.row[index] == null ? '' : table.row[index]).toLowerCase() : '';
+}
+
+function renderHistory() {
+    var allItems = getHistoryViewItems();
+    var container = $('#vsHistory');
+    var template = getExportTemplate(currentType);
+
+    if (!allItems.length) {
+        container.html('<div class="vs-history-empty">' +
+            (historySearch ? 'Không tìm thấy dữ liệu phù hợp.' : 'Chưa có dữ liệu lịch sử cho ' + esc(fields[currentType].title.replace('Tạo QR cho ','')) + '.') +
+            '</div>');
+        $('#vsExportExcel').prop('disabled', !template);
         return;
     }
 
-    var sample = getHistoryTable(items[0], 1);
-    var html = '<div class="vs-history-table-wrap"><table class="vs-history-table"><thead><tr>';
-    sample.columns.forEach(function(column) { html += '<th>' + esc(column) + '</th>'; });
-    html += '</tr></thead><tbody>';
+    var pageCount = Math.max(1, Math.ceil(allItems.length / historyPageSize));
+    if (historyPage > pageCount) historyPage = pageCount;
+    var start = (historyPage - 1) * historyPageSize;
+    var pageItems = allItems.slice(start, start + historyPageSize);
+    var columns = template ? template.columns.slice() : getHistoryTable(allItems[0], 1).columns.slice();
 
-    items.forEach(function(item, index) {
-        var table = getHistoryTable(item, index + 1);
+    var html = '<div class="vs-history-toolbar">' +
+        '<input class="vs-history-search" id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc dữ liệu..." aria-label="Lọc lịch sử">' +
+        '<div class="vs-history-toolbar-actions">' +
+        '<select class="vs-history-page-size" id="vsHistoryPageSize"><option value="10">10 / trang</option><option value="25">25 / trang</option><option value="50">50 / trang</option></select>' +
+        '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button">Xóa tất cả</button>' +
+        '</div></div>' +
+        '<div class="vs-history-table-wrap"><table class="vs-history-table"><thead><tr>';
+
+    columns.forEach(function(column) {
+        var sortable = column !== 'ID';
+        var arrow = sortable && historySort.key === column ? (historySort.direction === 'asc' ? ' ▲' : ' ▼') : '';
+        html += '<th data-sortable="' + sortable + '" data-history-sort="' + esc(column) + '">' + esc(column) + arrow + '</th>';
+    });
+    html += '<th data-sortable="false">Thao tác</th></tr></thead><tbody>';
+
+    pageItems.forEach(function(item, index) {
+        var absoluteIndex = start + index;
+        var table = getHistoryTable(item, absoluteIndex + 1);
         html += '<tr>';
         table.row.forEach(function(value) { html += '<td>' + esc(value) + '</td>'; });
-        html += '</tr>';
+        html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete="' + absoluteIndex + '">Xóa</button></td></tr>';
     });
 
     html += '</tbody></table></div>';
+
+    var first = start + 1;
+    var last = Math.min(start + historyPageSize, allItems.length);
+    html += '<div class="vs-history-pagination"><span>Hiển thị ' + first + '–' + last + ' / ' + allItems.length + '</span><div class="vs-history-page-buttons">';
+    html += '<button type="button" data-history-page="' + (historyPage - 1) + '"' + (historyPage === 1 ? ' disabled' : '') + '>‹</button>';
+    for (var page = 1; page <= pageCount; page++) {
+        if (pageCount > 7 && page !== 1 && page !== pageCount && Math.abs(page - historyPage) > 2) continue;
+        html += '<button type="button" class="' + (page === historyPage ? 'active' : '') + '" data-history-page="' + page + '">' + page + '</button>';
+    }
+    html += '<button type="button" data-history-page="' + (historyPage + 1) + '"' + (historyPage === pageCount ? ' disabled' : '') + '>›</button></div></div>';
+
     container.html(html);
-    $('#vsExportExcel').prop('disabled', !getExportTemplate(currentType));
+    $('#vsHistoryPageSize').val(String(historyPageSize));
+    $('#vsExportExcel').prop('disabled', !template);
 }
+
+function deleteHistoryItem(itemIndex) {
+    var items = getHistory();
+    var currentItems = items.filter(function(item) { return item.type === currentType; });
+    var target = getHistoryViewItems()[itemIndex];
+    if (!target) return;
+
+    var targetIndex = items.indexOf(target);
+    if (targetIndex < 0) return;
+    items.splice(targetIndex, 1);
+    localStorage.setItem(historyKey, JSON.stringify(items));
+    renderHistory();
+}
+
+function clearCurrentHistory() {
+    if (!confirm('Xóa toàn bộ lịch sử của loại QR này?')) return;
+    var items = getHistory().filter(function(item) { return item.type !== currentType; });
+    localStorage.setItem(historyKey, JSON.stringify(items));
+    historyPage = 1;
+    renderHistory();
+}
+
 
 function getExportTemplate(type) {
     var normalizedType = String(type || '').toLowerCase().trim();
@@ -342,6 +431,35 @@ $(function(){
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
     $('#vsExportExcel').on('click',exportExcel);
+    $('#vsHistory').on('input', '#vsHistorySearch', function(){
+        historySearch = $(this).val();
+        historyPage = 1;
+        renderHistory();
+    });
+    $('#vsHistory').on('change', '#vsHistoryPageSize', function(){
+        historyPageSize = parseInt($(this).val(), 10) || 10;
+        historyPage = 1;
+        renderHistory();
+    });
+    $('#vsHistory').on('click', '[data-history-sort]', function(){
+        var key = $(this).attr('data-history-sort');
+        if (key === 'ID') return;
+        if (historySort.key === key) historySort.direction = historySort.direction === 'asc' ? 'desc' : 'asc';
+        else { historySort.key = key; historySort.direction = 'asc'; }
+        historyPage = 1;
+        renderHistory();
+    });
+    $('#vsHistory').on('click', '[data-history-page]', function(){
+        var page = parseInt($(this).attr('data-history-page'), 10);
+        if (page > 0) { historyPage = page; renderHistory(); }
+    });
+    $('#vsHistory').on('click', '[data-history-delete]', function(){
+        var index = parseInt($(this).attr('data-history-delete'), 10);
+        var target = getHistoryViewItems()[index];
+        if (!target) return;
+        if (confirm('Xóa bản ghi này?')) deleteHistoryItem(index);
+    });
+    $('#vsHistory').on('click', '#vsClearHistory', clearCurrentHistory);
     $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
     $('#vsCopy').on('click',async function(){if(!currentImage)return;try{var blob=await (await fetch(currentImage)).blob();await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setStatus('✓ Đã sao chép ảnh QR');track('qr_copy',{qr_type:currentType});}catch(e){setStatus('Trình duyệt không hỗ trợ sao chép ảnh. Hãy dùng Tải PNG.');}});
     $('#vsOpen').on('click',function(){if(currentImage)window.open(currentImage,'_blank');});
