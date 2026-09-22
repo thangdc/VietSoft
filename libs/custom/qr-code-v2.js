@@ -405,20 +405,7 @@ function getRecord() {
 function escapeQrField(value, characters) {
     var escaped = String(value == null ? '' : value);
     escaped = escaped.replace(/\\/g, '\\\\');
-    return escaped.replace(characters, '\\\\function buildData(record) {
-    var f = record.fields;
-    switch(currentType) {
-        case 'url': return f.url.trim();
-        case 'text': return f.text;
-        case 'contact': return 'MECARD:N:' + f.name + ';TEL:' + f.phone + ';EMAIL:' + f.email + ';URL:' + f.website + ';ADR:' + f.address + ';;';
-        case 'wifi': return 'WIFI:T:' + f.auth + ';S:' + f.ssid.replace(/[;,:]/g,'\\$&') + ';P:' + f.password.replace(/[;,:]/g,'\\$&') + ';H:' + (f.hidden ? 'true' : 'false') + ';;';
-        case 'email': return 'MATMSG:TO:' + f.email + ';SUB:' + f.subject + ';BODY:' + f.body + ';;';
-        case 'phone': return 'tel:' + f.phone;
-        case 'sms': return 'SMSTO:' + f.phone + ':' + f.body;
-        case 'location': return 'geo:' + f.latitude + ',' + f.longitude;
-    }
-    return '';
-}');
+    return escaped.replace(characters, '\\\\$&');
 }
 
 function buildData(record) {
