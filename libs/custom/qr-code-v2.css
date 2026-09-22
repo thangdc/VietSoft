@@ -249,3 +249,83 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
     max-width:58px!important;
   }
 }
+
+
+/* Design tab: focused editor without the generator/history clutter. */
+.vs-modern .vs-design-panel{
+  max-width:720px;
+  padding:20px;
+  border:1px solid #e4e7ec;
+  border-radius:14px;
+  background:linear-gradient(180deg,#fbfcff 0%,#f8fafc 100%);
+  box-shadow:0 4px 16px rgba(16,24,40,.04);
+}
+.vs-modern .vs-design-intro{
+  margin:0 0 18px;
+  padding:0 0 16px;
+  border-bottom:1px solid #eaecf0;
+  color:#667085;
+  font-size:13px;
+  line-height:1.55;
+}
+.vs-modern .vs-design-panel .vs-grid2{
+  gap:14px;
+}
+.vs-modern .vs-design-panel .vs-field{
+  margin-bottom:16px;
+}
+.vs-modern .vs-design-panel .vs-field:last-of-type{
+  margin-bottom:0;
+}
+.vs-modern .vs-color-control{
+  padding:6px;
+  border:1px solid #d0d5dd;
+  border-radius:9px;
+  background:#fff;
+}
+.vs-modern .vs-color-control input[type=color]{
+  flex:0 0 42px;
+  width:42px;
+  height:38px;
+  border:0;
+  padding:2px;
+}
+.vs-modern .vs-color-control input[type=text]{
+  height:38px;
+  border:0;
+  box-shadow:none;
+  font-size:13px;
+}
+.vs-modern .vs-color-control input[type=text]:focus{
+  box-shadow:none;
+}
+.vs-modern .vs-design-panel #vsDesignStyle{
+  background:#fff;
+}
+.vs-modern .vs-design-panel #vsDesignLogo{
+  height:auto;
+  padding:9px 10px;
+  line-height:20px;
+  background:#fff;
+}
+.vs-modern .vs-design-file-name{
+  min-height:18px;
+}
+.vs-modern .vs-design-warning{
+  margin-top:4px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.vs-modern .vs-design-panel .vs-actions{
+  padding-top:2px;
+}
+.vs-modern .vs-design-panel .vs-btn-primary{
+  min-width:170px;
+}
+@media(max-width:800px){
+  .vs-modern .vs-design-panel{
+    max-width:none;
+    padding:16px;
+  }
+}
