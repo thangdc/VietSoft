@@ -7,3 +7,4 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-history-table-wrap{overflow-x:hidden}
 .vs-history-table th:first-child,.vs-history-table td:first-child{width:42px}
 @media(max-width:640px){.vs-history-footer{flex-wrap:wrap}.vs-history-pagination{margin-left:auto}.vs-history-table th,.vs-history-table td{padding:9px 7px}.vs-history-table th:first-child,.vs-history-table td:first-child{width:34px}.vs-history-table th:last-child,.vs-history-table td:last-child{width:42px;min-width:42px;max-width:42px}.vs-history-filter{min-width:0;max-width:none}.vs-history-toolbar-actions{width:100%;justify-content:flex-end}}
+.vs-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;box-sizing:border-box}.vs-btn-icon{width:15px;height:15px;flex:0 0 15px;fill:currentColor}.vs-history-delete .vs-btn-icon{width:15px;height:15px}.vs-history-toolbar-actions .vs-btn{min-height:36px}
