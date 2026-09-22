@@ -15,3 +15,52 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-history-table th,.vs-history-table td{min-width:0!important;max-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-sizing:border-box}
 .vs-history-table th:first-child,.vs-history-table td:first-child{width:42px!important;max-width:42px!important}
 .vs-history-table th:last-child,.vs-history-table td:last-child{width:52px!important;min-width:52px!important;max-width:52px!important}
+
+
+/* Consistent form control sizing */
+.vs-modern .vs-field input,
+.vs-modern .vs-field select,
+.vs-modern .vs-location-search input,
+.vs-modern .vs-history-search,
+.vs-modern .vs-history-page-size {
+  height: 40px;
+  min-height: 40px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 38px;
+  border-radius: 8px;
+}
+
+.vs-modern .vs-field textarea {
+  min-height: 40px;
+  padding: 9px 12px;
+  line-height: 20px;
+  border-radius: 8px;
+}
+
+.vs-modern .vs-btn {
+  min-height: 40px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.vs-modern .vs-history-toolbar-actions .vs-btn,
+.vs-modern .vs-history-page-size {
+  height: 40px;
+  min-height: 40px;
+}
+
+.vs-modern .vs-location-search .vs-btn {
+  height: 40px;
+  min-height: 40px;
+}
+
+.vs-modern .vs-field label {
+  margin-bottom: 6px;
+}
+
+.vs-modern .vs-actions {
+  align-items: center;
+}
