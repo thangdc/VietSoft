@@ -909,6 +909,9 @@ function generate() {
         currentData = data;
         currentHistoryId = '';
         currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
+        syncDesignFields(currentDesign);
+        $('#vsApplyDesign').prop('disabled', false);
+        $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
         currentImage = imageUrl;
         preview.innerHTML = '';
         preview.appendChild(image);
