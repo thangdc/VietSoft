@@ -617,20 +617,29 @@ function fieldsFromHistoryData(type, data) {
                     address: vcardField('ADR')
                 };
             }
+            var mecardField = function(name) {
+                var match = data.match(new RegExp(name + ':([^;]*);', 'i'));
+                return match ? match[1].replace(/\\\\/g, '\\').replace(/\\([;:])/g, '$1') : '';
+            };
             return {
-                name:(data.match(/N:([^;]*);/i) || [,''])[1],
-                phone:(data.match(/TEL:([^;]*);/i) || [,''])[1],
-                website:(data.match(/URL:([^;]*);/i) || [,''])[1],
-                email:(data.match(/EMAIL:([^;]*);/i) || [,''])[1],
-                address:(data.match(/ADR:([^;]*);/i) || [,''])[1]
+                name:mecardField('N'),
+                phone:mecardField('TEL'),
+                website:mecardField('URL'),
+                email:mecardField('EMAIL'),
+                address:mecardField('ADR')
             };
 
         case 'wifi':
+            var wifiField = function(name) {
+                var match = data.match(new RegExp(name + ':([^;]*);', 'i'));
+                return match ? match[1].replace(/\\\\/g, '\\').replace(/\\([;,:"])/g, '$1') : '';
+            };
+            var wifiHidden = (data.match(/H:([^;]*);/i) || [,'false'])[1];
             return {
-                ssid:(data.match(/S:([^;]*);/i) || [,''])[1],
-                password:(data.match(/P:([^;]*);/i) || [,''])[1],
-                auth:(data.match(/T:([^;]*);/i) || [,''])[1],
-                hidden:((data.match(/H:([^;]*);/i) || [,'false'])[1]).toLowerCase() === 'true'
+                ssid:wifiField('S'),
+                password:wifiField('P'),
+                auth:wifiField('T'),
+                hidden:String(wifiHidden).toLowerCase() === 'true'
             };
 
         case 'location':
