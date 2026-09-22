@@ -470,12 +470,14 @@ function loadPaymentBanks() {
     var select = $('#vsPaymentBank');
     if (!select.length) return;
     var render = function(banks) {
+        var selected = select.val() || '';
         select.empty().append('<option value="">Chọn ngân hàng</option>');
         banks.filter(function(bank) { return bank && bank.bin && bank.name; })
             .sort(function(a,b) { return String(a.name).localeCompare(String(b.name), 'vi'); })
             .forEach(function(bank) {
                 $('<option>').val(String(bank.bin)).text(String(bank.name)).appendTo(select);
             });
+        if (selected) select.val(selected);
     };
     render(fallback);
     if (window.fetch) {
