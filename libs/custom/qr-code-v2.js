@@ -4,6 +4,7 @@
 var currentType = 'url';
 var currentData = '';
 var currentImage = '';
+var currentHistoryId = '';
 var historySort = {key:'id', direction:'desc'};
 var historyPage = 1;
 var historyPageSize = 10;
@@ -395,14 +396,16 @@ function buildData(record) {
 
 function saveHistory(data, record) {
     var items = getHistory();
+    var historyId = String(Date.now()) + '-' + String(Math.random()).slice(2);
     items.unshift({
-        historyId: String(Date.now()) + '-' + String(Math.random()).slice(2),
+        historyId: historyId,
         type: currentType,
         fields: record.fields,
         data: data,
         design: $.extend({}, currentDesign),
         time: new Date().toLocaleString()
     });
+    currentHistoryId = historyId;
     localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
     renderHistory();
 }
@@ -441,10 +444,10 @@ function getCurrentDesign(callback) {
 
 function persistCurrentDesign(design) {
     currentDesign = normalizeDesign(design);
-    if (!currentData) return;
+    if (!currentData || !currentHistoryId) return;
     var items = getHistory();
     for (var i = 0; i < items.length; i++) {
-        if (items[i].data === currentData && items[i].type === (designMode ? items[i].type : currentType)) {
+        if (String(items[i].historyId || '') === String(currentHistoryId)) {
             items[i].design = $.extend({}, currentDesign);
             localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
             break;
@@ -638,7 +641,9 @@ function syncDesignFields(design) {
 function showHistoryQrResult(item) {
     if (!item || !item.data) return;
     var design = normalizeDesign(item.design);
+    currentHistoryId = String(item.historyId || '');
     populateFieldsFromHistory(item);
+    syncDesignFields(design);
     currentData = String(item.data);
     currentDesign = design;
     renderQrImage(currentData, design, qrConfig.size || 300, function(imageUrl) {
@@ -647,11 +652,24 @@ function showHistoryQrResult(item) {
         var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
         $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
         setStatus('✓ Đã tải QR từ lịch sử; bạn có thể chỉnh sửa nội dung và tạo lại.');
+        try {
+            var form = document.querySelector('.vs-form');
+            if (form) form.scrollIntoView({behavior:'smooth', block:'start'});
+        } catch (e) {}
     });
 }
 
 $(document).on('click','.vs-history-qr-trigger',function(e){
     e.preventDefault();
+    e.stopPropagation();
+    var historyId=$(this).attr('data-history-id')||'';
+    var items=getHistory();
+    for(var i=0;i<items.length;i++) {
+        if(String(items[i].historyId||'')===historyId) { showHistoryQrResult(items[i]); break; }
+    }
+});
+$(document).on('click','.vs-history-row',function(e){
+    if ($(e.target).closest('.vs-history-delete,.vs-history-qr-trigger,button,a,input,select,textarea').length) return;
     var historyId=$(this).attr('data-history-id')||'';
     var items=getHistory();
     for(var i=0;i<items.length;i++) {
@@ -707,7 +725,7 @@ function renderHistory() {
     pageItems.forEach(function(item, index) {
         var absoluteIndex = start + index;
         var table = getHistoryTable(item, absoluteIndex + 1);
-        html += '<tr>';
+        html += '<tr class="vs-history-row" data-history-id="' + esc(item.historyId) + '" title="Nhấn để chỉnh sửa QR này">';
         html += '<td class="vs-history-qr"><a href="#" class="vs-history-qr-trigger" data-history-id="' + esc(item.historyId) + '" title="Xem QR Code"><div class="vs-history-qr-code" data-history-id="' + esc(item.historyId) + '" aria-label="QR Code"></div></a></td>';
         table.row.forEach(function(value, cellIndex) { html += '<td class="' + (cellIndex === 0 ? 'vs-history-id' : '') + '">' + esc(value) + '</td>'; });
         html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
@@ -766,6 +784,9 @@ function deleteHistoryItem(historyId) {
 
     if (targetIndex < 0) return;
     items.splice(targetIndex, 1);
+    if (String(currentHistoryId || '') === String(historyId || '')) {
+        currentHistoryId = '';
+    }
     localStorage.setItem(historyKey, JSON.stringify(items));
     renderHistory();
 }
@@ -862,6 +883,7 @@ function generate() {
     image.alt = 'QR Code';
     image.onload = function () {
         currentData = data;
+        currentHistoryId = '';
         currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
         currentImage = imageUrl;
         preview.innerHTML = '';
