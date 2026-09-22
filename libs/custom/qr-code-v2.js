@@ -595,9 +595,49 @@ function openHistoryQrModalFromData(data){
     }catch(e){container.remove();}
 }
 function closeHistoryQrModal(){$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
+function populateFieldsFromHistory(item) {
+    if (!item || !item.type) return;
+    var type = String(item.type);
+    if (!fields[type]) return;
+    renderFields(type);
+    var values = item.fields || fieldsFromHistoryData(type, item.data || '');
+    var map = {
+        url: {url:'vsUrl'},
+        text: {text:'vsText'},
+        contact: {name:'vsName',phone:'vsPhone',email:'vsEmail',website:'vsWebsite',address:'vsAddress'},
+        wifi: {ssid:'vsSsid',password:'vsWifiPass',auth:'vsWifiAuth',hidden:'vsHidden'},
+        email: {email:'vsEmailTo',subject:'vsEmailSubject',body:'vsEmailBody'},
+        phone: {phone:'vsPhoneNumber'},
+        sms: {phone:'vsSmsPhone',body:'vsSmsBody'},
+        location: {latitude:'vsLat',longitude:'vsLng'}
+    };
+    var typeMap = map[type] || {};
+    Object.keys(typeMap).forEach(function(key) {
+        var selector = '#' + typeMap[key];
+        if ($(selector).length) {
+            if ($(selector).is(':checkbox')) $(selector).prop('checked', !!values[key]);
+            else $(selector).val(values[key] == null ? '' : values[key]);
+        }
+    });
+    if (type === 'location') {
+        var lat = values.latitude || '';
+        var lng = values.longitude || '';
+        if (lat && lng) setLocation(lat, lng);
+    }
+}
+function syncDesignFields(design) {
+    design = normalizeDesign(design);
+    $('#vsDesignForeground').val(design.foreground);
+    $('#vsDesignForegroundText').val(design.foreground);
+    $('#vsDesignBackground').val(design.background);
+    $('#vsDesignBackgroundText').val(design.background);
+    $('#vsDesignStyle').val(design.style);
+    if (design.logoDataUrl) $('#vsDesignLogoName').text('Logo đã lưu');
+}
 function showHistoryQrResult(item) {
     if (!item || !item.data) return;
     var design = normalizeDesign(item.design);
+    populateFieldsFromHistory(item);
     currentData = String(item.data);
     currentDesign = design;
     renderQrImage(currentData, design, qrConfig.size || 300, function(imageUrl) {
@@ -605,7 +645,7 @@ function showHistoryQrResult(item) {
         var preview=document.getElementById('vsPreview'); preview.innerHTML='';
         var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
         $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
-        setStatus('✓ Đã tải QR từ lịch sử theo thiết kế đã lưu');
+        setStatus('✓ Đã tải QR từ lịch sử; bạn có thể chỉnh sửa nội dung và tạo lại.');
     });
 }
 
