@@ -68,3 +68,60 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 /* Keep table action text fully visible without squeezing data columns. */
 .vs-history-table th:last-child{white-space:nowrap;padding-left:10px;padding-right:10px;}
 .vs-history-table td:last-child{white-space:nowrap;padding-left:10px;padding-right:10px;}
+
+
+/* QR app visual polish - SaaS utility style */
+.vs-modern{
+  --vs-primary:#2563eb;
+  --vs-primary-dark:#1d4ed8;
+  --vs-primary-soft:#eff6ff;
+  --vs-text:#101828;
+  --vs-muted:#667085;
+  --vs-border:#e4e7ec;
+  --vs-surface:#f8fafc;
+}
+.vs-modern .content{background:linear-gradient(180deg,#f8fafc 0,#f5f7fb 100%)!important}
+.vs-modern .vs-hero{padding:34px 20px 26px;background:transparent;text-align:left}
+.vs-modern .vs-hero .vs-app-kicker{display:inline-flex;align-items:center;gap:7px;color:var(--vs-primary);background:var(--vs-primary-soft);border:1px solid #dbeafe;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.vs-modern .vs-hero h1{font-size:32px;letter-spacing:-.035em;margin:12px 0 6px}
+.vs-modern .vs-hero p{margin:0;color:var(--vs-muted);font-size:14px;max-width:760px}
+.vs-modern .vs-app{padding:8px 16px 28px}
+.vs-modern .vs-card{border-radius:16px;box-shadow:0 10px 32px rgba(16,24,40,.07);border-color:#e7eaf0}
+.vs-modern .vs-tabs{gap:5px;padding:10px;background:#fff;border-bottom:1px solid #eef0f3}
+.vs-modern .vs-tabs a{position:relative;padding:9px 12px;border-radius:9px;font-size:13px;transition:background .15s ease,color .15s ease,transform .15s ease}
+.vs-modern .vs-tabs a:hover{background:#f8fafc;color:var(--vs-primary);transform:translateY(-1px)}
+.vs-modern .vs-tabs a.active{background:var(--vs-primary-soft);color:var(--vs-primary);box-shadow:inset 0 0 0 1px #dbeafe}
+.vs-modern .vs-generator{background:#fff}
+.vs-modern .vs-form{padding:26px 28px}
+.vs-modern .vs-result{padding:26px 28px;background:linear-gradient(180deg,#fbfcfe,#f7f9fc);border-left:1px solid #eef0f3}
+.vs-modern .vs-form h2,.vs-modern .vs-result h2{font-size:18px;letter-spacing:-.01em;margin-bottom:18px}
+.vs-modern .vs-field{margin-bottom:14px}
+.vs-modern .vs-field label{font-size:12px;color:#344054;font-weight:700}
+.vs-modern .vs-field input,.vs-modern .vs-field textarea,.vs-modern .vs-field select{border-color:#d0d5dd;box-shadow:0 1px 2px rgba(16,24,40,.03);transition:border-color .15s ease,box-shadow .15s ease}
+.vs-modern .vs-field input:hover,.vs-modern .vs-field textarea:hover,.vs-modern .vs-field select:hover{border-color:#b8c0cc}
+.vs-modern .vs-field input:focus,.vs-modern .vs-field textarea:focus,.vs-modern .vs-field select:focus{border-color:#84adff;box-shadow:0 0 0 3px #eff4ff,0 1px 2px rgba(16,24,40,.04)}
+.vs-modern .vs-actions{margin-top:18px}
+.vs-modern .vs-btn{box-shadow:0 1px 2px rgba(16,24,40,.05);transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.vs-modern .vs-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(16,24,40,.08)}
+.vs-modern .vs-btn-primary{background:linear-gradient(180deg,#2f6df0,#2563eb);border-color:#2563eb}
+.vs-modern .vs-btn-secondary{background:#fff}
+.vs-modern .vs-preview{width:300px;height:300px;border-radius:16px;border-color:#dfe3e8;box-shadow:0 12px 30px rgba(16,24,40,.08)}
+.vs-modern .vs-status{font-size:12px}
+.vs-modern .vs-custom{margin-top:20px;padding-top:18px}
+.vs-modern .vs-history{margin-top:24px;padding-top:20px}
+.vs-modern .vs-history-header h3{font-size:15px;letter-spacing:-.01em}
+.vs-modern .vs-history-table-wrap{border-color:#e4e7ec;border-radius:10px;box-shadow:0 1px 2px rgba(16,24,40,.02)}
+.vs-modern .vs-history-table th{background:#f8fafc;color:#344054;font-size:11px;text-transform:none}
+.vs-modern .vs-history-table td{background:#fff;font-size:12px}
+.vs-modern .vs-history-table tbody tr:hover td{background:#f9fbff}
+.vs-modern .vs-history-page-buttons button{min-width:30px;height:30px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center}
+.vs-modern .vs-history-page-buttons button.active{font-weight:700}
+.vs-modern .vs-location-search{margin-bottom:12px}
+.vs-modern .vs-location-map{border-color:#d0d5dd;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.vs-modern .vs-location-selected{background:#f8fafc;border-color:#e4e7ec}
+@media(max-width:800px){
+  .vs-modern .vs-hero{padding:26px 16px 20px}
+  .vs-modern .vs-hero h1{font-size:27px}
+  .vs-modern .vs-form,.vs-modern .vs-result{padding:20px}
+  .vs-modern .vs-tabs{padding:8px}
+}
