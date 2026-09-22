@@ -159,7 +159,7 @@ function renderHistory() {
 
     if (!items.length) {
         container.html('<div class="vs-history-empty">Chưa có dữ liệu lịch sử cho ' + esc(fields[currentType].title.replace('Tạo QR cho ','')) + '.</div>');
-        $('#vsExportExcel').prop('disabled', !exportTemplates[currentType]);
+        $('#vsExportExcel').prop('disabled', !getExportTemplate(currentType));
         return;
     }
 
@@ -180,28 +180,34 @@ function renderHistory() {
     $('#vsExportExcel').prop('disabled', !exportTemplates[currentType]);
 }
 
+function getExportTemplate(type) {
+    var normalizedType = String(type || '').toLowerCase().trim();
+    return exportTemplates[normalizedType] || null;
+}
+
 function exportExcel() {
-    var type = currentType;
-    var template = exportTemplates[type];
+    var type = String(currentType || '').toLowerCase().trim();
+    var template = getExportTemplate(type);
     var status = $('#vsExportStatus');
     var button = $('#vsExportExcel');
 
     if (!template) {
-        status.text('Loại QR này chưa hỗ trợ xuất Excel cho phần mềm desktop.');
+        status.text('Tab QR hiện tại không có template Excel tương ứng.');
         return;
     }
 
     var items = getHistory().filter(function(item) {
-        return item.type === type && item.fields && typeof item.fields === 'object';
+        return String(item.type || '').toLowerCase().trim() === type &&
+            item.fields && typeof item.fields === 'object';
     });
 
     if (!items.length) {
-        status.text('Chưa có dữ liệu để xuất cho loại QR hiện tại.');
+        status.text('Chưa có dữ liệu để xuất cho ' + template.templateName + '.');
         return;
     }
 
-    if (typeof XLSX === 'undefined') {
-        status.text('Không thể tải thư viện Excel. Kiểm tra kết nối mạng rồi tải lại trang.');
+    if (!window.XLSX || typeof XLSX.utils === 'undefined' || typeof XLSX.writeFile !== 'function') {
+        status.text('Thư viện Excel chưa sẵn sàng. Vui lòng tải lại trang.');
         return;
     }
 
@@ -216,7 +222,7 @@ function exportExcel() {
 
         var worksheet = XLSX.utils.aoa_to_sheet(rows);
         worksheet['!cols'] = template.columns.map(function(column) {
-            return {wch: Math.max(16, Math.min(40, column.length + 8))};
+            return {wch: Math.max(16, Math.min(40, String(column).length + 8))};
         });
 
         var workbook = XLSX.utils.book_new();
@@ -226,7 +232,7 @@ function exportExcel() {
         status.text('✓ Đã xuất ' + items.length + ' bản ghi.');
         track('qr_excel_export', {qr_type:type, template_id:template.templateId, record_count:items.length});
     } catch (e) {
-        status.text('Không thể xuất Excel. Vui lòng thử lại.');
+        status.text('Xuất Excel thất bại: ' + (e && e.message ? e.message : 'lỗi không xác định') + '.');
     } finally {
         button.prop('disabled', false).text('Xuất Excel');
     }
