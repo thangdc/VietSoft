@@ -63,30 +63,36 @@ function renderHistory() {
 function setStatus(text) { $('#vsStatus').text(text); }
 
 function generate() {
-    if (typeof QRCode === 'undefined') { setStatus('Thư viện QR chưa tải xong. Vui lòng thử lại sau vài giây.'); return; }
     var data = buildData();
     if (!data.trim()) { setStatus('Vui lòng nhập nội dung.'); return; }
-    if (currentType === 'url' && !/^https?:\/\//i.test(data)) { setStatus('URL nên bắt đầu bằng http:// hoặc https://'); return; }
+    if (currentType === 'url' && !/^https?:\\/\\//i.test(data)) { setStatus('URL nên bắt đầu bằng http:// hoặc https://'); return; }
+
     var size = parseInt($('#vsSize').val(),10) || 300;
+    var level = $('#vsLevel').val() || 'M';
+    var encoded = encodeURIComponent(data);
+    var imageUrl = 'https://zxing.org/w/chart?cht=qr&chs=' + size + 'x' + size + '&chld=' + level + '&choe=UTF-8&chl=' + encoded;
     var preview = document.getElementById('vsPreview');
-    preview.innerHTML = '<div id="vsQrCanvas"></div>';
-    try {
-        new QRCode(document.getElementById('vsQrCanvas'), {text:data,width:size,height:size,correctLevel:QRCode.CorrectLevel[$('#vsLevel').val()] || QRCode.CorrectLevel.M});
-        setTimeout(function(){
-            var canvas = $('#vsQrCanvas canvas')[0];
-            var img = $('#vsQrCanvas img')[0];
-            currentImage = canvas ? canvas.toDataURL('image/png') : (img ? img.src : '');
-            if (currentImage) {
-                preview.innerHTML = '<img src="' + currentImage + '" alt="QR Code">';
-                $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
-                setStatus('✓ QR Code đã được tạo');
-                saveHistory(data);
-                track('qr_generate',{qr_type:currentType});
-            } else setStatus('Không thể tạo QR Code.');
-        },100);
-    } catch(e) {
-        setStatus('Không thể tạo QR Code. Vui lòng thử lại.');
-    }
+    preview.innerHTML = '<div class="vs-empty">Đang tạo QR...</div>';
+    setStatus('');
+
+    var image = new Image();
+    image.alt = 'QR Code';
+    image.onload = function () {
+        currentImage = imageUrl;
+        preview.innerHTML = '';
+        preview.appendChild(image);
+        $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
+        setStatus('✓ QR Code đã được tạo');
+        saveHistory(data);
+        track('qr_generate',{qr_type:currentType});
+    };
+    image.onerror = function () {
+        currentImage = '';
+        preview.innerHTML = '<div class="vs-empty">Không thể tạo QR Code. Vui lòng thử lại.</div>';
+        $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',true);
+        setStatus('Không thể kết nối dịch vụ tạo QR.');
+    };
+    image.src = imageUrl;
 }
 $(function(){
     renderFields('url');
