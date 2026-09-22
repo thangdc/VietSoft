@@ -12,6 +12,7 @@ var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
 var activeTabKey = 'vietsoft_qr_active_tab_v1';
+var currentQrKey = 'vietsoft_qr_current_v1';
 var qrConfig = {size:300, level:'M'};
 var designMode = false;
 var currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
@@ -166,7 +167,7 @@ function syncDesignColorControls() {
         var valueText = $(this).val().trim();
         if (/^#[0-9a-fA-F]{6}$/.test(valueText)) {
             var target = this.id === 'vsDesignForegroundText' ? '#vsDesignForeground' : '#vsDesignBackground';
-            $(target).val(valueText);
+            $(target).val(valueText).trigger('input');
         }
     });
     $('#vsDesignStyle').on('change', function(){ if (currentData) renderCustomQr(); });
@@ -255,6 +256,7 @@ function renderCustomQr() {
             var preview=document.getElementById('vsPreview'); preview.innerHTML='';
             var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
             $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
+            saveCurrentQrState();
             setStatus('✓ Thiết kế QR đã được áp dụng');
         });
     });
@@ -269,6 +271,7 @@ function applyDesign() {
             var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
             $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
             persistCurrentDesign(design);
+            saveCurrentQrState();
             setStatus('✓ Thiết kế QR đã được áp dụng và lưu');
         });
     });
@@ -466,6 +469,36 @@ function getCurrentDesign(callback) {
     reader.readAsDataURL(logoFile);
 }
 
+function saveCurrentQrState() {
+    if (!currentData) return;
+    try {
+        localStorage.setItem(currentQrKey, JSON.stringify({data:currentData, design:normalizeDesign(currentDesign), type:currentType}));
+    } catch (e) {}
+}
+
+function restoreCurrentQrState() {
+    try {
+        var saved = JSON.parse(localStorage.getItem(currentQrKey) || 'null');
+        if (!saved || !saved.data) return;
+        currentData = String(saved.data);
+        currentDesign = normalizeDesign(saved.design);
+        renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
+            currentImage = imageUrl;
+            var preview = document.getElementById('vsPreview');
+            if (!preview) return;
+            preview.innerHTML = '';
+            var img = new Image();
+            img.alt = 'QR Code';
+            img.src = currentImage;
+            preview.appendChild(img);
+            $('#vsDownload,#vsCopy,#vsOpen').prop('disabled', false);
+            syncDesignFields(currentDesign);
+            $('#vsApplyDesign').prop('disabled', false);
+            $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
+        });
+    } catch (e) {}
+}
+
 function persistCurrentDesign(design) {
     currentDesign = normalizeDesign(design);
     if (!currentData || !currentHistoryId) return;
@@ -660,7 +693,7 @@ function syncDesignFields(design) {
     $('#vsDesignBackground').val(design.background);
     $('#vsDesignBackgroundText').val(design.background);
     $('#vsDesignStyle').val(design.style);
-    if (design.logoDataUrl) $('#vsDesignLogoName').text('Logo đã lưu');
+    $('#vsDesignLogoName').text(design.logoDataUrl ? 'Logo đã lưu' : 'Chưa chọn logo');
 }
 function showHistoryQrResult(item) {
     if (!item || !item.data) return;
@@ -675,6 +708,9 @@ function showHistoryQrResult(item) {
         var preview=document.getElementById('vsPreview'); preview.innerHTML='';
         var img=new Image(); img.alt='QR Code'; img.src=currentImage; preview.appendChild(img);
         $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
+        $('#vsApplyDesign').prop('disabled', false);
+        $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
+        saveCurrentQrState();
         setStatus('✓ Đã tải QR từ lịch sử; bạn có thể chỉnh sửa nội dung và tạo lại.');
         try {
             var form = document.querySelector('.vs-form');
@@ -918,6 +954,7 @@ function generate() {
         $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
         setStatus('✓ QR Code đã được tạo');
         saveHistory(data, record);
+        saveCurrentQrState();
         track('qr_generate',{qr_type:currentType});
     };
     image.onerror = function () {
@@ -945,6 +982,7 @@ $(function(){
     } catch (e) {}
     renderFields(initialType);
     renderResultDesignPanel();
+    restoreCurrentQrState();
     $('#vsTabs').off('click.qrTabs').on('click.qrTabs', 'a[data-type]', function(e){
         e.preventDefault();
         e.stopPropagation();
