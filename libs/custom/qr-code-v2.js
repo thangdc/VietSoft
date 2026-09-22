@@ -112,6 +112,10 @@ var fields = {
 
 function renderDesign() {
     designMode = true;
+    currentType = 'design';
+    historyPage = 1;
+    historySearch = '';
+    closeHistoryQrModal();
     $('#vsTabs a').removeClass('active').filter('[data-type="design"]').addClass('active');
     $('#vsFormTitle').text('Thiết kế mã QR');
     $('#vsFields').html('<div class="vs-design-panel">' +
@@ -128,6 +132,7 @@ function renderDesign() {
     syncDesignColorControls();
     $('#vsApplyDesign').prop('disabled', !currentData);
     $('#vsDesignWarning').text(currentData ? '✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.' : 'Tạo QR trước, sau đó bạn có thể áp dụng thiết kế.');
+    $('#vsHistory').empty();
     if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
 }
 
@@ -215,6 +220,9 @@ function applyDesign() { renderCustomQr(); }
 function renderFields(type) {
     currentType = type;
     designMode = false;
+    historySearch = '';
+    historyPage = 1;
+    historySort = {key:'id', direction:'desc'};
     $('#vsFormTitle').text(fields[type].title);
     $('#vsFields').html(fields[type].html);
     $('#vsStatus').text('');
@@ -485,8 +493,22 @@ function ensureHistoryQrModal() {
     $(document).on('keydown',function(e){if(e.key==='Escape')closeHistoryQrModal();});
 }
 function openHistoryQrModal(imageUrl){if(!imageUrl)return;ensureHistoryQrModal();$('#vsHistoryQrModal .vs-history-qr-modal-image').html('<img src="'+esc(imageUrl)+'" alt="QR Code preview">');$('#vsHistoryQrModal').addClass('is-open');$('body').addClass('vs-history-qr-modal-open');}
-function closeHistoryQrModal(){$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
-$(document).on('click','.vs-history-qr-trigger',function(e){e.preventDefault();var image=$(this).find('img').attr('src');if(!image){var canvas=$(this).find('canvas')[0];if(canvas)image=canvas.toDataURL('image/png');}openHistoryQrModal(image);});
+function openHistoryQrModalFromData(data){
+    if(!data)return;
+    ensureHistoryQrModal();
+    var container=$('<div></div>').css({position:'absolute',left:'-99999px',top:'-99999px',width:'360px',height:'360px'}).appendTo('body');
+    try{
+        var level=(window.QRCode.CorrectLevel||{}).M;
+        new window.QRCode(container[0],{text:data,width:360,height:360,correctLevel:level});
+        setTimeout(function(){
+            var canvas=container.find('canvas')[0], image=container.find('img')[0], imageUrl=canvas?canvas.toDataURL('image/png'):(image?image.src:'');
+            container.remove();
+            openHistoryQrModal(imageUrl);
+        },0);
+    }catch(e){container.remove();}
+}
+function closeHistoryQrModal{$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
+$(document).on('click','.vs-history-qr-trigger',function(e){e.preventDefault();var data=$(this).find('.vs-history-qr-code').attr('data-qr-data')||'';try{data=decodeURIComponent(data);}catch(err){data='';}openHistoryQrModalFromData(data);});
 function renderHistoryQrs(){
     if(typeof window.QRCode==='undefined')return;
     var correctLevel=window.QRCode.CorrectLevel||{}, level=correctLevel[qrConfig.level||'M']||correctLevel.M;
@@ -515,7 +537,7 @@ function renderHistory() {
 
     if (!allItems.length) {
         container.html(toolbar + '<div class="vs-history-empty">' +
-            (historySearch ? 'Không tìm thấy dữ liệu phù hợp.' : 'Chưa có dữ liệu lịch sử cho ' + esc(fields[currentType].title.replace('Tạo QR cho ','')) + '.') +
+            (historySearch ? 'Không tìm thấy dữ liệu phù hợp.' : 'Chưa có dữ liệu lịch sử cho ' + esc((fields[currentType] ? fields[currentType].title : 'loại QR hiện tại').replace('Tạo QR cho ','')) + '.') +
             '</div>');
         $('#vsExportExcel').prop('disabled', !template);
         return;
@@ -534,9 +556,9 @@ function renderHistory() {
     columns.forEach(function(column) {
         var sortable = column !== 'ID';
         var arrow = sortable && historySort.key === column ? (historySort.direction === 'asc' ? ' ▲' : ' ▼') : '';
-        html += '<th data-sortable="' + sortable + '" data-history-sort="' + esc(column) + '">' + esc(column) + arrow + '</th>';
+        html += '<th class="' + (column === 'ID' ? 'vs-history-id-column' : '') + '" data-sortable="' + sortable + '" data-history-sort="' + esc(column) + '">' + esc(column) + arrow + '</th>';
     });
-    html += '<th data-sortable="false">Thao tác</th></tr></thead><tbody>';
+    html += '<th class="vs-history-actions-column" data-sortable="false">Thao tác</th></tr></thead><tbody>';
 
     pageItems.forEach(function(item, index) {
         var absoluteIndex = start + index;
@@ -544,7 +566,7 @@ function renderHistory() {
         html += '<tr>';
         var qrData = encodeURIComponent(String(item.data || ''));
         html += '<td class="vs-history-qr"><a href="#" class="vs-history-qr-trigger" title="Xem QR Code"><div class="vs-history-qr-code" data-qr-data="' + esc(qrData) + '" aria-label="QR Code"></div></a></td>';
-        table.row.forEach(function(value) { html += '<td>' + esc(value) + '</td>'; });
+        table.row.forEach(function(value, cellIndex) { html += '<td class="' + (cellIndex === 0 ? 'vs-history-id' : '') + '">' + esc(value) + '</td>'; });
         html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
             '<svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2h-2v13H6V7H4V5h4l1-2zm-1 4v11h8V7H8zm2 2h2v7h-2V9zm4 0h2v7h-2V9z"/></svg>' +
             '</button></td></tr>';
