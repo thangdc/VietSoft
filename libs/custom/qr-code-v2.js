@@ -207,7 +207,7 @@ function renderQrImage(data, design, size, callback, onError) {
         var x=offset+col*moduleSize, y=offset+row*moduleSize;
         ctx.fillStyle=foreground;
         if (style === 'dot') { ctx.beginPath(); ctx.arc(x+moduleSize/2,y+moduleSize/2,moduleSize*.42,0,Math.PI*2); ctx.fill(); }
-        else if (style === 'rounded') drawRoundedRect(ctx,x+moduleSize*.08,y+moduleSize*.08,moduleSize*.84,moduleSize*.25);
+        else if (style === 'rounded') drawRoundedRect(ctx,x+moduleSize*.08,y+moduleSize*.08,moduleSize*.84,moduleSize*.84);
         else ctx.fillRect(x,y,Math.ceil(moduleSize+.1),Math.ceil(moduleSize+.1));
     }
     drawFinder(ctx, offset, offset, moduleSize, foreground, background);
