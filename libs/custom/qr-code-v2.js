@@ -1076,7 +1076,7 @@ function generate() {
     $('#vsApplyDesign').prop('disabled', false);
     $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
 
-    renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
+    var rendered = renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
         currentImage = imageUrl;
         preview.innerHTML = '';
         var image = new Image();
