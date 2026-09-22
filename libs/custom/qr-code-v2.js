@@ -175,9 +175,9 @@ function initLocationMap() {
     var element = document.getElementById('vsLocationMap');
     if (!element || typeof L === 'undefined') return;
     locationMap = L.map(element).setView([10.78778, 106.662483], 13);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: 'Sources: Esri, DeLorme, HERE, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom'
     }).addTo(locationMap);
     locationMap.on('click', function(e) {
         setLocation(e.latlng.lat, e.latlng.lng);
