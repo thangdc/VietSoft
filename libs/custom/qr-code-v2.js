@@ -11,6 +11,7 @@ var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
 var qrConfig = {size:300, level:'M'};
+var tabStateKey = 'vietsoft_qr_active_tab_v1';
 var locationMap = null;
 var locationMarker = null;
 
@@ -102,6 +103,7 @@ var fields = {
 
 function renderFields(type) {
     currentType = type;
+    try { localStorage.setItem(tabStateKey, type); } catch (e) {}
     $('#vsFormTitle').text(fields[type].title);
     $('#vsFields').html(fields[type].html);
     $('#vsStatus').text('');
@@ -190,7 +192,16 @@ function initLocationMap() {
             searchLocation();
         }
     });
-    setTimeout(function(){ locationMap.invalidateSize(); }, 100);
+    function refreshLocationMap() {
+        if (!locationMap) return;
+        locationMap.invalidateSize(true);
+        locationMap.eachLayer(function(layer) {
+            if (layer instanceof L.TileLayer) layer.redraw();
+        });
+    }
+    setTimeout(refreshLocationMap, 100);
+    setTimeout(refreshLocationMap, 500);
+    setTimeout(refreshLocationMap, 1000);
 }
 
 function getRecord() {
@@ -556,7 +567,12 @@ function generate() {
 $(function(){
     loadQrConfig();
     applyQrConfig();
-    renderFields('url');
+    var initialType = 'url';
+    try {
+        var savedType = localStorage.getItem(tabStateKey);
+        if (savedType && fields[savedType]) initialType = savedType;
+    } catch (e) {}
+    renderFields(initialType);
     $('#vsTabs a').click(function(e){e.preventDefault();renderFields($(this).attr('data-type'));});
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
@@ -594,3 +610,4 @@ $(function(){
     $('#vsOpen').on('click',function(){if(currentImage)window.open(currentImage,'_blank');});
 });
 })();
+$(window).on('resize', function(){ if (locationMap) locationMap.invalidateSize(true); });
