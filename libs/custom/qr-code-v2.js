@@ -408,17 +408,25 @@ function escapeQrField(value, characters) {
     return escaped.replace(characters, '\\\\$&');
 }
 
+function escapeVCardField(value) {
+    var escaped = String(value == null ? '' : value);
+    return escaped.replace(/\\/g, '\\\\')
+        .replace(/([;,])/g, '\\\\$1')
+        .replace(/\\r?\\n/g, '\\\\n');
+}
+
 function buildData(record) {
     var f = record.fields;
     switch(currentType) {
         case 'url': return f.url.trim();
         case 'text': return f.text;
         case 'contact':
-            return 'MECARD:N:' + escapeQrField(f.name, /[;:]/g) +
-                ';TEL:' + escapeQrField(f.phone, /[;:]/g) +
-                ';EMAIL:' + escapeQrField(f.email, /[;:]/g) +
-                ';URL:' + escapeQrField(f.website, /[;:]/g) +
-                ';ADR:' + escapeQrField(f.address, /[;:]/g) + ';;';
+            return 'BEGIN:VCARD\\nVERSION:3.0\\nFN:' + escapeVCardField(f.name) +
+                '\\nTEL:' + escapeVCardField(f.phone) +
+                '\\nEMAIL:' + escapeVCardField(f.email) +
+                '\\nURL:' + escapeVCardField(f.website) +
+                '\\nADR;TYPE=HOME:' + escapeVCardField(f.address) +
+                '\\nEND:VCARD';
         case 'wifi':
             return 'WIFI:T:' + escapeQrField(f.auth, /[;,:]/g) +
                 ';S:' + escapeQrField(f.ssid, /[;,:" ]/g) +
