@@ -429,8 +429,8 @@ function buildData(record) {
                 '\\nEND:VCARD';
         case 'wifi':
             return 'WIFI:T:' + escapeQrField(f.auth, /[;,:]/g) +
-                ';S:' + escapeQrField(f.ssid, /[;,:" ]/g) +
-                ';P:' + escapeQrField(f.password, /[;,:" ]/g) +
+                ';S:' + escapeQrField(f.ssid, /[;,:\"]/g) +
+                ';P:' + escapeQrField(f.password, /[;,:\"]/g) +
                 ';H:' + (f.hidden ? 'true' : 'false') + ';;';
         case 'email':
             return 'mailto:' + encodeURIComponent(f.email || '') +
