@@ -412,6 +412,47 @@ function historySortValue(item, key) {
     return index >= 0 ? String(table.row[index] == null ? '' : table.row[index]).toLowerCase() : '';
 }
 
+function ensureHistoryQrModal() {
+    if ($('#vsHistoryQrModal').length) return;
+
+    $('body').append(
+        '<div id="vsHistoryQrModal" class="vs-history-qr-modal" role="dialog" aria-modal="true" aria-label="QR Code preview">' +
+            '<div class="vs-history-qr-modal-backdrop"></div>' +
+            '<div class="vs-history-qr-modal-content">' +
+                '<button type="button" class="vs-history-qr-modal-close" aria-label="Đóng">×</button>' +
+                '<div class="vs-history-qr-modal-image"></div>' +
+            '</div>' +
+        '</div>'
+    );
+
+    $(document).on('click', '.vs-history-qr-modal-backdrop, .vs-history-qr-modal-close', closeHistoryQrModal);
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape') closeHistoryQrModal();
+    });
+}
+
+function openHistoryQrModal(imageUrl) {
+    if (!imageUrl) return;
+    ensureHistoryQrModal();
+    $('#vsHistoryQrModal .vs-history-qr-modal-image').html('<img src="' + esc(imageUrl) + '" alt="QR Code preview">');
+    $('#vsHistoryQrModal').addClass('is-open');
+    $('body').addClass('vs-history-qr-modal-open');
+}
+
+function closeHistoryQrModal() {
+    $('#vsHistoryQrModal').removeClass('is-open');
+    $('body').removeClass('vs-history-qr-modal-open');
+}
+
+$(document).on('click', '.vs-history-qr-trigger', function(e) {
+    e.preventDefault();
+    var image = $(this).find('img').attr('src');
+    if (!image) {
+        var canvas = $(this).find('canvas')[0];
+        if (canvas) image = canvas.toDataURL('image/png');
+    }
+    openHistoryQrModal(image);
+});
 function renderHistoryQrs() {
     if (typeof window.QRCode === 'undefined') return;
 
@@ -495,7 +536,7 @@ function renderHistory() {
         var table = getHistoryTable(item, absoluteIndex + 1);
         html += '<tr>';
         var qrData = encodeURIComponent(String(item.data || ''));
-        html += '<td class="vs-history-qr"><a href="#" target="_blank" rel="noopener" title="Mở QR Code"><div class="vs-history-qr-code" data-qr-data="' + esc(qrData) + '" aria-label="QR Code"></div></a></td>';
+        html += '<td class="vs-history-qr"><a href="#" class="vs-history-qr-trigger" title="Xem QR Code"><div class="vs-history-qr-code" data-qr-data="' + esc(qrData) + '" aria-label="QR Code"></div></a></td>';
         table.row.forEach(function(value) { html += '<td>' + esc(value) + '</td>'; });
         html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
             '<svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2h-2v13H6V7H4V5h4l1-2zm-1 4v11h8V7H8zm2 2h2v7h-2V9zm4 0h2v7h-2V9z"/></svg>' +
