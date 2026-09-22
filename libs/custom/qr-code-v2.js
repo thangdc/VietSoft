@@ -117,6 +117,8 @@ function renderDesign() {
     historySearch = '';
     closeHistoryQrModal();
     $('#vsTabs a').removeClass('active').filter('[data-type="design"]').addClass('active');
+    $('#vsGenerate').closest('.vs-actions').hide();
+    $('.vs-history').hide();
     $('#vsFormTitle').text('Thiết kế mã QR');
     $('#vsFields').html('<div class="vs-design-panel">' +
         '<div class="vs-design-intro">Tùy chỉnh màu sắc, kiểu điểm và logo. QR vẫn giữ vùng nhận diện cần thiết để dễ quét.</div>' +
@@ -223,6 +225,8 @@ function renderFields(type) {
     historySearch = '';
     historyPage = 1;
     historySort = {key:'id', direction:'desc'};
+    $('#vsGenerate').closest('.vs-actions').show();
+    $('.vs-history').show();
     $('#vsFormTitle').text(fields[type].title);
     $('#vsFields').html(fields[type].html);
     $('#vsStatus').text('');
