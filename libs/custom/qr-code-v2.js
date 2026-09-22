@@ -437,7 +437,7 @@ function buildData(record) {
                 '?subject=' + encodeURIComponent(f.subject || '') +
                 '&body=' + encodeURIComponent(f.body || '');
         case 'phone': return 'tel:' + f.phone;
-        case 'sms': return 'SMSTO:' + f.phone + ':' + f.body;
+        case 'sms': return 'SMSTO:' + f.phone + ':' + String(f.body || '').replace(/([\\:])/g, '\\$1');
         case 'location': return 'geo:' + f.latitude + ',' + f.longitude;
     }
     return '';
