@@ -422,17 +422,26 @@ function renderHistory() {
     html += '<button type="button" data-history-page="' + (historyPage + 1) + '"' + (historyPage === pageCount ? ' disabled' : '') + '>›</button></div></div></div>';
 
     var searchInput = document.getElementById('vsHistorySearch');
-    var hadSearchFocus = document.activeElement === searchInput;
+    var hadSearchFocus = searchInput && (
+        document.activeElement === searchInput ||
+        document.activeElement === document.body
+    );
     var searchSelectionStart = searchInput ? searchInput.selectionStart : null;
     var searchSelectionEnd = searchInput ? searchInput.selectionEnd : null;
     container.html(html);
     $('#vsHistoryPageSize').val(String(historyPageSize));
     if (hadSearchFocus) {
-        var restoredSearch = document.getElementById('vsHistorySearch');
-        if (restoredSearch) {
+        setTimeout(function () {
+            var restoredSearch = document.getElementById('vsHistorySearch');
+            if (!restoredSearch) return;
             restoredSearch.focus();
-            try { restoredSearch.setSelectionRange(searchSelectionStart, searchSelectionEnd); } catch (e) {}
-        }
+            try {
+                restoredSearch.setSelectionRange(
+                    searchSelectionStart == null ? restoredSearch.value.length : searchSelectionStart,
+                    searchSelectionEnd == null ? restoredSearch.value.length : searchSelectionEnd
+                );
+            } catch (e) {}
+        }, 0);
     }
     $('#vsExportExcel').prop('disabled', !template);
 }
