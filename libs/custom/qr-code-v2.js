@@ -142,6 +142,7 @@ function buildData(record) {
 function saveHistory(data, record) {
     var items = getHistory();
     items.unshift({
+        historyId: String(Date.now()) + '-' + String(Math.random()).slice(2),
         type: currentType,
         fields: record.fields,
         data: data,
@@ -156,10 +157,13 @@ function getHistory() {
         var items = JSON.parse(localStorage.getItem(historyKey) || '[]');
         if (!Array.isArray(items)) return [];
 
-        return items.map(function(item) {
+        return items.map(function(item, index) {
             var normalized = item || {};
             if (!normalized.fields || typeof normalized.fields !== 'object') {
                 normalized.fields = fieldsFromHistoryData(normalized.type, normalized.data || '');
+            }
+            if (!normalized.historyId) {
+                normalized.historyId = 'legacy-' + index;
             }
             return normalized;
         });
@@ -273,10 +277,18 @@ function renderHistory() {
     var container = $('#vsHistory');
     var template = getExportTemplate(currentType);
 
+    var toolbar = '<div class="vs-history-toolbar">' +
+        '<input class="vs-history-search" id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc dữ liệu..." aria-label="Lọc lịch sử">' +
+        '<div class="vs-history-toolbar-actions">' +
+        '<select class="vs-history-page-size" id="vsHistoryPageSize"><option value="10">10 / trang</option><option value="25">25 / trang</option><option value="50">50 / trang</option></select>' +
+        '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button"' + (!allItems.length ? ' disabled' : '') + '>Xóa tất cả</button>' +
+        '</div></div>';
+
     if (!allItems.length) {
-        container.html('<div class="vs-history-empty">' +
+        container.html(toolbar + '<div class="vs-history-empty">' +
             (historySearch ? 'Không tìm thấy dữ liệu phù hợp.' : 'Chưa có dữ liệu lịch sử cho ' + esc(fields[currentType].title.replace('Tạo QR cho ','')) + '.') +
             '</div>');
+        $('#vsHistoryPageSize').val(String(historyPageSize));
         $('#vsExportExcel').prop('disabled', !template);
         return;
     }
@@ -287,12 +299,7 @@ function renderHistory() {
     var pageItems = allItems.slice(start, start + historyPageSize);
     var columns = template ? template.columns.slice() : getHistoryTable(allItems[0], 1).columns.slice();
 
-    var html = '<div class="vs-history-toolbar">' +
-        '<input class="vs-history-search" id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc dữ liệu..." aria-label="Lọc lịch sử">' +
-        '<div class="vs-history-toolbar-actions">' +
-        '<select class="vs-history-page-size" id="vsHistoryPageSize"><option value="10">10 / trang</option><option value="25">25 / trang</option><option value="50">50 / trang</option></select>' +
-        '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button">Xóa tất cả</button>' +
-        '</div></div>' +
+    var html = toolbar +
         '<div class="vs-history-table-wrap"><table class="vs-history-table"><thead><tr>';
 
     columns.forEach(function(column) {
@@ -307,7 +314,9 @@ function renderHistory() {
         var table = getHistoryTable(item, absoluteIndex + 1);
         html += '<tr>';
         table.row.forEach(function(value) { html += '<td>' + esc(value) + '</td>'; });
-        html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete="' + absoluteIndex + '">Xóa</button></td></tr>';
+        html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2h-2v13H6V7H4V5h4l1-2zm-1 4v11h8V7H8zm2 2h2v7h-2V9zm4 0h2v7h-2V9z"/></svg>' +
+            '</button></td></tr>';
     });
 
     html += '</tbody></table></div>';
@@ -327,13 +336,17 @@ function renderHistory() {
     $('#vsExportExcel').prop('disabled', !template);
 }
 
-function deleteHistoryItem(itemIndex) {
+function deleteHistoryItem(historyId) {
     var items = getHistory();
-    var currentItems = items.filter(function(item) { return item.type === currentType; });
-    var target = getHistoryViewItems()[itemIndex];
-    if (!target) return;
+    var targetIndex = -1;
 
-    var targetIndex = items.indexOf(target);
+    for (var i = 0; i < items.length; i++) {
+        if (String(items[i].historyId || '') === String(historyId || '')) {
+            targetIndex = i;
+            break;
+        }
+    }
+
     if (targetIndex < 0) return;
     items.splice(targetIndex, 1);
     localStorage.setItem(historyKey, JSON.stringify(items));
@@ -479,11 +492,9 @@ $(function(){
         var page = parseInt($(this).attr('data-history-page'), 10);
         if (page > 0) { historyPage = page; renderHistory(); }
     });
-    $('#vsHistory').on('click', '[data-history-delete]', function(){
-        var index = parseInt($(this).attr('data-history-delete'), 10);
-        var target = getHistoryViewItems()[index];
-        if (!target) return;
-        if (confirm('Xóa bản ghi này?')) deleteHistoryItem(index);
+    $('#vsHistory').on('click', '[data-history-delete-id]', function(){
+        var historyId = $(this).attr('data-history-delete-id');
+        if (confirm('Xóa bản ghi này?')) deleteHistoryItem(historyId);
     });
     $('#vsHistory').on('click', '#vsClearHistory', clearCurrentHistory);
     $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
