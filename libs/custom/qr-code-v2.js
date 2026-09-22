@@ -574,9 +574,29 @@ function fieldsFromHistoryData(type, data) {
         case 'sms':
             var sms = data.replace(/^smsto:/i, '');
             var smsParts = sms.split(':');
-            return {phone:smsParts.shift() || '', body:smsParts.join(':')};
+            var smsPhone = smsParts.shift() || '';
+            var smsBody = smsParts.join(':').replace(/\\\\/g, '\\').replace(/\\:/g, ':');
+            return {phone:smsPhone, body:smsBody};
 
         case 'email':
+            if (/^mailto:/i.test(data)) {
+                var mailto = data.replace(/^mailto:/i, '');
+                var mailParts = mailto.split('?');
+                var emailAddress = decodeURIComponent(mailParts.shift() || '');
+                var query = {};
+                (mailParts.join('?').split('&')).forEach(function(part) {
+                    if (!part) return;
+                    var separator = part.indexOf('=');
+                    var key = separator >= 0 ? part.substring(0, separator) : part;
+                    var value = separator >= 0 ? part.substring(separator + 1) : '';
+                    try { query[key] = decodeURIComponent(value); } catch (e) { query[key] = value; }
+                });
+                return {
+                    email: emailAddress,
+                    subject: query.subject || '',
+                    body: query.body || ''
+                };
+            }
             return {
                 email:(data.match(/TO:([^;]*);/i) || [,''])[1],
                 subject:(data.match(/SUB:([^;]*);/i) || [,''])[1],
