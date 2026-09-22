@@ -185,9 +185,12 @@ function drawFinder(ctx, x, y, moduleSize, foreground, background) {
 var qrRenderSequence = 0;
 
 function renderQrImage(data, design, size, callback, onError) {
-    if (!data || typeof qrcode !== 'function') return false;
-    var renderSequence = ++qrRenderSequence;
     onError = onError || function() {};
+    if (!data || typeof qrcode !== 'function') {
+        onError(new Error('QR renderer is unavailable.'));
+        return false;
+    }
+    var renderSequence = ++qrRenderSequence;
     design = normalizeDesign(design);
     var level = design.logoDataUrl ? 'H' : (qrConfig.level || 'M');
     var qr;
@@ -459,7 +462,12 @@ function saveHistory(data, record) {
         time: new Date().toLocaleString()
     });
     currentHistoryId = historyId;
-    localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+    try {
+        localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+    } catch (e) {
+        currentHistoryId = '';
+        setStatus('QR đã được tạo nhưng không thể lưu vào lịch sử của trình duyệt.');
+    }
     renderHistory();
 }
 
@@ -514,7 +522,7 @@ function restoreCurrentQrState() {
         currentType = savedType;
         currentHistoryId = String(saved.historyId || '');
         currentDesign = normalizeDesign(saved.design);
-        renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
+        var rendered = renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
             currentImage = imageUrl;
             var preview = document.getElementById('vsPreview');
             if (!preview) return;
@@ -538,7 +546,11 @@ function persistCurrentDesign(design) {
     for (var i = 0; i < items.length; i++) {
         if (String(items[i].historyId || '') === String(currentHistoryId)) {
             items[i].design = $.extend({}, currentDesign);
-            localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+            try {
+                localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+            } catch (e) {
+                setStatus('Thiết kế đã áp dụng nhưng không thể lưu vào lịch sử của trình duyệt.');
+            }
             break;
         }
     }
@@ -1098,6 +1110,26 @@ function generate() {
         }
         setStatus('Không thể tạo QR. Nội dung có thể quá dài hoặc không phù hợp với mức sửa lỗi hiện tại.');
     });
+    if (!rendered) {
+        currentData = previousData;
+        currentImage = previousImage;
+        currentHistoryId = previousHistoryId;
+        currentDesign = previousDesign;
+        if (previousImage) {
+            preview.innerHTML = '';
+            var previousQr = new Image();
+            previousQr.alt = 'QR Code';
+            previousQr.src = previousImage;
+            preview.appendChild(previousQr);
+            syncDesignFields(currentDesign);
+            $('#vsDownload,#vsCopy,#vsOpen,#vsApplyDesign').prop('disabled', false);
+            $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
+        } else {
+            preview.innerHTML = '<div class="vs-empty">Chưa có mã QR</div>';
+            $('#vsDownload,#vsCopy,#vsOpen,#vsApplyDesign').prop('disabled', true);
+            $('#vsDesignWarning').text('Không thể khởi tạo bộ tạo QR. Vui lòng tải lại trang.');
+        }
+    }
 }
 
 $(function(){
