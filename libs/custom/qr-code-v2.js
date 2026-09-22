@@ -63,6 +63,7 @@ function renderHistory() {
 function setStatus(text) { $('#vsStatus').text(text); }
 
 function generate() {
+    if (typeof QRCode === 'undefined') { setStatus('Thư viện QR chưa tải xong. Vui lòng thử lại sau vài giây.'); return; }
     var data = buildData();
     if (!data.trim()) { setStatus('Vui lòng nhập nội dung.'); return; }
     if (currentType === 'url' && !/^https?:\/\//i.test(data)) { setStatus('URL nên bắt đầu bằng http:// hoặc https://'); return; }
