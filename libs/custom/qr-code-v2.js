@@ -507,7 +507,7 @@ function openHistoryQrModalFromData(data){
         },0);
     }catch(e){container.remove();}
 }
-function closeHistoryQrModal{$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
+function closeHistoryQrModal(){$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
 $(document).on('click','.vs-history-qr-trigger',function(e){e.preventDefault();var data=$(this).find('.vs-history-qr-code').attr('data-qr-data')||'';try{data=decodeURIComponent(data);}catch(err){data='';}openHistoryQrModalFromData(data);});
 function renderHistoryQrs(){
     if(typeof window.QRCode==='undefined')return;
