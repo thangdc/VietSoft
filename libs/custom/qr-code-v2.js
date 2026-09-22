@@ -175,7 +175,7 @@ function initLocationMap() {
     var element = document.getElementById('vsLocationMap');
     if (!element || typeof L === 'undefined') return;
     locationMap = L.map(element).setView([10.78778, 106.662483], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(locationMap);
