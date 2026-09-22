@@ -363,7 +363,6 @@ function renderHistory() {
     var toolbar = '<div class="vs-history-toolbar">' +
         '<input class="vs-history-search" id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc dữ liệu..." aria-label="Lọc lịch sử">' +
         '<div class="vs-history-toolbar-actions">' +
-        '<select class="vs-history-page-size" id="vsHistoryPageSize"><option value="10">10 / trang</option><option value="25">25 / trang</option><option value="50">50 / trang</option></select>' +
         '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button"' + (!allItems.length ? ' disabled' : '') + '>Xóa tất cả</button>' +
         '</div></div>';
 
@@ -371,7 +370,6 @@ function renderHistory() {
         container.html(toolbar + '<div class="vs-history-empty">' +
             (historySearch ? 'Không tìm thấy dữ liệu phù hợp.' : 'Chưa có dữ liệu lịch sử cho ' + esc(fields[currentType].title.replace('Tạo QR cho ','')) + '.') +
             '</div>');
-        $('#vsHistoryPageSize').val(String(historyPageSize));
         $('#vsExportExcel').prop('disabled', !template);
         return;
     }
@@ -406,13 +404,13 @@ function renderHistory() {
 
     var first = start + 1;
     var last = Math.min(start + historyPageSize, allItems.length);
-    html += '<div class="vs-history-pagination"><span>Hiển thị ' + first + '–' + last + ' / ' + allItems.length + '</span><div class="vs-history-page-buttons">';
+    html += '<div class="vs-history-footer"><div class="vs-history-page-size-wrap"><span>Hiển thị</span><select class="vs-history-page-size" id="vsHistoryPageSize"><option value="10">10 / trang</option><option value="25">25 / trang</option><option value="50">50 / trang</option></select></div><div class="vs-history-pagination"><span>' + first + '–' + last + ' / ' + allItems.length + '</span><div class="vs-history-page-buttons">';
     html += '<button type="button" data-history-page="' + (historyPage - 1) + '"' + (historyPage === 1 ? ' disabled' : '') + '>‹</button>';
     for (var page = 1; page <= pageCount; page++) {
         if (pageCount > 7 && page !== 1 && page !== pageCount && Math.abs(page - historyPage) > 2) continue;
         html += '<button type="button" class="' + (page === historyPage ? 'active' : '') + '" data-history-page="' + page + '">' + page + '</button>';
     }
-    html += '<button type="button" data-history-page="' + (historyPage + 1) + '"' + (historyPage === pageCount ? ' disabled' : '') + '>›</button></div></div>';
+    html += '<button type="button" data-history-page="' + (historyPage + 1) + '"' + (historyPage === pageCount ? ' disabled' : '') + '>›</button></div></div></div>';
 
     var searchInput = document.getElementById('vsHistorySearch');
     var hadSearchFocus = document.activeElement === searchInput;
