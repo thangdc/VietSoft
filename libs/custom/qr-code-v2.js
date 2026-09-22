@@ -287,6 +287,7 @@ function applyDesign() {
 }
 
 function renderFields(type) {
+    var typeChanged = currentType !== type;
     currentType = type;
     designMode = false;
     historySearch = '';
@@ -298,6 +299,13 @@ function renderFields(type) {
     $('#vsFormTitle').text(fields[type].title);
     $('#vsFields').html(fields[type].html);
     $('#vsStatus').text('');
+    if (typeChanged) {
+        currentData = '';
+        currentImage = '';
+        currentHistoryId = '';
+        currentDesign = normalizeDesign({});
+        try { localStorage.removeItem(currentQrKey); } catch (e) {}
+    }
     $('#vsTabs a').removeClass('active').filter('[data-type="' + type + '"]').addClass('active');
     if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
     renderHistory();
@@ -1031,7 +1039,19 @@ $(function(){
         }
     });
     $('#vsGenerate').on('click',generate);
-    $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
+    $('#vsClear').on('click',function(){
+        currentData = '';
+        currentImage = '';
+        currentHistoryId = '';
+        currentDesign = normalizeDesign({});
+        try { localStorage.removeItem(currentQrKey); } catch (e) {}
+        renderFields(currentType);
+        var preview = document.getElementById('vsPreview');
+        if (preview) preview.innerHTML = '<div class="vs-empty">Chưa có mã QR</div>';
+        $('#vsDownload,#vsCopy,#vsOpen,#vsApplyDesign').prop('disabled', true);
+        $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
+        $('#vsStatus').text('');
+    });
     $('#vsExportExcel').on('click',exportExcel);
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
