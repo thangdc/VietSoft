@@ -10,6 +10,7 @@ var historyPageSize = 10;
 var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
+var activeTabKey = 'vietsoft_qr_active_tab_v1';
 var qrConfig = {size:300, level:'M'};
 var designMode = false;
 var currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
@@ -883,15 +884,29 @@ $(function(){
     loadQrConfig();
     applyQrConfig();
     var initialType = 'url';
+    var savedTab = '';
     try {
         var queryType = new URLSearchParams(window.location.search).get('type');
-        if (queryType && fields[queryType]) initialType = queryType;
+        if (queryType === 'design') {
+            initialType = 'design';
+        } else if (queryType && fields[queryType]) {
+            initialType = queryType;
+        } else {
+            savedTab = localStorage.getItem(activeTabKey) || '';
+            if (savedTab === 'design') initialType = 'design';
+            else if (savedTab && fields[savedTab]) initialType = savedTab;
+        }
     } catch (e) {}
-    renderFields(initialType);
+    if (initialType === 'design') {
+        renderDesign();
+    } else {
+        renderFields(initialType);
+    }
     $('#vsTabs').off('click.qrTabs').on('click.qrTabs', 'a[data-type]', function(e){
         e.preventDefault();
         e.stopPropagation();
         var type = $(this).attr('data-type');
+        try { localStorage.setItem(activeTabKey, type); } catch (e) {}
         try {
             var url = new URL(window.location.href);
             url.searchParams.set('type', type);
