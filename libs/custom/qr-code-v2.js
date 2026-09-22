@@ -1021,7 +1021,6 @@ function generate() {
     var record = getRecord();
     var validationError = validateRecord(record);
     if (validationError) { setStatus(validationError); return; }
-    var record = getRecord();
     var data;
     try {
         data = buildData(record);
