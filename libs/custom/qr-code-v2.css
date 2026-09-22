@@ -329,3 +329,73 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
     padding:16px;
   }
 }
+
+
+/* Guide + FAQ: match the QR app shell instead of legacy Bootstrap panels. */
+.vs-modern .vs-info-section{max-width:1120px;margin:18px auto;padding:0 16px}
+.vs-modern .vs-info-card{
+  border:1px solid #dfe3ea;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(16,24,40,.045);
+  padding:24px;
+}
+.vs-modern .vs-info-heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.vs-modern .vs-info-icon{
+  width:32px;height:32px;flex:0 0 32px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:9px;background:#eff6ff;color:#2563eb;
+  border:1px solid #dbeafe;font-weight:800;font-size:14px;
+}
+.vs-modern .vs-info-kicker{
+  display:block;margin-bottom:3px;color:#2563eb;
+  font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+}
+.vs-modern .vs-info-heading h2{margin:0;color:#101828;font-size:19px;font-weight:750;letter-spacing:-.015em}
+.vs-modern .vs-info-heading p{margin:4px 0 0;color:#667085;font-size:13px}
+.vs-modern .vs-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vs-modern .vs-guide-step{
+  display:flex;gap:12px;padding:15px;
+  border:1px solid #eaecf0;border-radius:12px;
+  background:#fbfcfe;
+}
+.vs-modern .vs-guide-step:hover{border-color:#dbeafe;background:#f9fbff}
+.vs-modern .vs-guide-number{
+  width:28px;height:28px;flex:0 0 28px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;background:#eff6ff;color:#175cd3;
+  font-size:12px;font-weight:800;
+}
+.vs-modern .vs-guide-step h3{margin:1px 0 5px;font-size:13px;color:#101828;font-weight:750}
+.vs-modern .vs-guide-step p{margin:0;color:#667085;font-size:12px;line-height:1.55}
+.vs-modern .vs-info-note{
+  margin-top:14px;padding:11px 13px;
+  border-radius:10px;background:#f8fafc;border:1px solid #eaecf0;
+  color:#667085;font-size:12px;line-height:1.5;
+}
+.vs-modern .vs-info-note strong{color:#344054}
+.vs-modern .vs-faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vs-modern .vs-faq-grid details{
+  border:1px solid #eaecf0;border-radius:11px;background:#fbfcfe;
+  overflow:hidden;
+}
+.vs-modern .vs-faq-grid details[open]{background:#fff;border-color:#dbeafe}
+.vs-modern .vs-faq-grid summary{
+  position:relative;cursor:pointer;list-style:none;
+  padding:14px 38px 14px 15px;
+  color:#344054;font-size:13px;font-weight:700;
+}
+.vs-modern .vs-faq-grid summary::-webkit-details-marker{display:none}
+.vs-modern .vs-faq-grid summary:after{
+  content:'+';position:absolute;right:15px;top:11px;
+  color:#667085;font-size:18px;font-weight:400;
+}
+.vs-modern .vs-faq-grid details[open] summary:after{content:'−';color:#2563eb}
+.vs-modern .vs-faq-grid details p{
+  margin:0;padding:0 15px 15px;color:#667085;font-size:12px;line-height:1.6;
+}
+@media(max-width:700px){
+  .vs-modern .vs-info-section{padding:0 16px}
+  .vs-modern .vs-info-card{padding:18px}
+  .vs-modern .vs-guide-grid,.vs-modern .vs-faq-grid{grid-template-columns:1fr}
+}
