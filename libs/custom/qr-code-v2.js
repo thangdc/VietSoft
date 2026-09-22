@@ -493,8 +493,22 @@ function ensureHistoryQrModal() {
     $(document).on('keydown',function(e){if(e.key==='Escape')closeHistoryQrModal();});
 }
 function openHistoryQrModal(imageUrl){if(!imageUrl)return;ensureHistoryQrModal();$('#vsHistoryQrModal .vs-history-qr-modal-image').html('<img src="'+esc(imageUrl)+'" alt="QR Code preview">');$('#vsHistoryQrModal').addClass('is-open');$('body').addClass('vs-history-qr-modal-open');}
-function closeHistoryQrModal(){$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
-$(document).on('click','.vs-history-qr-trigger',function(e){e.preventDefault();var image=$(this).find('img').attr('src');if(!image){var canvas=$(this).find('canvas')[0];if(canvas)image=canvas.toDataURL('image/png');}openHistoryQrModal(image);});
+function openHistoryQrModalFromData(data){
+    if(!data)return;
+    ensureHistoryQrModal();
+    var container=$('<div></div>').css({position:'absolute',left:'-99999px',top:'-99999px',width:'360px',height:'360px'}).appendTo('body');
+    try{
+        var level=(window.QRCode.CorrectLevel||{}).M;
+        new window.QRCode(container[0],{text:data,width:360,height:360,correctLevel:level});
+        setTimeout(function(){
+            var canvas=container.find('canvas')[0], image=container.find('img')[0], imageUrl=canvas?canvas.toDataURL('image/png'):(image?image.src:'');
+            container.remove();
+            openHistoryQrModal(imageUrl);
+        },0);
+    }catch(e){container.remove();}
+}
+function closeHistoryQrModal{$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
+$(document).on('click','.vs-history-qr-trigger',function(e){e.preventDefault();var data=$(this).find('.vs-history-qr-code').attr('data-qr-data')||'';try{data=decodeURIComponent(data);}catch(err){data='';}openHistoryQrModalFromData(data);});
 function renderHistoryQrs(){
     if(typeof window.QRCode==='undefined')return;
     var correctLevel=window.QRCode.CorrectLevel||{}, level=correctLevel[qrConfig.level||'M']||correctLevel.M;
@@ -544,7 +558,7 @@ function renderHistory() {
         var arrow = sortable && historySort.key === column ? (historySort.direction === 'asc' ? ' ▲' : ' ▼') : '';
         html += '<th class="' + (column === 'ID' ? 'vs-history-id-column' : '') + '" data-sortable="' + sortable + '" data-history-sort="' + esc(column) + '">' + esc(column) + arrow + '</th>';
     });
-    html += '<th data-sortable="false">Thao tác</th></tr></thead><tbody>';
+    html += '<th class="vs-history-actions-column" data-sortable="false">Thao tác</th></tr></thead><tbody>';
 
     pageItems.forEach(function(item, index) {
         var absoluteIndex = start + index;
