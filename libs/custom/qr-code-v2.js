@@ -113,16 +113,13 @@ var fields = {
 };
 
 
-function renderDesign() {
+function renderDesignLegacy() {
     designMode = true;
     currentType = 'design';
     historyPage = 1;
     historySearch = '';
-    closeHistoryQrModal();
-    $('#vsTabs a').removeClass('active').filter('[data-type="design"]').addClass('active');
-    $('#vsGenerate').closest('.vs-actions').hide();
-    $('.vs-history').hide();
-    $('#vsFormTitle').text('Thiết kế mã QR');
+
+
     $('#vsFields').html('<div class="vs-design-panel">' +
         '<div class="vs-design-intro">Tùy chỉnh màu sắc, kiểu điểm và logo. QR vẫn giữ vùng nhận diện cần thiết để dễ quét.</div>' +
         '<div class="vs-grid2">' +
@@ -139,6 +136,27 @@ function renderDesign() {
     $('#vsDesignWarning').text(currentData ? '✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.' : 'Tạo QR trước, sau đó bạn có thể áp dụng thiết kế.');
     $('#vsHistory').empty();
     if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
+}
+
+function renderResultDesignPanel() {
+    var container = $('.vs-result');
+    if (!container.length || $('#vsResultDesign').length) return;
+    var html = '<div class="vs-result-design" id="vsResultDesign">' +
+        '<div class="vs-result-design-header"><div><div class="vs-result-design-kicker">Tùy chỉnh</div><h3>Thiết kế QR</h3></div><span class="vs-result-design-hint">Thay đổi sẽ cập nhật ngay</span></div>' +
+        '<div class="vs-grid2">' +
+        '<div class="vs-field"><label>Màu QR</label><div class="vs-color-control"><input id="vsDesignForeground" type="color" value="#111827"><input id="vsDesignForegroundText" type="text" value="#111827" maxlength="7" aria-label="Mã màu QR"></div></div>' +
+        '<div class="vs-field"><label>Màu nền</label><div class="vs-color-control"><input id="vsDesignBackground" type="color" value="#FFFFFF"><input id="vsDesignBackgroundText" type="text" value="#FFFFFF" maxlength="7" aria-label="Mã màu nền"></div></div>' +
+        '</div>' +
+        '<div class="vs-field"><label>Kiểu điểm</label><select id="vsDesignStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option><option value="dot">Chấm</option></select></div>' +
+        '<div class="vs-field"><label>Logo <span class="vs-label-muted">(tùy chọn)</span></label><input id="vsDesignLogo" type="file" accept="image/png,image/jpeg,image/webp"><div id="vsDesignLogoName" class="vs-design-file-name">Chưa chọn logo</div></div>' +
+        '<div class="vs-design-warning" id="vsDesignWarning">Tạo QR trước, sau đó bạn có thể tùy chỉnh.</div>' +
+        '<div class="vs-actions"><button class="vs-btn vs-btn-primary" id="vsApplyDesign" type="button" disabled><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1L12 3z"/></svg><span>Áp dụng thiết kế</span></button><button class="vs-btn vs-btn-secondary" id="vsResetDesign" type="button">Đặt lại</button></div>' +
+        '</div>';
+    container.find('.vs-result-config').after(html);
+    syncDesignColorControls();
+    syncDesignFields(currentDesign);
+    $('#vsApplyDesign').prop('disabled', !currentData);
+    $('#vsDesignWarning').text(currentData ? '✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.' : 'Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
 }
 
 function syncDesignColorControls() {
@@ -263,6 +281,7 @@ function renderFields(type) {
     historyPage = 1;
     historySort = {key:'id', direction:'desc'};
     $('#vsGenerate').closest('.vs-actions').show();
+    $('#vsResultDesign').show();
     $('.vs-history').show();
     $('#vsFormTitle').text(fields[type].title);
     $('#vsFields').html(fields[type].html);
@@ -271,6 +290,11 @@ function renderFields(type) {
     if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
     renderHistory();
     if (type === 'location') initLocationMap();
+    if ($('#vsResultDesign').length) {
+        syncDesignFields(currentDesign);
+        $('#vsApplyDesign').prop('disabled', !currentData);
+        $('#vsDesignWarning').text(currentData ? '✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.' : 'Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
+    }
     track('qr_type_select', {qr_type:type});
 }
 
@@ -885,6 +909,9 @@ function generate() {
         currentData = data;
         currentHistoryId = '';
         currentDesign = normalizeDesign({foreground:'#111827',background:'#FFFFFF',style:'square',logoDataUrl:''});
+        syncDesignFields(currentDesign);
+        $('#vsApplyDesign').prop('disabled', false);
+        $('#vsDesignWarning').text('✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.');
         currentImage = imageUrl;
         preview.innerHTML = '';
         preview.appendChild(image);
@@ -909,21 +936,15 @@ $(function(){
     var savedTab = '';
     try {
         var queryType = new URLSearchParams(window.location.search).get('type');
-        if (queryType === 'design') {
-            initialType = 'design';
-        } else if (queryType && fields[queryType]) {
+        if (queryType && fields[queryType]) {
             initialType = queryType;
         } else {
             savedTab = localStorage.getItem(activeTabKey) || '';
-            if (savedTab === 'design') initialType = 'design';
-            else if (savedTab && fields[savedTab]) initialType = savedTab;
+            if (savedTab && fields[savedTab]) initialType = savedTab;
         }
     } catch (e) {}
-    if (initialType === 'design') {
-        renderDesign();
-    } else {
-        renderFields(initialType);
-    }
+    renderFields(initialType);
+    renderResultDesignPanel();
     $('#vsTabs').off('click.qrTabs').on('click.qrTabs', 'a[data-type]', function(e){
         e.preventDefault();
         e.stopPropagation();
@@ -934,9 +955,7 @@ $(function(){
             url.searchParams.set('type', type);
             window.history.replaceState(null, '', url.toString());
         } catch (e) {}
-        if (type === 'design') {
-            renderDesign();
-        } else {
+        if (fields[type]) {
             renderFields(type);
         }
     });

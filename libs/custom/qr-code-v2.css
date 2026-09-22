@@ -340,3 +340,17 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-history-table tbody tr.vs-history-row{cursor:pointer;transition:background-color .15s ease,box-shadow .15s ease}
 .vs-modern .vs-history-table tbody tr.vs-history-row:hover td{background:#f5f9ff!important}
 .vs-modern .vs-history-table tbody tr.vs-history-row:focus-within td{background:#f5f9ff!important}
+
+
+/* QR design controls live with the generated result. */
+.vs-result-design{margin:18px 0 0;padding:18px;border:1px solid #e5eaf2;border-radius:16px;background:#f8fafc}
+.vs-result-design-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.vs-result-design-header h3{margin:2px 0 0;font-size:18px;font-weight:700}
+.vs-result-design-kicker{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2563eb}
+.vs-result-design-hint{font-size:12px;color:#64748b;padding-top:4px}
+.vs-result-design .vs-actions{margin-top:14px}
+.vs-result-design .vs-design-warning{margin-top:12px}
+@media (max-width:700px){
+  .vs-result-design-header{display:block}
+  .vs-result-design-hint{display:block;margin-top:5px}
+}
