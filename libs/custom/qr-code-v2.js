@@ -128,10 +128,68 @@ function saveHistory(data, record) {
 function getHistory() {
     try {
         var items = JSON.parse(localStorage.getItem(historyKey) || '[]');
-        return Array.isArray(items) ? items : [];
+        if (!Array.isArray(items)) return [];
+
+        return items.map(function(item) {
+            var normalized = item || {};
+            if (!normalized.fields || typeof normalized.fields !== 'object') {
+                normalized.fields = fieldsFromHistoryData(normalized.type, normalized.data || '');
+            }
+            return normalized;
+        });
     } catch (e) {
         return [];
     }
+}
+
+function fieldsFromHistoryData(type, data) {
+    data = String(data || '');
+
+    switch (type) {
+        case 'url':
+            return {url:data};
+
+        case 'text':
+            return {text:data};
+
+        case 'phone':
+            return {phone:data.replace(/^tel:/i, '')};
+
+        case 'sms':
+            var sms = data.replace(/^smsto:/i, '');
+            var smsParts = sms.split(':');
+            return {phone:smsParts.shift() || '', body:smsParts.join(':')};
+
+        case 'email':
+            return {
+                email:(data.match(/TO:([^;]*);/i) || [,''])[1],
+                subject:(data.match(/SUB:([^;]*);/i) || [,''])[1],
+                body:(data.match(/BODY:(.*?);?$/i) || [,''])[1].replace(/;$/, '')
+            };
+
+        case 'contact':
+            return {
+                name:(data.match(/N:([^;]*);/i) || [,''])[1],
+                phone:(data.match(/TEL:([^;]*);/i) || [,''])[1],
+                website:(data.match(/URL:([^;]*);/i) || [,''])[1],
+                email:(data.match(/EMAIL:([^;]*);/i) || [,''])[1],
+                address:(data.match(/ADR:([^;]*);/i) || [,''])[1]
+            };
+
+        case 'wifi':
+            return {
+                ssid:(data.match(/S:([^;]*);/i) || [,''])[1],
+                password:(data.match(/P:([^;]*);/i) || [,''])[1],
+                auth:(data.match(/T:([^;]*);/i) || [,''])[1],
+                hidden:((data.match(/H:([^;]*);/i) || [,'false'])[1]).toLowerCase() === 'true'
+            };
+
+        case 'location':
+            var geo = data.replace(/^geo:/i, '').split(',');
+            return {latitude:geo[0] || '',longitude:geo[1] || ''};
+    }
+
+    return {};
 }
 
 function getHistoryTable(item, id) {
@@ -177,7 +235,7 @@ function renderHistory() {
 
     html += '</tbody></table></div>';
     container.html(html);
-    $('#vsExportExcel').prop('disabled', !exportTemplates[currentType]);
+    $('#vsExportExcel').prop('disabled', !getExportTemplate(currentType));
 }
 
 function getExportTemplate(type) {
