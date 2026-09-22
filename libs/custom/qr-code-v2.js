@@ -132,8 +132,8 @@ function renderDesign() {
 }
 
 function syncDesignColorControls() {
-    $('#vsDesignForeground').on('input', function(){ $('#vsDesignForegroundText').val($(this).val()); });
-    $('#vsDesignBackground').on('input', function(){ $('#vsDesignBackgroundText').val($(this).val()); });
+    $('#vsDesignForeground').on('input', function(){ $('#vsDesignForegroundText').val($(this).val()); if (currentData) renderCustomQr(); });
+    $('#vsDesignBackground').on('input', function(){ $('#vsDesignBackgroundText').val($(this).val()); if (currentData) renderCustomQr(); });
     $('#vsDesignForegroundText,#vsDesignBackgroundText').on('change', function(){
         var valueText = $(this).val().trim();
         if (/^#[0-9a-fA-F]{6}$/.test(valueText)) {
@@ -141,9 +141,11 @@ function syncDesignColorControls() {
             $(target).val(valueText);
         }
     });
+    $('#vsDesignStyle').on('change', function(){ if (currentData) renderCustomQr(); });
     $('#vsDesignLogo').on('change', function(){
         var file = this.files && this.files[0];
         $('#vsDesignLogoName').text(file ? file.name : 'Chưa chọn logo');
+        if (currentData) renderCustomQr();
     });
     $('#vsApplyDesign').on('click', applyDesign);
     $('#vsResetDesign').on('click', function(){
@@ -721,16 +723,20 @@ $(function(){
         if (queryType && fields[queryType]) initialType = queryType;
     } catch (e) {}
     renderFields(initialType);
-    $('#vsTabs a').click(function(e){
+    $('#vsTabs').off('click.qrTabs').on('click.qrTabs', 'a[data-type]', function(e){
         e.preventDefault();
+        e.stopPropagation();
         var type = $(this).attr('data-type');
-        if (type === 'design') { renderDesign(); return; }
-        renderFields(type);
         try {
             var url = new URL(window.location.href);
             url.searchParams.set('type', type);
             window.history.replaceState(null, '', url.toString());
         } catch (e) {}
+        if (type === 'design') {
+            renderDesign();
+        } else {
+            renderFields(type);
+        }
     });
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
