@@ -175,3 +175,12 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
  .vs-modern .vs-form,.vs-modern .vs-result{padding:22px!important}
  .vs-modern .vs-history{padding:20px 0 0!important}
 }
+
+
+/* History QR thumbnail */
+.vs-modern .vs-history-table th.vs-history-qr-column,
+.vs-modern .vs-history-table td.vs-history-qr{width:72px!important;min-width:72px!important;max-width:72px!important;padding:5px!important;text-align:center!important;vertical-align:middle!important}
+.vs-modern .vs-history-qr a{display:inline-flex;width:56px;height:56px;align-items:center;justify-content:center;border:1px solid #e4e7ec;border-radius:7px;background:#fff;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease}
+.vs-modern .vs-history-qr a:hover{transform:scale(1.06);box-shadow:0 4px 10px rgba(16,24,40,.10)}
+.vs-modern .vs-history-qr img{width:56px;height:56px;display:block}
+@media(max-width:640px){.vs-modern .vs-history-table th.vs-history-qr-column,.vs-modern .vs-history-table td.vs-history-qr{width:66px!important;min-width:66px!important;max-width:66px!important;padding:4px!important}.vs-modern .vs-history-qr a,.vs-modern .vs-history-qr img{width:52px;height:52px}}
