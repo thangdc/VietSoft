@@ -9,6 +9,8 @@ var historyPage = 1;
 var historyPageSize = 10;
 var historySearch = '';
 var historyKey = 'vietsoft_qr_history_v2';
+var configKey = 'vietsoft_qr_config_v1';
+var qrConfig = {size:300, level:'M'};
 
 var exportTemplates = {
     url: {
@@ -56,6 +58,26 @@ var exportTemplates = {
         getRow: function (item, id) { return [id, item.fields.name || '', item.fields.description || '', item.fields.price || '']; }
     }
 };
+
+function loadQrConfig() {
+    try {
+        var saved = JSON.parse(localStorage.getItem(configKey) || 'null');
+        if (saved && ['220','300','400','500'].indexOf(String(saved.size)) !== -1 && ['L','M','Q','H'].indexOf(String(saved.level)) !== -1) {
+            qrConfig = {size:parseInt(saved.size, 10), level:String(saved.level)};
+        }
+    } catch (e) {}
+}
+
+function saveQrConfig() {
+    qrConfig.size = parseInt($('#vsSize').val(), 10) || 300;
+    qrConfig.level = $('#vsLevel').val() || 'M';
+    localStorage.setItem(configKey, JSON.stringify(qrConfig));
+}
+
+function applyQrConfig() {
+    $('#vsSize').val(String(qrConfig.size));
+    $('#vsLevel').val(qrConfig.level);
+}
 
 function track(name, params) {
     if (window.vietsoftAnalytics) window.vietsoftAnalytics.track(name, params || {});
@@ -397,8 +419,9 @@ function generate() {
         return;
     }
 
-    var size = parseInt($('#vsSize').val(),10) || 300;
-    var level = $('#vsLevel').val() || 'M';
+    saveQrConfig();
+    var size = qrConfig.size;
+    var level = qrConfig.level;
     var encoded = encodeURIComponent(data);
     var imageUrl = 'https://zxing.org/w/chart?cht=qr&chs=' + size + 'x' + size + '&chld=' + level + '&choe=UTF-8&chl=' + encoded;
     var preview = document.getElementById('vsPreview');
@@ -426,11 +449,14 @@ function generate() {
 }
 
 $(function(){
+    loadQrConfig();
+    applyQrConfig();
     renderFields('url');
     $('#vsTabs a').click(function(e){e.preventDefault();renderFields($(this).attr('data-type'));});
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){renderFields(currentType);$('#vsStatus').text('');});
     $('#vsExportExcel').on('click',exportExcel);
+    $('#vsSize,#vsLevel').on('change', saveQrConfig);
     $('#vsHistory').on('input', '#vsHistorySearch', function(){
         historySearch = $(this).val();
         historyPage = 1;
