@@ -278,10 +278,13 @@ function renderHistory() {
     var template = getExportTemplate(currentType);
 
     var toolbar = '<div class="vs-history-toolbar">' +
-        '<input class="vs-history-search" id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc dữ liệu..." aria-label="Lọc lịch sử">' +
+        '<div class="vs-history-filter">' +
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 18a7.5 7.5 0 1 1 5.3-2.2l4.2 4.2-1.4 1.4-4.2-4.2A7.47 7.47 0 0 1 10.5 18zm0-2a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z"/></svg>' +
+        '<input id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc lịch sử..." aria-label="Lọc lịch sử">' +
+        '</div>' +
         '<div class="vs-history-toolbar-actions">' +
-        '<select class="vs-history-page-size" id="vsHistoryPageSize"><option value="10">10 / trang</option><option value="25">25 / trang</option><option value="50">50 / trang</option></select>' +
-        '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button"' + (!allItems.length ? ' disabled' : '') + '>Xóa tất cả</button>' +
+        '<div class="vs-history-page-size-wrap"><span>Hiển thị</span><select id="vsHistoryPageSize"><option value="10">10</option><option value="25">25</option><option value="50">50</option></select></div>' +
+        '<button class="vs-history-clear" id="vsClearHistory" type="button"' + (!allItems.length ? ' disabled' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2h-2v13H6V7H4V5h4l1-2zm-1 4v11h8V7H8zm2 2h2v7h-2V9zm4 0h2v7h-2V9z"/></svg><span>Xóa tất cả</span></button>' +
         '</div></div>';
 
     if (!allItems.length) {
@@ -323,7 +326,7 @@ function renderHistory() {
 
     var first = start + 1;
     var last = Math.min(start + historyPageSize, allItems.length);
-    html += '<div class="vs-history-pagination"><span>Hiển thị ' + first + '–' + last + ' / ' + allItems.length + '</span><div class="vs-history-page-buttons">';
+    html += '<div class="vs-history-pagination"><span>Hiển thị <strong>' + first + '–' + last + '</strong> trong <strong>' + allItems.length + '</strong></span><div class="vs-history-page-buttons">';
     html += '<button type="button" data-history-page="' + (historyPage - 1) + '"' + (historyPage === 1 ? ' disabled' : '') + '>‹</button>';
     for (var page = 1; page <= pageCount; page++) {
         if (pageCount > 7 && page !== 1 && page !== pageCount && Math.abs(page - historyPage) > 2) continue;
