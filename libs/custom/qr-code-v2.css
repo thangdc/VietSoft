@@ -14,7 +14,13 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-history-table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed!important}
 .vs-history-table th,.vs-history-table td{min-width:0!important;max-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-sizing:border-box}
 .vs-history-table th:first-child,.vs-history-table td:first-child{width:42px!important;max-width:42px!important}
-.vs-history-table th:last-child,.vs-history-table td:last-child{width:80px!important;min-width:80px!important;max-width:80px!important}
+.vs-history-table th.vs-history-qr-column,.vs-history-table td.vs-history-qr{width:72px!important;min-width:72px!important;max-width:72px!important;text-align:center!important;vertical-align:middle!important}
+.vs-history-table th:last-child,.vs-history-table td:last-child{width:64px!important;min-width:64px!important;max-width:64px!important;text-align:center!important}
+.vs-history-table th:not(:first-child):not(.vs-history-qr-column):not(:last-child),
+.vs-history-table td:not(:first-child):not(.vs-history-qr):not(:last-child){text-align:left!important}
+.vs-history-table td{vertical-align:middle!important}
+.vs-history-table td:not(.vs-history-qr):not(.vs-history-actions){white-space:nowrap!important}
+.vs-history-table td:not(.vs-history-qr):not(.vs-history-actions){padding-left:12px!important;padding-right:12px!important}
 
 
 /* Consistent form control sizing */
