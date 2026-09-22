@@ -363,7 +363,7 @@ function renderHistory() {
     var toolbar = '<div class="vs-history-toolbar">' +
         '<input class="vs-history-search" id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc dữ liệu..." aria-label="Lọc lịch sử">' +
         '<div class="vs-history-toolbar-actions">' +
-        '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button"' + (!allItems.length ? ' disabled' : '') + ><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l1 2h3v2H3V6h3l1-2zm0 6h2v9h2v-9h2v9h2v-9h2v11H7V10z"/></svg><span>Xóa tất cả</span></button>' +
+        '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button"' + (!allItems.length ? ' disabled' : '') + '><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l1 2h3v2H3V6h3l1-2zm0 6h2v9h2v-9h2v9h2v-9h2v11H7V10z"/></svg><span>Xóa tất cả</span></button>' +
         '</div></div>';
 
     if (!allItems.length) {
