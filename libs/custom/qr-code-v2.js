@@ -14,7 +14,6 @@ var configKey = 'vietsoft_qr_config_v1';
 var activeTabKey = 'vietsoft_qr_active_tab_v1';
 var currentQrKey = 'vietsoft_qr_current_v1';
 var qrConfig = {size:300, level:'M'};
-var designMode = false;
 var currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
 var locationMap = null;
 var locationMarker = null;
@@ -113,31 +112,6 @@ var fields = {
     location: {title:'Tạo QR cho vị trí', html:'<div class="vs-location-search"><input id="vsLocationSearch" type="search" placeholder="Tìm địa chỉ hoặc địa điểm..." aria-label="Tìm địa chỉ hoặc địa điểm"><button class="vs-btn vs-btn-secondary" id="vsLocationSearchButton" type="button">Tìm</button></div><div id="vsLocationMap" class="vs-location-map"></div><div class="vs-location-selected"><span id="vsLocationAddress">Chọn một điểm trên bản đồ</span><span id="vsLocationCoords">10.787780, 106.662483</span></div><input id="vsLat" type="hidden" value="10.78778"><input id="vsLng" type="hidden" value="106.662483"><p class="vs-location-help">Nhấp vào bản đồ hoặc kéo ghim để chọn vị trí. Có thể tìm địa chỉ ở ô phía trên.</p>'}
 };
 
-
-function renderDesignLegacy() {
-    designMode = true;
-    currentType = 'design';
-    historyPage = 1;
-    historySearch = '';
-
-
-    $('#vsFields').html('<div class="vs-design-panel">' +
-        '<div class="vs-design-intro">Tùy chỉnh màu sắc, kiểu điểm và logo. QR vẫn giữ vùng nhận diện cần thiết để dễ quét.</div>' +
-        '<div class="vs-grid2">' +
-        '<div class="vs-field"><label>Màu QR</label><div class="vs-color-control"><input id="vsDesignForeground" type="color" value="#111827"><input id="vsDesignForegroundText" type="text" value="#111827" maxlength="7" aria-label="Mã màu QR"></div></div>' +
-        '<div class="vs-field"><label>Màu nền</label><div class="vs-color-control"><input id="vsDesignBackground" type="color" value="#FFFFFF"><input id="vsDesignBackgroundText" type="text" value="#FFFFFF" maxlength="7" aria-label="Mã màu nền"></div></div>' +
-        '</div>' +
-        '<div class="vs-field"><label>Kiểu điểm</label><select id="vsDesignStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option><option value="dot">Chấm</option></select></div>' +
-        '<div class="vs-field"><label>Logo <span class="vs-label-muted">(tùy chọn)</span></label><input id="vsDesignLogo" type="file" accept="image/png,image/jpeg,image/webp"><div id="vsDesignLogoName" class="vs-design-file-name">Chưa chọn logo</div></div>' +
-        '<div class="vs-design-warning" id="vsDesignWarning">Tạo QR trước, sau đó bạn có thể áp dụng thiết kế.</div>' +
-        '<div class="vs-actions"><button class="vs-btn vs-btn-primary" id="vsApplyDesign" type="button" disabled><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1L12 3z"/></svg><span>Áp dụng thiết kế</span></button><button class="vs-btn vs-btn-secondary" id="vsResetDesign" type="button">Đặt lại</button></div>' +
-        '</div>');
-    syncDesignColorControls();
-    $('#vsApplyDesign').prop('disabled', !currentData);
-    $('#vsDesignWarning').text(currentData ? '✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.' : 'Tạo QR trước, sau đó bạn có thể áp dụng thiết kế.');
-    $('#vsHistory').empty();
-    if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
-}
 
 function renderResultDesignPanel() {
     var container = $('.vs-result');
@@ -294,7 +268,6 @@ function applyDesign() {
 function renderFields(type) {
     var typeChanged = currentType !== type;
     currentType = type;
-    designMode = false;
     historySearch = '';
     historyPage = 1;
     historySort = {key:'id', direction:'desc'};
@@ -658,28 +631,6 @@ function historySortValue(item, key) {
     return index >= 0 ? String(table.row[index] == null ? '' : table.row[index]).toLowerCase() : '';
 }
 
-function ensureHistoryQrModal() {
-    if ($('#vsHistoryQrModal').length) return;
-    $('body').append('<div id="vsHistoryQrModal" class="vs-history-qr-modal" role="dialog" aria-modal="true" aria-label="QR Code preview"><div class="vs-history-qr-modal-backdrop"></div><div class="vs-history-qr-modal-content"><button type="button" class="vs-history-qr-modal-close" aria-label="Đóng">×</button><div class="vs-history-qr-modal-image"></div></div></div>');
-    $(document).on('click','.vs-history-qr-modal-backdrop,.vs-history-qr-modal-close',closeHistoryQrModal);
-    $(document).on('keydown',function(e){if(e.key==='Escape')closeHistoryQrModal();});
-}
-function openHistoryQrModal(imageUrl){if(!imageUrl)return;ensureHistoryQrModal();$('#vsHistoryQrModal .vs-history-qr-modal-image').html('<img src="'+esc(imageUrl)+'" alt="QR Code preview">');$('#vsHistoryQrModal').addClass('is-open');$('body').addClass('vs-history-qr-modal-open');}
-function openHistoryQrModalFromData(data){
-    if(!data)return;
-    ensureHistoryQrModal();
-    var container=$('<div></div>').css({position:'absolute',left:'-99999px',top:'-99999px',width:'360px',height:'360px'}).appendTo('body');
-    try{
-        var level=(window.QRCode.CorrectLevel||{}).M;
-        new window.QRCode(container[0],{text:data,width:360,height:360,correctLevel:level});
-        setTimeout(function(){
-            var canvas=container.find('canvas')[0], image=container.find('img')[0], imageUrl=canvas?canvas.toDataURL('image/png'):(image?image.src:'');
-            container.remove();
-            openHistoryQrModal(imageUrl);
-        },0);
-    }catch(e){container.remove();}
-}
-function closeHistoryQrModal(){$('#vsHistoryQrModal').removeClass('is-open');$('body').removeClass('vs-history-qr-modal-open');}
 function populateFieldsFromHistory(item) {
     if (!item || !item.type) return;
     var type = String(item.type);
