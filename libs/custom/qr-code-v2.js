@@ -65,7 +65,7 @@ function setStatus(text) { $('#vsStatus').text(text); }
 function generate() {
     var data = buildData();
     if (!data.trim()) { setStatus('Vui lòng nhập nội dung.'); return; }
-    if (currentType === 'url' && !/^https?:\/\//i.test(data)) { setStatus('URL nên bắt đầu bằng http:// hoặc https://'); return; }
+    if (currentType === 'url' && data.toLowerCase().indexOf('http://') !== 0 && data.toLowerCase().indexOf('https://') !== 0) { setStatus('URL nên bắt đầu bằng http:// hoặc https://'); return; }
 
     var size = parseInt($('#vsSize').val(),10) || 300;
     var level = $('#vsLevel').val() || 'M';
