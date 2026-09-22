@@ -196,10 +196,6 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 
 /* Client-side history QR renderer */
 .vs-modern .vs-history-qr-code{width:56px;height:56px;display:flex;align-items:center;justify-content:center;background:#fff}.vs-modern .vs-history-qr-code img,.vs-modern .vs-history-qr-code canvas{width:56px!important;height:56px!important;display:block}@media(max-width:640px){.vs-modern .vs-history-qr-code,.vs-modern .vs-history-qr-code img,.vs-modern .vs-history-qr-code canvas{width:52px!important;height:52px!important}}
-/* Large QR preview modal */
-.vs-history-qr-modal{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}.vs-history-qr-modal.is-open{display:flex}.vs-history-qr-modal-backdrop{position:absolute;inset:0;background:rgba(16,24,40,.72);backdrop-filter:blur(2px)}.vs-history-qr-modal-content{position:relative;z-index:1;width:min(460px,calc(100vw - 48px));min-height:460px;background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;padding:28px;box-sizing:border-box}.vs-history-qr-modal-close{position:absolute;right:12px;top:10px;width:36px;height:36px;border:0;border-radius:50%;background:#f2f4f7;color:#344054;font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}.vs-history-qr-modal-image{width:360px;height:360px;display:flex;align-items:center;justify-content:center;background:#fff}.vs-history-qr-modal-image img{width:360px;height:360px;max-width:100%;max-height:100%;display:block}body.vs-history-qr-modal-open{overflow:hidden}@media(max-width:640px){.vs-history-qr-modal{padding:16px}.vs-history-qr-modal-content{width:calc(100vw - 32px);min-height:calc(100vw - 32px);padding:24px}.vs-history-qr-modal-image,.vs-history-qr-modal-image img{width:min(320px,calc(100vw - 80px));height:min(320px,calc(100vw - 80px))}}
-
-
 /* Final history table sizing: QR, compact ID, readable action column. */
 .vs-modern .vs-history-table th.vs-history-id-column,
 .vs-modern .vs-history-table td.vs-history-id {
