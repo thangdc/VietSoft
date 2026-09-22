@@ -604,6 +604,19 @@ function fieldsFromHistoryData(type, data) {
             };
 
         case 'contact':
+            if (/^BEGIN:VCARD/i.test(data)) {
+                var vcardField = function(name) {
+                    var match = data.match(new RegExp('^' + name + '(?:;[^:]*)?:([^\\n\\r]*)', 'im'));
+                    return match ? match[1].replace(/\\\\n/g, '\\n').replace(/\\\\([;,])/g, '$1').replace(/\\\\\\/g, '\\') : '';
+                };
+                return {
+                    name: vcardField('FN'),
+                    phone: vcardField('TEL'),
+                    website: vcardField('URL'),
+                    email: vcardField('EMAIL'),
+                    address: vcardField('ADR')
+                };
+            }
             return {
                 name:(data.match(/N:([^;]*);/i) || [,''])[1],
                 phone:(data.match(/TEL:([^;]*);/i) || [,''])[1],
