@@ -182,8 +182,11 @@ function drawFinder(ctx, x, y, moduleSize, foreground, background) {
     ctx.fillStyle = foreground; ctx.fillRect(x + moduleSize * 2, y + moduleSize * 2, moduleSize * 3, moduleSize * 3);
 }
 
+var qrRenderSequence = 0;
+
 function renderQrImage(data, design, size, callback, onError) {
     if (!data || typeof qrcode !== 'function') return false;
+    var renderSequence = ++qrRenderSequence;
     onError = onError || function() {};
     design = normalizeDesign(design);
     var level = design.logoDataUrl ? 'H' : (qrConfig.level || 'M');
@@ -214,6 +217,7 @@ function renderQrImage(data, design, size, callback, onError) {
     drawFinder(ctx, offset + (count-7)*moduleSize, offset, moduleSize, foreground, background);
     drawFinder(ctx, offset, offset + (count-7)*moduleSize, moduleSize, foreground, background);
     var done = function(logo){
+        if (renderSequence !== qrRenderSequence) return;
         if (logo) {
             var logoSize=size*.16, lx=(size-logoSize)/2, ly=(size-logoSize)/2;
             var padding=Math.max(4, Math.round(size*.012));
