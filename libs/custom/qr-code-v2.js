@@ -1792,6 +1792,16 @@ function validateRecord(record) {
     return '';
 }
 
+function setGenerateLoading(loading) {
+    var button = document.getElementById('vsGenerate');
+    if (!button) return;
+    button.disabled = loading;
+    button.setAttribute('aria-busy', String(loading));
+    button.classList.toggle('vs-btn-loading', loading);
+    var label = button.querySelector('span');
+    if (label) label.textContent = loading ? 'Đang tạo...' : 'Tạo mã QR';
+}
+
 function generate() {
     var record = getRecord();
     var validationError = validateRecord(record);
@@ -1806,6 +1816,7 @@ function generate() {
 
     if (!data.trim()) { setStatus('Vui lòng nhập nội dung.'); return; }
     saveQrConfig();
+    setGenerateLoading(true);
     var preview = document.getElementById('vsPreview');
     preview.innerHTML = '<div class="vs-empty">Đang tạo QR...</div>';
     setStatus('');
@@ -1830,6 +1841,7 @@ function generate() {
         preview.appendChild(image);
         $('#vsDownload,#vsCopy,#vsOpen').prop('disabled',false);
         setStatus('✓ QR Code đã được tạo');
+        setGenerateLoading(false);
         saveHistory(data, record);
         saveCurrentQrState();
         track('qr_generate',{qr_type:currentType});
@@ -1853,6 +1865,7 @@ function generate() {
             $('#vsDownload,#vsCopy,#vsOpen,#vsApplyDesign').prop('disabled', true);
             $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
         }
+        setGenerateLoading(false);
         setStatus('Không thể tạo QR. Nội dung có thể quá dài hoặc không phù hợp với mức sửa lỗi hiện tại.');
     });
     if (!rendered) {
@@ -1874,6 +1887,7 @@ function generate() {
             $('#vsDownload,#vsCopy,#vsOpen,#vsApplyDesign').prop('disabled', true);
             $('#vsDesignWarning').text('Không thể khởi tạo bộ tạo QR. Vui lòng tải lại trang.');
         }
+        setGenerateLoading(false);
     }
 }
 
@@ -1998,15 +2012,3 @@ $(function(){
                 result = await window.VietSoftQrLicense.activate(entered, enteredEmail);
                 if (!result.valid) {
                     status.text('✕ ' + (result.message || 'License không hợp lệ.'));
-                    return;
-                }
-                var licenseEmail = normalizeLicenseEmail(result.payload && result.payload.email);
-                if (!licenseEmail) {
-                    window.VietSoftQrLicense.clear();
-                    status.text('✕ License chưa chứa email. Vui lòng cấp lại License Key.');
-                    return;
-                }
-                if (licenseEmail !== enteredEmail) {
-                    window.VietSoftQrLicense.clear();
-                    status.text('✕ Email không khớp với License Key.');
-                    return;
