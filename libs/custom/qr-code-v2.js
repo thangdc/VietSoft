@@ -306,6 +306,7 @@ function applyDesign() {
 
 function renderFields(type) {
     var typeChanged = currentType !== type;
+    if (typeChanged) clearHistorySelection();
     currentType = type;
     historySearch = '';
     historyPage = 1;
