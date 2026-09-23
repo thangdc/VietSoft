@@ -35,10 +35,8 @@ global.VietSoftQrHistoryRepository = {
 
     saveMany: function (newItems) {
         var items = read();
-        (newItems || []).slice().reverse().forEach(function (item) {
-            items.unshift(item);
-        });
-        return write(items.slice(0, MAX_ITEMS));
+        var incoming = (newItems || []).slice().reverse();
+        return write(incoming.concat(items).slice(0, MAX_ITEMS));
     },
 
     update: function (historyId, updater) {
