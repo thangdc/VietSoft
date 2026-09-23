@@ -76,6 +76,7 @@ async function handleLogin() {
         if (result.error) throw result.error;
         currentUser = result.data.user;
         updateAccountUi();
+        $(document).trigger('vietsoft:auth-changed', [currentUser]);
         closeModal();
         if (window.vietsoftAnalytics) window.vietsoftAnalytics.track('auth_login');
     } catch (e) {
@@ -117,6 +118,7 @@ async function handleSignup() {
         if (result.data.session) {
             currentUser = result.data.user;
             updateAccountUi();
+            $(document).trigger('vietsoft:auth-changed', [currentUser]);
             closeModal();
             setStatus('');
         } else {
@@ -159,6 +161,7 @@ async function handleLogout() {
         if (result.error) throw result.error;
         currentUser = null;
         updateAccountUi();
+        $(document).trigger('vietsoft:auth-changed', [null]);
         closeModal();
         if (window.vietsoftAnalytics) window.vietsoftAnalytics.track('auth_logout');
     } catch (e) {
@@ -184,6 +187,7 @@ async function init() {
     supabaseClient.auth.onAuthStateChange(function (event, session) {
         currentUser = session ? session.user : null;
         updateAccountUi();
+        $(document).trigger('vietsoft:auth-changed', [currentUser]);
     });
 
     $('#vsAuthLoginButton').on('click', function () { openModal('login'); });
