@@ -18,8 +18,11 @@ function showMode(mode) {
     var isLogin = mode === 'login';
     var isSignup = mode === 'signup';
     var isForgot = mode === 'forgot';
+    var isAccount = mode === 'account';
 
     $('#vsAuthLoginForm').toggle(isLogin || isSignup);
+    $('#vsAuthAccountInfo').toggle(isAccount);
+    $('#vsAuthLogout').toggle(isAccount);
     $('#vsAuthPasswordField').toggle(!isForgot);
     $('#vsAuthConfirmPasswordField').toggle(isSignup);
     $('#vsAuthSubmit').toggle(isLogin).text('Đăng nhập');
@@ -27,7 +30,8 @@ function showMode(mode) {
     $('#vsAuthForgot').toggle(isLogin);
     $('#vsAuthBackToLogin').toggle(!isLogin);
     $('#vsAuthForgotForm').toggle(isForgot);
-    $('#vsAuthTitle').text(isSignup ? 'Tạo tài khoản VietSoft' : isForgot ? 'Đặt lại mật khẩu' : 'Đăng nhập VietSoft');
+    $('#vsAuthTitle').text(isSignup ? 'Tạo tài khoản VietSoft' : isForgot ? 'Đặt lại mật khẩu' : isAccount ? 'Tài khoản VietSoft' : 'Đăng nhập VietSoft');
+    if (isAccount && currentUser) $('#vsAuthAccountEmail').text(currentUser.email || '');
     setStatus('');
 }
 
@@ -182,6 +186,7 @@ async function init() {
 
     $('#vsAuthLoginButton').on('click', function () { openModal('login'); });
     $('#vsAuthAccount').on('click', function () { openModal('account'); });
+    $('#vsAuthCreateAccount').on('click', function () { showMode('signup'); });
     $('#vsAuthModalClose').on('click', closeModal);
     $('#vsAuthModal').on('click', '[data-auth-close="true"]', closeModal);
     $('#vsAuthSubmit').on('click', handleLogin);
