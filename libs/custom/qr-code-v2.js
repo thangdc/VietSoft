@@ -473,10 +473,14 @@ function setLocation(lat, lng, address) {
     lng = parseFloat(lng);
     if (!isFinite(lat) || !isFinite(lng)) return;
 
-    $('#vsLat').val(lat.toFixed(6));
-    $('#vsLng').val(lng.toFixed(6));
-    $('#vsLocationCoords').text(lat.toFixed(6) + ', ' + lng.toFixed(6));
-    if (address) $('#vsLocationAddress').text(address);
+    var latInput = document.getElementById('vsLat');
+    var lngInput = document.getElementById('vsLng');
+    var coords = document.getElementById('vsLocationCoords');
+    var addressElement = document.getElementById('vsLocationAddress');
+    if (latInput) latInput.value = lat.toFixed(6);
+    if (lngInput) lngInput.value = lng.toFixed(6);
+    if (coords) coords.textContent = lat.toFixed(6) + ', ' + lng.toFixed(6);
+    if (address && addressElement) addressElement.textContent = address;
 
     var point = [lat, lng];
     if (locationMarker) {
@@ -498,30 +502,36 @@ function reverseGeocode(lat, lng) {
         if (!response.ok) throw new Error('Reverse geocoding failed');
         return response.json();
     }).then(function(result) {
-        if (result && result.display_name) $('#vsLocationAddress').text(result.display_name);
+        var addressElement = document.getElementById('vsLocationAddress');
+        if (result && result.display_name && addressElement) addressElement.textContent = result.display_name;
     }).catch(function(){});
 }
 
 function searchLocation() {
     var query = value('vsLocationSearch').trim();
     if (!query) return;
-    var button = $('#vsLocationSearchButton');
-    button.prop('disabled', true).text('Đang tìm...');
+    var button = document.getElementById('vsLocationSearchButton');
+    if (!button) return;
+    button.disabled = true;
+    button.textContent = 'Đang tìm...';
     var url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=vi&q=' + encodeURIComponent(query);
     fetch(url, {headers:{'Accept':'application/json'}}).then(function(response) {
         if (!response.ok) throw new Error('Search failed');
         return response.json();
     }).then(function(results) {
         if (!results.length) {
-            $('#vsLocationAddress').text('Không tìm thấy địa điểm.');
+            var addressElement = document.getElementById('vsLocationAddress');
+            if (addressElement) addressElement.textContent = 'Không tìm thấy địa điểm.';
             return;
         }
         var result = results[0];
         setLocation(result.lat, result.lon, result.display_name);
     }).catch(function() {
-        $('#vsLocationAddress').text('Không thể tìm địa điểm lúc này.');
+        var addressElement = document.getElementById('vsLocationAddress');
+        if (addressElement) addressElement.textContent = 'Không thể tìm địa điểm lúc này.';
     }).finally(function() {
-        button.prop('disabled', false).text('Tìm');
+        button.disabled = false;
+        button.textContent = 'Tìm';
     });
 }
 
@@ -548,8 +558,12 @@ function initLocationMap() {
     locationMap = L.map(element, {preferCanvas:true}).setView([10.78778, 106.662483], 13);
     addLocationTileLayer();
     locationMap.on('click', function(e) { setLocation(e.latlng.lat, e.latlng.lng); reverseGeocode(e.latlng.lat, e.latlng.lng); });
-    $('#vsLocationSearchButton').on('click', searchLocation);
-    $('#vsLocationSearch').on('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); searchLocation(); } });
+    var searchButton = document.getElementById('vsLocationSearchButton');
+    var searchInput = document.getElementById('vsLocationSearch');
+    if (searchButton) searchButton.addEventListener('click', searchLocation);
+    if (searchInput) searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); searchLocation(); }
+    });
     function refreshLocationMap() {
         if (!locationMap) return;
         locationMap.invalidateSize(true);
