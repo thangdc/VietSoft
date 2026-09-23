@@ -19,7 +19,7 @@
       </header>
 
       <section class="grid gap-6 lg:grid-cols-[1.35fr_.65fr]">
-        <div class="rounded-vs-lg border border-vs-border bg-vs-surface p-6 shadow-vs-card">
+        <div data-ui-card>
           <div class="mb-6 flex items-start justify-between gap-4">
             <div>
               <p class="text-xs font-semibold uppercase tracking-wider text-vs-muted">Generator preview</p>
@@ -32,29 +32,29 @@
 
           <label class="block text-sm font-medium" for="content">Content</label>
           <div class="mt-2 flex gap-2">
-            <input id="content" class="min-w-0 flex-1 rounded-vs-md border border-vs-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100" value="https://vietsofts.thangdc.com">
-            <button id="previewButton" class="inline-flex shrink-0 items-center justify-center gap-2 rounded-vs-md bg-vs-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-vs-brand-dark active:translate-y-px">
+            <input id="content" value="https://vietsofts.thangdc.com">
+            <button id="previewButton" data-ui-button data-variant="primary" class="shrink-0">
               <i data-lucide="qr-code" class="size-4"></i><span>Generate</span>
             </button>
           </div>
 
           <div class="mt-5 grid gap-3 sm:grid-cols-3">
-            <button class="flex items-center gap-3 rounded-vs-md border border-vs-border bg-white p-3 text-left transition hover:border-blue-200 hover:bg-blue-50/40">
+            <button data-ui-button data-variant="secondary" class="text-left">
               <span class="grid size-9 place-items-center rounded-lg bg-blue-50 text-blue-600"><i data-lucide="link" class="size-4"></i></span>
               <span><strong class="block text-sm">URL</strong><small class="text-xs text-vs-muted">Website</small></span>
             </button>
-            <button class="flex items-center gap-3 rounded-vs-md border border-vs-border bg-white p-3 text-left transition hover:border-blue-200 hover:bg-blue-50/40">
+            <button data-ui-button data-variant="secondary" class="text-left">
               <span class="grid size-9 place-items-center rounded-lg bg-blue-50 text-blue-600"><i data-lucide="wifi" class="size-4"></i></span>
               <span><strong class="block text-sm">Wi-Fi</strong><small class="text-xs text-vs-muted">Network</small></span>
             </button>
-            <button class="flex items-center gap-3 rounded-vs-md border border-vs-border bg-white p-3 text-left transition hover:border-blue-200 hover:bg-blue-50/40">
+            <button data-ui-button data-variant="secondary" class="text-left">
               <span class="grid size-9 place-items-center rounded-lg bg-blue-50 text-blue-600"><i data-lucide="contact" class="size-4"></i></span>
               <span><strong class="block text-sm">Contact</strong><small class="text-xs text-vs-muted">vCard</small></span>
             </button>
           </div>
         </div>
 
-        <aside class="rounded-vs-lg border border-vs-border bg-vs-surface p-6 shadow-vs-card">
+        <aside data-ui-card>
           <p class="text-xs font-semibold uppercase tracking-wider text-vs-muted">Result</p>
           <div class="mt-4 flex aspect-square items-center justify-center rounded-vs-md border border-dashed border-slate-300 bg-slate-50">
             <div class="text-center">
@@ -64,26 +64,30 @@
             </div>
           </div>
           <div class="mt-4 grid grid-cols-2 gap-2">
-            <button class="inline-flex items-center justify-center gap-2 rounded-vs-md border border-vs-border px-3 py-2 text-sm font-medium hover:bg-slate-50"><i data-lucide="download" class="size-4"></i>Download</button>
-            <button class="inline-flex items-center justify-center gap-2 rounded-vs-md border border-vs-border px-3 py-2 text-sm font-medium hover:bg-slate-50"><i data-lucide="copy" class="size-4"></i>Copy</button>
+            <button data-ui-button data-variant="secondary">
+              <i data-lucide="download" class="size-4"></i><span>Download</span>
+            </button>
+            <button data-ui-button data-variant="secondary">
+              <i data-lucide="copy" class="size-4"></i><span>Copy</span>
+            </button>
           </div>
         </aside>
       </section>
 
-      <section class="mt-6 rounded-vs-lg border border-vs-border bg-vs-surface p-6 shadow-vs-card">
+      <section data-ui-card class="mt-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 class="text-base font-semibold">Base component states</h2>
             <p class="mt-1 text-sm text-vs-muted">Shared visual language for buttons, status, fields and feedback.</p>
           </div>
-          <span id="status" class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
-            <i data-lucide="circle-check" class="size-4"></i>Ready
+          <span id="status">
+            <i data-lucide="circle-check" class="size-4"></i><span>Ready</span>
           </span>
         </div>
         <div class="mt-5 flex flex-wrap gap-3">
-          <button class="inline-flex items-center gap-2 rounded-vs-md bg-vs-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-vs-brand-dark"><i data-lucide="check" class="size-4"></i>Success action</button>
-          <button class="inline-flex items-center gap-2 rounded-vs-md border border-vs-border px-4 py-2.5 text-sm font-medium hover:bg-slate-50"><i data-lucide="x" class="size-4"></i>Secondary</button>
-          <button class="inline-flex items-center gap-2 rounded-vs-md border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 hover:bg-red-100"><i data-lucide="trash-2" class="size-4"></i>Destructive</button>
+          <button data-ui-button data-variant="primary"><i data-lucide="check" class="size-4"></i><span>Success action</span></button>
+          <button data-ui-button data-variant="secondary"><i data-lucide="x" class="size-4"></i><span>Secondary</span></button>
+          <button data-ui-button data-variant="danger"><i data-lucide="trash-2" class="size-4"></i><span>Destructive</span></button>
         </div>
       </section>
 
