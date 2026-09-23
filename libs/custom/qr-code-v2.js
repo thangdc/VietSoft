@@ -509,17 +509,29 @@ function initLocationMap() {
     }
     setTimeout(refreshLocationMap,100); setTimeout(refreshLocationMap,500); setTimeout(refreshLocationMap,1000);
 }
+function checked(id) {
+    var element = document.getElementById(id);
+    return !!(element && element.checked);
+}
+
+function selectedText(id) {
+    var element = document.getElementById(id);
+    if (!element || element.tagName !== 'SELECT') return '';
+    var option = element.options[element.selectedIndex];
+    return option ? option.text : '';
+}
+
 function getRecord() {
     switch(currentType) {
         case 'url': return {fields:{url:value('vsUrl')}};
         case 'text': return {fields:{text:value('vsText')}};
         case 'contact': return {fields:{name:value('vsName'),phone:value('vsPhone'),website:value('vsWebsite'),email:value('vsEmail'),address:value('vsAddress')}};
-        case 'wifi': return {fields:{ssid:value('vsSsid'),password:value('vsWifiPass'),auth:value('vsWifiAuth'),hidden:$('#vsHidden').prop('checked')}};
+        case 'wifi': return {fields:{ssid:value('vsSsid'),password:value('vsWifiPass'),auth:value('vsWifiAuth'),hidden:checked('vsHidden')}};
         case 'email': return {fields:{email:value('vsEmailTo'),subject:value('vsEmailSubject'),body:value('vsEmailBody')}};
         case 'phone': return {fields:{phone:value('vsPhoneNumber')}};
         case 'sms': return {fields:{phone:value('vsSmsPhone'),body:value('vsSmsBody')}};
         case 'location': return {fields:{latitude:value('vsLat'),longitude:value('vsLng')}};
-        case 'payment': return {fields:{bankBin:value('vsPaymentBank'),bankName:$('#vsPaymentBank option:selected').text(),account:value('vsPaymentAccount'),accountName:value('vsPaymentAccountName'),amount:value('vsPaymentAmount'),description:value('vsPaymentDescription'),lockAmount:$('#vsPaymentLockAmount').prop('checked')}};
+        case 'payment': return {fields:{bankBin:value('vsPaymentBank'),bankName:selectedText('vsPaymentBank'),account:value('vsPaymentAccount'),accountName:value('vsPaymentAccountName'),amount:value('vsPaymentAmount'),description:value('vsPaymentDescription'),lockAmount:checked('vsPaymentLockAmount')}};
     }
     return {fields:{}};
 }
@@ -1998,9 +2010,3 @@ $(function(){
                     window.VietSoftQrLicense.clear();
                     status.text('✕ Email không khớp với License Key.');
                     return;
-                }
-                track('qr_pro_license_activated', {license_id: result.payload && result.payload.licenseId ? result.payload.licenseId : ''});
-            }
-            var action = pendingProAction;
-            pendingProAction = null;
-            closeProModal();
