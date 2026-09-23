@@ -554,3 +554,16 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   margin-right: 8px !important;
   box-sizing: border-box !important;
 }
+
+
+/* Highlight the history row currently loaded into the QR editor. */
+.vs-modern .vs-history-table tbody tr.vs-history-row.is-selected td{
+  background:#eff6ff!important;
+  box-shadow:inset 3px 0 0 #2563eb;
+}
+.vs-modern .vs-history-table tbody tr.vs-history-row.is-selected td:first-child{
+  box-shadow:inset 3px 0 0 #2563eb;
+}
+.vs-modern .vs-history-table tbody tr.vs-history-row.is-selected:hover td{
+  background:#eaf2ff!important;
+}
