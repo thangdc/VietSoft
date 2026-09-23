@@ -70,3 +70,42 @@
 .vs-modern .vs-plan-card li em{margin-left:auto;color:#98a2b3;font-size:10px;font-style:normal;white-space:nowrap}
 .vs-modern .vs-pro-plan-note{margin-top:14px;color:#98a2b3;font-size:11px;line-height:1.45}
 @media(max-width:640px){.vs-modern .vs-pro-plan-grid{grid-template-columns:1fr}.vs-modern .vs-pro-plan-intro{font-size:12px}}
+
+
+/* Excel import preview */
+.vs-modern.vs-import-preview-open{overflow:hidden}
+.vs-modern .vs-import-preview-modal{display:none;position:fixed;inset:0;z-index:10001}
+.vs-modern .vs-import-preview-modal.is-open{display:flex;align-items:center;justify-content:center;padding:20px}
+.vs-modern .vs-import-preview-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.48)}
+.vs-modern .vs-import-preview-card{position:relative;width:min(860px,100%);max-height:calc(100vh - 40px);display:flex;flex-direction:column;padding:28px;border:1px solid #e4e7ec;border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.22)}
+.vs-modern .vs-import-preview-close{position:absolute;top:12px;right:14px;width:34px;height:34px;border:0;border-radius:50%;background:#f2f4f7;color:#475467;font-size:24px;line-height:1;cursor:pointer}
+.vs-modern .vs-import-preview-kicker{margin-bottom:7px;color:#175cd3;font-size:11px;font-weight:800;letter-spacing:.1em}
+.vs-modern .vs-import-preview-card h2{margin:0 40px 7px 0;color:#101828;font-size:23px;line-height:1.25}
+.vs-modern .vs-import-preview-intro{margin:0 0 18px;color:#667085;font-size:13px;line-height:1.5}
+.vs-modern .vs-import-preview-table-wrap{min-height:0;overflow:auto;border:1px solid #eaecf0;border-radius:11px}
+.vs-modern .vs-import-preview-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+.vs-modern .vs-import-preview-table th{position:sticky;top:0;background:#f8fafc;color:#475467;font-size:11px;font-weight:700;text-align:left;padding:10px;border-bottom:1px solid #eaecf0;z-index:1}
+.vs-modern .vs-import-preview-table td{padding:10px;border-bottom:1px solid #f2f4f7;color:#344054;vertical-align:middle}
+.vs-modern .vs-import-preview-table tr:last-child td{border-bottom:0}
+.vs-modern .vs-import-preview-table th:nth-child(1),.vs-modern .vs-import-preview-table td:nth-child(1){width:58px;text-align:center}
+.vs-modern .vs-import-preview-table th:nth-child(2),.vs-modern .vs-import-preview-table td:nth-child(2){width:125px}
+.vs-modern .vs-import-preview-table th:nth-child(4),.vs-modern .vs-import-preview-table td:nth-child(4){width:150px}
+.vs-modern .vs-import-preview-table td:nth-child(3){white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vs-modern .vs-import-preview-table tr.is-valid td:last-child{color:#027a48}
+.vs-modern .vs-import-preview-table tr.is-skipped{background:#fffcf5}
+.vs-modern .vs-import-preview-table tr.is-skipped td:last-child{color:#b54708}
+.vs-modern .vs-import-preview-status{font-weight:600}
+.vs-modern .vs-import-preview-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:16px}
+.vs-modern .vs-import-preview-footer>span{color:#98a2b3;font-size:11px}
+.vs-modern .vs-import-preview-actions{display:flex;gap:8px;flex:0 0 auto}
+.vs-modern .vs-import-preview-actions .vs-btn{margin:0}
+@media(max-width:640px){
+  .vs-modern .vs-import-preview-modal.is-open{padding:10px}
+  .vs-modern .vs-import-preview-card{max-height:calc(100vh - 20px);padding:22px 14px;border-radius:15px}
+  .vs-modern .vs-import-preview-card h2{font-size:20px}
+  .vs-modern .vs-import-preview-table th:nth-child(2),.vs-modern .vs-import-preview-table td:nth-child(2){width:95px}
+  .vs-modern .vs-import-preview-table th:nth-child(4),.vs-modern .vs-import-preview-table td:nth-child(4){width:118px}
+  .vs-modern .vs-import-preview-footer{align-items:stretch;flex-direction:column}
+  .vs-modern .vs-import-preview-actions{width:100%}
+  .vs-modern .vs-import-preview-actions .vs-btn{flex:1}
+}
