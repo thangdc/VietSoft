@@ -7,6 +7,7 @@ import { inputClass } from '../ui/input';
 import { selectClass } from '../ui/select';
 import { textareaClass } from '../ui/textarea';
 import { createTabs } from '../ui/tabs';
+import { qrTypes } from '../features/qr-generator';
 import './styles.css';
 
 createIcons({ icons });
@@ -53,17 +54,7 @@ if (status) {
 if (qrTypeTabs && selectedQrType) {
   createTabs(
     qrTypeTabs,
-    [
-      { id: 'url', label: 'URL', icon: 'link' },
-      { id: 'text', label: 'Text', icon: 'file-text' },
-      { id: 'contact', label: 'Contact', icon: 'contact' },
-      { id: 'wifi', label: 'Wi-Fi', icon: 'wifi' },
-      { id: 'email', label: 'Email', icon: 'mail' },
-      { id: 'phone', label: 'Phone', icon: 'phone' },
-      { id: 'sms', label: 'SMS', icon: 'message-square' },
-      { id: 'location', label: 'Location', icon: 'map-pin' },
-      { id: 'payment', label: 'Payment', icon: 'wallet-cards' },
-    ],
+    qrTypes.map(({ id, label, icon }) => ({ id, label, icon })),
     {
       activeId: 'url',
       onChange: (id) => {
