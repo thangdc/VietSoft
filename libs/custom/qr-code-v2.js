@@ -917,6 +917,11 @@ function syncDesignFields(design) {
 }
 function showHistoryQrResult(item) {
     if (!item || !item.data) return;
+    var historyId = String(item.historyId || '');
+    $('.vs-history-table tbody tr.vs-history-row').removeClass('is-selected');
+    if (historyId) {
+        $('.vs-history-table tbody tr.vs-history-row[data-history-id="' + historyId.replace(/"/g, '\\"') + '"]').addClass('is-selected');
+    }
     var design = normalizeDesign(item.design);
     currentHistoryId = String(item.historyId || '');
     populateFieldsFromHistory(item);
@@ -949,7 +954,7 @@ $(document).on('click','.vs-history-qr-trigger',function(e){
     }
 });
 $(document).on('click','.vs-history-row',function(e){
-    if ($(e.target).closest('.vs-history-delete,.vs-history-qr-trigger,button,a,input,select,textarea').length) return;
+    if ($(e.target).closest('.vs-history-delete,button,input,select,textarea').length) return;
     var historyId=$(this).attr('data-history-id')||'';
     var items=getHistory();
     for(var i=0;i<items.length;i++) {
@@ -1021,7 +1026,7 @@ function renderHistory() {
     pageItems.forEach(function(item, index) {
         var absoluteIndex = start + index;
         var table = getHistoryTable(item, absoluteIndex + 1);
-        html += '<tr class="vs-history-row" data-history-id="' + esc(item.historyId) + '" title="Nhấn để chỉnh sửa QR này">';
+        html += '<tr class="vs-history-row' + (String(item.historyId || '') === String(currentHistoryId || '') ? ' is-selected' : '') + '" data-history-id="' + esc(item.historyId) + '" title="Nhấn để chỉnh sửa QR này">';
         html += '<td class="vs-history-select"><input type="checkbox" class="vs-history-select-item" data-history-id="' + esc(item.historyId) + '"' + (selectedHistoryIds[String(item.historyId || '')] ? ' checked' : '') + ' aria-label="Chọn QR"></td>';
         html += '<td class="vs-history-qr"><a href="#" class="vs-history-qr-trigger" data-history-id="' + esc(item.historyId) + '" title="Xem QR Code"><div class="vs-history-qr-code" data-history-id="' + esc(item.historyId) + '" aria-label="QR Code"></div></a></td>';
         table.row.forEach(function(value, cellIndex) { html += '<td class="' + (cellIndex === 0 ? 'vs-history-id' : '') + '">' + esc(value) + '</td>'; });
