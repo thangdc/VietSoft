@@ -55,7 +55,7 @@ async function upsert(items) {
     return { ok: true, count: rows.length };
 }
 
-async function pullUpdatedSince(updatedAt) {
+async function pullUpdatedSince(updatedAt, fullSync) {
     var user = await getAuthenticatedUser();
     if (!user) return { ok: false, reason: 'not-authenticated', items: [] };
 
@@ -66,7 +66,7 @@ async function pullUpdatedSince(updatedAt) {
         .eq('user_id', user.id)
         .order('updated_at', { ascending: true });
 
-    if (updatedAt) query = query.gt('updated_at', updatedAt);
+    if (updatedAt && !fullSync) query = query.gt('updated_at', updatedAt);
 
     var result = await query;
     if (result.error) return { ok: false, reason: result.error.message, items: [] };
