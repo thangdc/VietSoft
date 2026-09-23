@@ -1710,21 +1710,20 @@ $(function(){
         var historyId = $(this).attr('data-history-delete-id');
         if (confirm('Xóa bản ghi này?')) deleteHistoryItem(historyId);
     });
-    $('#vsHistory').on('click', '.vs-history-select-item', function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
+    // Let the browser own checkbox state; only stop row/label click propagation.
+    $('#vsHistory').on('click', '.vs-history-select-item,#vsHistorySelectPage,#vsHistorySelectAllPage', function(e){
+        e.stopPropagation();
+    });
+    $('#vsHistory').on('change', '.vs-history-select-item', function(){
         var checkbox = $(this);
         var id = String(checkbox.attr('data-history-id') || '');
         if (!id) return;
-        checkbox.prop('checked', !checkbox.prop('checked'));
         if (checkbox.prop('checked')) selectedHistoryIds[id] = true;
         else delete selectedHistoryIds[id];
         updateHistorySelectionUi();
     });
-    $('#vsHistory').on('click', '#vsHistorySelectPage,#vsHistorySelectAllPage', function(e){
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        var checked = !$(this).prop('checked');
+    $('#vsHistory').on('change', '#vsHistorySelectPage,#vsHistorySelectAllPage', function(){
+        var checked = $(this).prop('checked');
         $('#vsHistory .vs-history-select-item').each(function(){
             var id = String($(this).attr('data-history-id') || '');
             if (!id) return;
