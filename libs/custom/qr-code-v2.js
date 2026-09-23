@@ -1909,44 +1909,61 @@ $(function(){
         $('body').removeClass('vs-pro-modal-open');
     }
     async function continueProAction() {
-        var result = await window.VietSoftQrLicense.getActive();
-        if (!result.valid) {
-            var enteredEmail = normalizeLicenseEmail($('#vsProLicenseEmail').val());
-            var entered = $('#vsProLicenseInput').val().trim();
-            if (!enteredEmail) {
-                $('#vsProLicenseStatus').text('Vui lòng nhập email mua License.');
-                return;
-            }
-            if (!entered) {
-                $('#vsProLicenseStatus').text('Vui lòng nhập License Key.');
-                return;
-            }
-            result = await window.VietSoftQrLicense.activate(entered, enteredEmail);
+        var button = $('#vsProModalContinue');
+        var input = $('#vsProLicenseInput');
+        var email = $('#vsProLicenseEmail');
+        var status = $('#vsProLicenseStatus');
+        var originalText = button.text();
+
+        button.prop('disabled', true).text('Đang xử lý...');
+        input.prop('disabled', true);
+        email.prop('disabled', true);
+
+        try {
+            var result = await window.VietSoftQrLicense.getActive();
             if (!result.valid) {
-                $('#vsProLicenseStatus').text('✕ ' + (result.message || 'License không hợp lệ.'));
-                return;
+                var enteredEmail = normalizeLicenseEmail(email.val());
+                var entered = input.val().trim();
+                if (!enteredEmail) {
+                    status.text('Vui lòng nhập email mua License.');
+                    return;
+                }
+                if (!entered) {
+                    status.text('Vui lòng nhập License Key.');
+                    return;
+                }
+                status.text('Đang kích hoạt License...');
+                result = await window.VietSoftQrLicense.activate(entered, enteredEmail);
+                if (!result.valid) {
+                    status.text('✕ ' + (result.message || 'License không hợp lệ.'));
+                    return;
+                }
+                var licenseEmail = normalizeLicenseEmail(result.payload && result.payload.email);
+                if (!licenseEmail) {
+                    window.VietSoftQrLicense.clear();
+                    status.text('✕ License chưa chứa email. Vui lòng cấp lại License Key.');
+                    return;
+                }
+                if (licenseEmail !== enteredEmail) {
+                    window.VietSoftQrLicense.clear();
+                    status.text('✕ Email không khớp với License Key.');
+                    return;
+                }
+                track('qr_pro_license_activated', {license_id: result.payload && result.payload.licenseId ? result.payload.licenseId : ''});
             }
-            var licenseEmail = normalizeLicenseEmail(result.payload && result.payload.email);
-            if (!licenseEmail) {
-                window.VietSoftQrLicense.clear();
-                $('#vsProLicenseStatus').text('✕ License chưa chứa email. Vui lòng cấp lại License Key.');
-                return;
-            }
-            if (licenseEmail !== enteredEmail) {
-                window.VietSoftQrLicense.clear();
-                $('#vsProLicenseStatus').text('✕ Email không khớp với License Key.');
-                return;
-            }
-            track('qr_pro_license_activated', {license_id: result.payload && result.payload.licenseId ? result.payload.licenseId : ''});
+            var action = pendingProAction;
+            pendingProAction = null;
+            closeProModal();
+            if (action === 'import') $('#vsImportExcelInput').trigger('click');
+            else if (action === 'export-excel') exportExcel();
+            else if (action === 'export-zip') downloadHistoryQrs();
+            else if (action === 'print') printHistoryQrs();
+            else if (action === 'download') downloadHistoryQrs();
+        } finally {
+            button.prop('disabled', false).text(originalText);
+            input.prop('disabled', false);
+            email.prop('disabled', false);
         }
-        var action = pendingProAction;
-        pendingProAction = null;
-        closeProModal();
-        if (action === 'import') $('#vsImportExcelInput').trigger('click');
-        else if (action === 'export-excel') exportExcel();
-        else if (action === 'export-zip') downloadHistoryQrs();
-        else if (action === 'print') printHistoryQrs();
-        else if (action === 'download') downloadHistoryQrs();
     }
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
