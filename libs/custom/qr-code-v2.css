@@ -383,3 +383,78 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   display: inline-flex;
   align-items: center;
 }
+
+
+/* Compact QR customization: keep design controls collapsed until requested. */
+.vs-modern .vs-result-design{
+  margin:16px 0 0;
+  padding:0;
+  border:1px solid #e4e7ec;
+  border-radius:12px;
+  background:#fff;
+  overflow:hidden;
+}
+.vs-modern .vs-result-design-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0;
+  padding:13px 14px;
+}
+.vs-modern .vs-result-design-header h3{
+  margin:2px 0 0;
+  font-size:14px;
+  font-weight:700;
+  color:#101828;
+}
+.vs-modern .vs-result-design-summary{
+  margin:3px 0 0;
+  color:#667085;
+  font-size:11px;
+}
+.vs-modern .vs-result-design-kicker{
+  font-size:10px;
+  letter-spacing:.05em;
+}
+.vs-modern .vs-result-design-hint{display:none}
+.vs-modern .vs-result-design-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:34px;
+  padding:7px 11px;
+  border:1px solid #d0d5dd;
+  border-radius:8px;
+  background:#fff;
+  color:#344054;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.vs-modern .vs-result-design-toggle:hover{
+  background:#f8fafc;
+  border-color:#b8c0cc;
+}
+.vs-modern .vs-result-design-chevron{
+  font-size:15px;
+  line-height:1;
+  transition:transform .15s ease;
+}
+.vs-modern .vs-result-design-toggle[aria-expanded="true"] .vs-result-design-chevron{
+  transform:rotate(180deg);
+}
+.vs-modern .vs-result-design-body{
+  display:none;
+  padding:14px;
+  border-top:1px solid #eaecf0;
+  background:#f8fafc;
+}
+.vs-modern .vs-result-design-body .vs-field{margin-bottom:12px}
+.vs-modern .vs-result-design-body .vs-actions{margin-top:12px}
+.vs-modern .vs-result-design-body .vs-design-warning{margin-top:4px}
+@media(max-width:700px){
+  .vs-modern .vs-result-design-header{padding:12px}
+  .vs-modern .vs-result-design-toggle{min-height:32px;padding:6px 9px}
+}
