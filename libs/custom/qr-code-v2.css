@@ -535,3 +535,5 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-history-select-all input { position:relative; z-index:3; cursor:pointer; pointer-events:auto; }
 .vs-modern .vs-history-select-column,
 .vs-modern .vs-history-select { position:relative; z-index:2; }
+
+.vs-modern .vs-history-export .vs-pro-feature{white-space:nowrap}
