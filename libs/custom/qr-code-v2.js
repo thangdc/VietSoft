@@ -1389,11 +1389,21 @@ function importExcel(file) {
 
 
 function printHistoryQrs() {
-    var items = getHistoryViewItems();
+    var type = String(currentType || '').toLowerCase().trim();
+    var allItems = getHistory().filter(function(item) {
+        return String(item.type || '').toLowerCase().trim() === type && item.data;
+    });
+    var selectedItems = getSelectedHistoryItems(allItems);
+    var items = selectedItems.length ? selectedItems : getHistoryViewItems();
+
     if (!items.length) {
         $('#vsExportStatus').text('Chưa có mã QR để in.');
         return;
     }
+
+    var button = $('#vsPrintHistory');
+    button.prop('disabled', true);
+    $('#vsExportStatus').text('Đang chuẩn bị ' + items.length + ' mã QR để in...');
 
     var frame = document.getElementById('vsQrPrintFrame');
     if (!frame) {
@@ -1412,34 +1422,41 @@ function printHistoryQrs() {
     }
 
     var qrCells = [];
-    var remaining = items.length;
+    var renderNext = function(index) {
+        if (index >= items.length) {
+            var printDocument = frame.contentDocument || frame.contentWindow.document;
+            printDocument.open();
+            printDocument.write('<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>In ' + items.length + ' mã QR</title>' +
+                '<style>' +
+                '@page{margin:12mm}' +
+                'html,body{margin:0;padding:0;background:#fff}' +
+                'body{font-family:Arial,sans-serif}' +
+                '.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14mm;align-items:start}' +
+                '.qr-cell{display:flex;align-items:center;justify-content:center;break-inside:avoid;page-break-inside:avoid}' +
+                '.qr-cell img{display:block;width:55mm;height:55mm;object-fit:contain}' +
+                '</style></head><body><div class="qr-grid">' + qrCells.join('') + '</div></body></html>');
+            printDocument.close();
 
-    items.forEach(function(item, index) {
+            $('#vsExportStatus').text('✓ Đã chuẩn bị ' + items.length + ' mã QR. Mở hộp thoại in...');
+            setTimeout(function() {
+                frame.contentWindow.focus();
+                frame.contentWindow.print();
+                button.prop('disabled', false);
+            }, 250);
+            return;
+        }
+
+        var item = items[index];
         renderQrImage(String(item.data || ''), normalizeDesign(item.design), 320, function(imageUrl) {
             qrCells[index] = '<div class="qr-cell"><img src="' + imageUrl.replace(/"/g, '&quot;') + '" alt="QR Code"></div>';
-            remaining--;
-
-            if (remaining === 0) {
-                var printDocument = frame.contentDocument || frame.contentWindow.document;
-                printDocument.open();
-                printDocument.write('<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>In mã QR</title>' +
-                    '<style>' +
-                    '@page{margin:12mm}' +
-                    'html,body{margin:0;padding:0;background:#fff}' +
-                    'body{font-family:Arial,sans-serif}' +
-                    '.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14mm;align-items:start}' +
-                    '.qr-cell{display:flex;align-items:center;justify-content:center;break-inside:avoid;page-break-inside:avoid}' +
-                    '.qr-cell img{display:block;width:55mm;height:55mm;object-fit:contain}' +
-                    '</style></head><body><div class="qr-grid">' + qrCells.join('') + '</div></body></html>');
-                printDocument.close();
-
-                setTimeout(function() {
-                    frame.contentWindow.focus();
-                    frame.contentWindow.print();
-                }, 250);
-            }
+            renderNext(index + 1);
+        }, function() {
+            qrCells[index] = '';
+            renderNext(index + 1);
         });
-    });
+    };
+
+    renderNext(0);
 }
  
 function setStatus(text) { $('#vsStatus').text(text); }
