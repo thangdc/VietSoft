@@ -1,0 +1,3 @@
+# VietSoft QR Pro license signing key
+# Never commit the private Ed25519 key.
+vietsoft-qr-license-private.pem
