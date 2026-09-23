@@ -1234,12 +1234,32 @@ function ensureImportPreviewModal() {
             '<div class="vs-import-preview-kicker">IMPORT EXCEL</div>' +
             '<h2 id="vsImportPreviewTitle">Xem trước dữ liệu QR</h2>' +
             '<p class="vs-import-preview-intro" id="vsImportPreviewSummary"></p>' +
-            '<div class="vs-import-preview-table-wrap"><table class="vs-import-preview-table"><thead><tr><th>Dòng</th><th>Loại QR</th><th>Nội dung</th><th>Trạng thái</th></tr></thead><tbody id="vsImportPreviewRows"></tbody></table></div>' +
+            '<div class="vs-import-preview-table-wrap"><table class="vs-import-preview-table"><thead><tr><th>QR</th><th>Dòng</th><th>Loại QR</th><th>Nội dung</th><th>Trạng thái</th></tr></thead><tbody id="vsImportPreviewRows"></tbody></table></div>' +
             '<div class="vs-import-preview-footer"><span id="vsImportPreviewHint"></span><div class="vs-import-preview-actions"><button class="vs-btn vs-btn-secondary" id="vsImportPreviewCancel" type="button">Hủy</button><button class="vs-btn vs-btn-primary" id="vsImportPreviewConfirm" type="button">Nhập dữ liệu</button></div></div>' +
         '</div></div>';
     $('body').append(html);
     $('#vsImportPreviewClose,#vsImportPreviewCancel').on('click', closeImportPreview);
     $('#vsImportPreviewModal').on('click','[data-import-preview-close="true"]', closeImportPreview);
+}
+
+function renderImportPreviewQrs(result) {
+    var candidates = result.preview.filter(function(item) { return item.valid && item.data; }).slice(0, 30);
+    var index = 0;
+
+    function next() {
+        if (index >= candidates.length) return;
+        var item = candidates[index++];
+        renderQrImage(item.data, normalizeDesign({}), 64, function(imageUrl) {
+            var target = $('[data-import-preview-qr="' + item.rowNumber + '"]');
+            if (target.length) target.empty().append($('<img>', {src:imageUrl, alt:'QR Code preview'}));
+            next();
+        }, function() {
+            var target = $('[data-import-preview-qr="' + item.rowNumber + '"]');
+            if (target.length) target.text('—');
+            next();
+        });
+    }
+    next();
 }
 
 function showImportPreview(result) {
@@ -1250,7 +1270,8 @@ function showImportPreview(result) {
     $('#vsImportPreviewSummary').text('Đã đọc ' + total + ' dòng dữ liệu: ' + validCount + ' bản ghi sẽ được nhập, ' + skippedCount + ' dòng sẽ bỏ qua.');
     var rowsHtml = '';
     result.preview.slice(0, 30).forEach(function(item) {
-        rowsHtml += '<tr class="' + (item.valid ? 'is-valid' : 'is-skipped') + '">' +
+        rowsHtml += '<tr class="' + (item.valid ? 'is-valid' : 'is-skipped') + '" data-import-preview-row="' + esc(item.rowNumber) + '">' +
+            '<td><div class="vs-import-preview-qr" data-import-preview-qr="' + esc(item.rowNumber) + '">' + (item.valid ? '<span>…</span>' : '—') + '</div></td>' +
             '<td>' + esc(item.rowNumber) + '</td>' +
             '<td>' + esc(item.typeName) + '</td>' +
             '<td>' + esc(item.label) + '</td>' +
@@ -1262,6 +1283,7 @@ function showImportPreview(result) {
     $('#vsImportPreviewConfirm').prop('disabled', !validCount).text(validCount ? 'Nhập ' + validCount + ' bản ghi' : 'Không có dữ liệu hợp lệ');
     $('#vsImportPreviewModal').addClass('is-open').attr('aria-hidden','false');
     $('body').addClass('vs-import-preview-open');
+    renderImportPreviewQrs(result);
 }
 
 function commitImportedRecords(result) {

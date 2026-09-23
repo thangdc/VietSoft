@@ -109,3 +109,8 @@
   .vs-modern .vs-import-preview-actions{width:100%}
   .vs-modern .vs-import-preview-actions .vs-btn{flex:1}
 }
+
+.vs-modern .vs-import-preview-table th:nth-child(1),.vs-modern .vs-import-preview-table td:nth-child(1){width:58px;text-align:center}
+.vs-modern .vs-import-preview-qr{width:48px;height:48px;display:flex;align-items:center;justify-content:center;margin:auto;color:#98a2b3;font-size:16px}
+.vs-modern .vs-import-preview-qr img{display:block;width:44px;height:44px;object-fit:contain}
+.vs-modern .vs-import-preview-table th:nth-child(2),.vs-modern .vs-import-preview-table td:nth-child(2){width:52px;text-align:center}
