@@ -17,7 +17,7 @@ function getState() {
 }
 
 function getPullWindow(state) {
-    if (!state.lastSyncAt) return { updatedAt: '', fullSync: true };
+    if (!state.lastSyncAt || state.forceFullSync) return { updatedAt: '', fullSync: true };
 
     var lastSyncTime = toTime(state.lastSyncAt);
     var fullSync = !state.lastFullSyncAt || (Date.now() - toTime(state.lastFullSyncAt)) >= FULL_SYNC_INTERVAL_MS;
@@ -137,6 +137,14 @@ async function syncNow(reason) {
     syncing = true;
     try {
         var state = getState();
+        var user = await global.VietSoftQrCloudHistory.getAuthenticatedUser();
+        if (!user) { emitStatus('hidden'); return {ok:false, reason:'not-authenticated'}; }
+        if (state.userId && state.userId !== user.id) {
+            state = { userId: user.id, forceFullSync: true };
+        } else if (!state.userId) {
+            state.userId = user.id;
+            state.forceFullSync = true;
+        }
         var pullWindow = getPullWindow(state);
         var pulled = await global.VietSoftQrCloudHistory.pullUpdatedSince(pullWindow.updatedAt, pullWindow.fullSync);
         if (!pulled.ok) { emitStatus('error', 'Đồng bộ thất bại'); return pulled;}
@@ -156,6 +164,8 @@ async function syncNow(reason) {
 
         var syncedAt = new Date().toISOString();
         saveState({
+            userId: user.id,
+            forceFullSync: false,
             lastSyncAt: syncedAt,
             lastFullSyncAt: pullWindow.fullSync ? syncedAt : (state.lastFullSyncAt || syncedAt),
             lastReason: reason || 'manual',
@@ -166,6 +176,7 @@ async function syncNow(reason) {
         emitStatus('success', 'Đã đồng bộ');
         return result;
     } catch (e) {
+        emitStatus('error', 'Đồng bộ thất bại');
         return {ok: false, reason: e && e.message ? e.message : 'Sync failed.'};
     } finally {
         syncing = false;
