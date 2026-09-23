@@ -1633,6 +1633,7 @@ $(function(){
     }
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
+    $('#vsImportPreviewConfirm').on('click',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
     $('#vsExportExcel').on('click',function(){ openProModal('export'); });
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
