@@ -389,9 +389,12 @@ function renderFields(type) {
     $('#vsGenerate').closest('.vs-actions').show();
     $('#vsResultDesign').show();
     $('.vs-history').show();
-    $('#vsFormTitle').text(fields[type].title);
-    $('#vsFields').html(fields[type].html);
-    $('#vsStatus').text('');
+    var formTitle = document.getElementById('vsFormTitle');
+    var fieldsContainer = document.getElementById('vsFields');
+    var status = document.getElementById('vsStatus');
+    if (formTitle) formTitle.textContent = fields[type].title;
+    if (fieldsContainer) fieldsContainer.innerHTML = fields[type].html;
+    if (status) status.textContent = '';
     if (typeChanged) {
         currentData = '';
         currentImage = '';
@@ -412,7 +415,10 @@ function renderFields(type) {
     track('qr_type_select', {qr_type:type});
 }
 
-function value(id) { return $('#' + id).val() || ''; }
+function value(id) {
+    var element = document.getElementById(id);
+    return element && 'value' in element ? element.value || '' : '';
+}
 
 function setLocation(lat, lng, address) {
     lat = parseFloat(lat);
@@ -1998,49 +2004,3 @@ $(function(){
             var action = pendingProAction;
             pendingProAction = null;
             closeProModal();
-            if (action === 'import') $('#vsImportExcelInput').trigger('click');
-            else if (action === 'export-excel') exportExcel();
-            else if (action === 'export-zip') downloadHistoryQrs();
-            else if (action === 'print') printHistoryQrs();
-            else if (action === 'download') downloadHistoryQrs();
-        } finally {
-            button.prop('disabled', false).text(originalText);
-            input.prop('disabled', false);
-            email.prop('disabled', false);
-        }
-    }
-    $(document).on('vietsoft:auth-changed', function(e, user) {
-        if (user && pendingProAction) openProModal(pendingProAction);
-    });
-    $('#vsImportExcel').on('click',function(){ openProModal('import'); });
-    $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
-    $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
-    function closeFileExportModal() {
-        var modal = $('#vsFileExportModal');
-        if (!modal.length) return;
-        modal.removeClass('is-open').attr('aria-hidden','true');
-        $('body').removeClass('vs-file-export-modal-open');
-    }
-    function openFileExportModal() {
-        var modal = $('#vsFileExportModal');
-        if (!modal.length) return;
-        modal.addClass('is-open').attr('aria-hidden','false');
-        $('body').addClass('vs-file-export-modal-open');
-        $('#vsFileExportExcel').trigger('focus');
-    }
-    $('#vsFileExport').on('click',function(){ openFileExportModal(); });
-    $('#vsFileExportModalClose').on('click',closeFileExportModal);
-    $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
-    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); openProModal('export-excel'); });
-    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); openProModal('export-zip'); });
-    $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
-    $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
-    $('#vsProModalContinue').on('click',continueProAction);
-    $('#vsProLicenseClear').on('click',async function(){
-        var button = $(this);
-        button.prop('disabled', true);
-        $('#vsProLicenseStatus').text('Đang xóa License...');
-        try {
-            await window.VietSoftQrLicense.clear();
-            $('#vsProLicenseInput').val('');
-            $('#vsProLicenseEmail').val('');
