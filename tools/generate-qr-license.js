@@ -4,6 +4,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const SUPABASE_URL = 'https://yatmdgjkljmaohdkvzkd.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ZTRNO7lC0PzRgIfNU9qWtQ_CvXdx6cV';
 const CREATE_LICENSE_URL = SUPABASE_URL + '/functions/v1/create-license';
 
 function usage() {
@@ -32,6 +33,7 @@ async function registerLicense(licenseKey, adminKey) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
         'x-license-admin-key': adminKey
       },
       body: JSON.stringify({ licenseKey })
