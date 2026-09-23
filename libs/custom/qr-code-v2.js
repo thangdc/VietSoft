@@ -10,7 +10,6 @@ var historyPage = 1;
 var historyPageSize = 10;
 var historySearch = '';
 var selectedHistoryIds = {};
-var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
 var activeTabKey = 'vietsoft_qr_active_tab_v1';
 var currentQrKey = 'vietsoft_qr_current_v1';
@@ -586,20 +585,18 @@ function buildData(record) {
 }
 
 function saveHistory(data, record) {
-    var items = getHistory();
     var historyId = String(Date.now()) + '-' + String(Math.random()).slice(2);
-    items.unshift({
+    var item = {
         historyId: historyId,
         type: currentType,
         fields: record.fields,
         data: data,
         design: $.extend({}, currentDesign),
         time: new Date().toLocaleString()
-    });
-    currentHistoryId = historyId;
-    try {
-        localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
-    } catch (e) {
+    };
+    if (window.VietSoftQrHistoryRepository.save(item)) {
+        currentHistoryId = historyId;
+    } else {
         currentHistoryId = '';
         setStatus('QR đã được tạo nhưng không thể lưu vào lịch sử của trình duyệt.');
     }
@@ -685,24 +682,19 @@ function restoreCurrentQrState() {
 function persistCurrentDesign(design) {
     currentDesign = normalizeDesign(design);
     if (!currentData || !currentHistoryId) return;
-    var items = getHistory();
-    for (var i = 0; i < items.length; i++) {
-        if (String(items[i].historyId || '') === String(currentHistoryId)) {
-            items[i].design = $.extend({}, currentDesign);
-            try {
-                localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
-            } catch (e) {
-                setStatus('Thiết kế đã áp dụng nhưng không thể lưu vào lịch sử của trình duyệt.');
-            }
-            break;
-        }
+    var saved = window.VietSoftQrHistoryRepository.update(currentHistoryId, function (item) {
+        item.design = $.extend({}, currentDesign);
+        return item;
+    });
+    if (!saved) {
+        setStatus('Thiết kế đã áp dụng nhưng không thể lưu vào lịch sử của trình duyệt.');
     }
     renderHistory();
 }
 
 function getHistory() {
     try {
-        var items = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        var items = window.VietSoftQrHistoryRepository.getAll();
         if (!Array.isArray(items)) return [];
 
         return items.map(function(item, index) {
@@ -1075,41 +1067,27 @@ function renderHistory() {
 }
 
 function deleteHistoryItem(historyId) {
-    var items = getHistory();
-    var targetIndex = -1;
-
-    for (var i = 0; i < items.length; i++) {
-        if (String(items[i].historyId || '') === String(historyId || '')) {
-            targetIndex = i;
-            break;
-        }
-    }
-
-    if (targetIndex < 0) return;
-    items.splice(targetIndex, 1);
+    var removed = window.VietSoftQrHistoryRepository.remove(historyId);
+    if (!removed) return;
     delete selectedHistoryIds[String(historyId || '')];
     if (String(currentHistoryId || '') === String(historyId || '')) {
         currentHistoryId = '';
         saveCurrentQrState();
     }
-    localStorage.setItem(historyKey, JSON.stringify(items));
     renderHistory();
 }
 
 function clearCurrentHistory() {
     if (!confirm('Xóa toàn bộ lịch sử của loại QR này?')) return;
-    var items = getHistory().filter(function(item) { return item.type !== currentType; });
-    if (currentHistoryId) {
-        var currentItem = getHistory().filter(function(item) {
-            return String(item.historyId || '') === String(currentHistoryId || '');
-        })[0];
-        if (currentItem && currentItem.type === currentType) {
-            currentHistoryId = '';
-            saveCurrentQrState();
-        }
+    var currentItem = getHistory().filter(function(item) {
+        return String(item.historyId || '') === String(currentHistoryId || '');
+    })[0];
+    if (currentItem && currentItem.type === currentType) {
+        currentHistoryId = '';
+        saveCurrentQrState();
     }
     clearHistorySelection();
-    localStorage.setItem(historyKey, JSON.stringify(items));
+    window.VietSoftQrHistoryRepository.clearByType(currentType);
     historyPage = 1;
     renderHistory();
 }
@@ -1361,18 +1339,17 @@ function showImportPreview(result) {
 }
 
 function commitImportedRecords(result) {
-    var items = getHistory();
-    result.records.forEach(function(record) {
-        items.unshift({
+    var importedItems = result.records.map(function(record) {
+        return {
             historyId: String(Date.now()) + '-' + String(Math.random()).slice(2),
             type: record.type,
             fields: record.fields,
             data: record.data,
             design: normalizeDesign({}),
             time: new Date().toLocaleString()
-        });
+        };
     });
-    localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+    window.VietSoftQrHistoryRepository.saveMany(importedItems);
     historyPage = 1;
     historySearch = '';
     currentType = result.type;
