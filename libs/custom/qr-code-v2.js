@@ -1877,8 +1877,8 @@ $(function(){
     $('#vsFileExport').on('click',function(){ openFileExportModal(); });
     $('#vsFileExportModalClose').on('click',closeFileExportModal);
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
-    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); openProModal('export'); });
-    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); openProModal('download'); });
+    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); exportExcel(); });
+    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); downloadHistoryQrs(); });
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
