@@ -1056,7 +1056,6 @@ function deleteHistoryItem(historyId) {
         currentHistoryId = '';
         saveCurrentQrState();
     }
-    clearHistorySelection();
     localStorage.setItem(historyKey, JSON.stringify(items));
     renderHistory();
 }
@@ -1073,6 +1072,7 @@ function clearCurrentHistory() {
             saveCurrentQrState();
         }
     }
+    clearHistorySelection();
     localStorage.setItem(historyKey, JSON.stringify(items));
     historyPage = 1;
     renderHistory();
