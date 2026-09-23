@@ -515,3 +515,41 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 }
 
 /* Printing is handled by the isolated print iframe in qr-code-v2.js. */
+
+/* Force desktop result to remain beside the form using flex layout. */
+@media(min-width:801px){
+  .vs-modern .vs-generator{
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:flex-start!important;
+    width:100%!important;
+  }
+  .vs-modern .vs-generator > .vs-form{
+    flex:1 1 auto!important;
+    width:auto!important;
+    min-width:0!important;
+  }
+  .vs-modern .vs-generator > .vs-result{
+    flex:0 0 360px!important;
+    width:360px!important;
+    max-width:360px!important;
+    box-sizing:border-box!important;
+    align-self:flex-start!important;
+  }
+}
+@media(max-width:800px){
+  .vs-modern .vs-generator{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .vs-modern .vs-generator > .vs-form,
+  .vs-modern .vs-generator > .vs-result{
+    width:100%!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+  }
+  .vs-modern .vs-generator > .vs-result{
+    border-left:0!important;
+    border-top:1px solid #eaecf0!important;
+  }
+}
