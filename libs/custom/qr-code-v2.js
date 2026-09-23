@@ -1226,7 +1226,7 @@ function importExcel(file) {
             var imported = 0, skipped = 0;
             var items = getHistory();
             rows.slice(1).forEach(function(row) {
-                if (!row || !row.length || row.every(function(value){ return String(value == null ? '').trim() === ''; })) return;
+                if (!row || !row.length || row.every(function(value){ return String(value == null ? '' : value).trim() === ''; })) return;
                 var fields = getImportedFields(type, row, headers);
                 if (!isValidImportedFields(type, fields)) { skipped++; return; }
                 var data = buildImportedData(type, fields);
