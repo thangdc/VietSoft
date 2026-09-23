@@ -580,3 +580,61 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
     box-sizing: border-box !important;
   }
 }
+
+
+/* Final desktop positioning: Result is explicitly anchored to the right of the generator. */
+@media (min-width: 801px) {
+  .vs-modern .vs-generator {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    min-height: 1px !important;
+  }
+
+  .vs-modern .vs-generator > .vs-form {
+    display: block !important;
+    width: calc(100% - 360px) !important;
+    max-width: calc(100% - 360px) !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .vs-modern .vs-generator > .vs-result {
+    display: flex !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 360px !important;
+    max-width: 360px !important;
+    min-width: 360px !important;
+    box-sizing: border-box !important;
+    align-self: auto !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .vs-modern .vs-generator {
+    display: block !important;
+    position: relative !important;
+  }
+
+  .vs-modern .vs-generator > .vs-form,
+  .vs-modern .vs-generator > .vs-result {
+    display: block !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .vs-modern .vs-generator > .vs-result {
+    display: flex !important;
+    border-left: 0 !important;
+    border-top: 1px solid #eaecf0 !important;
+  }
+}
