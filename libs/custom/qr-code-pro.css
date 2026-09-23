@@ -55,3 +55,18 @@
   .vs-modern .vs-pro-modal-actions{align-items:flex-start}
   .vs-modern .vs-pro-modal-actions .vs-btn{width:100%}
 }
+
+/* Free / Pro positioning section */
+.vs-modern .vs-pro-plan-intro{margin:6px 0 0;color:#667085;line-height:1.55;font-size:13px}
+.vs-modern .vs-pro-plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+.vs-modern .vs-plan-card{padding:18px;border:1px solid #eaecf0;border-radius:14px;background:#fff}
+.vs-modern .vs-plan-card-pro{border-color:#c7d7fe;background:#f8fbff}
+.vs-modern .vs-plan-label{display:inline-flex;align-items:center;min-height:22px;padding:3px 8px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:10px;font-weight:800;letter-spacing:.08em}
+.vs-modern .vs-plan-card-pro .vs-plan-label{background:#eef4ff;color:#175cd3}
+.vs-modern .vs-plan-card h3{margin:10px 0 12px;color:#101828;font-size:17px}
+.vs-modern .vs-plan-card ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.vs-modern .vs-plan-card li{display:flex;gap:8px;align-items:flex-start;color:#475467;font-size:13px;line-height:1.4}
+.vs-modern .vs-plan-card li>span{flex:0 0 16px;color:#12b76a;font-weight:800;text-align:center}
+.vs-modern .vs-plan-card li em{margin-left:auto;color:#98a2b3;font-size:10px;font-style:normal;white-space:nowrap}
+.vs-modern .vs-pro-plan-note{margin-top:14px;color:#98a2b3;font-size:11px;line-height:1.45}
+@media(max-width:640px){.vs-modern .vs-pro-plan-grid{grid-template-columns:1fr}.vs-modern .vs-pro-plan-intro{font-size:12px}}
