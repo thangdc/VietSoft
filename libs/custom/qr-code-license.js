@@ -1,7 +1,7 @@
 (function () {
 'use strict';
 
-var PUBLIC_KEY_SPKI_BASE64 = 'MCowBQYDK2VwAyEAMlFMNDZxhns+ze0eW8P+bw3yNVFU4wpK2Oz8zUdfMbg=';
+var PUBLIC_KEY_SPKI_BASE64 = 'MCowBQYDK2VwAyEAWnPQe6rm1DUSVDAKaO6YzFk7+aOQu6+o047Pc0aNslw=';
 var STORAGE_KEY = 'vietsoft_qr_license_v1';
 var PRODUCT = 'vietsoft-qr';
 
