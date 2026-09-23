@@ -1894,9 +1894,14 @@ $(function(){
     }
 
     function openProModal(action) {
+        pendingProAction = action || null;
+        if (!window.VietSoftQrAuth || !window.VietSoftQrAuth.isAuthenticated()) {
+            window.VietSoftQrAuth.open('login');
+            return;
+        }
+
         var modal = $('#vsProModal');
         if (!modal.length) return;
-        pendingProAction = action || null;
         modal.addClass('is-open').attr('aria-hidden','false');
         $('body').addClass('vs-pro-modal-open');
         refreshProLicenseUi();
