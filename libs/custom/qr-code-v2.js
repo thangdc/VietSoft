@@ -1909,6 +1909,22 @@ $(function(){
         $('body').removeClass('vs-pro-modal-open');
     }
     async function continueProAction() {
+        if (!window.VietSoftQrAuth || !window.VietSoftQrAuth.isAuthenticated()) {
+            pendingProAction = pendingProAction || null;
+            closeProModal();
+            window.VietSoftQrAuth.open('login');
+            return;
+        }
+
+        var user = window.VietSoftQrAuth.getUser();
+        var accountEmail = normalizeLicenseEmail(user && user.email);
+        var enteredEmail = normalizeLicenseEmail($('#vsProLicenseEmail').val());
+        if (accountEmail && enteredEmail && accountEmail !== enteredEmail) {
+            $('#vsProLicenseStatus').text('Email tài khoản phải trùng với email mua License.');
+            return;
+        }
+        if (accountEmail && !enteredEmail) $('#vsProLicenseEmail').val(accountEmail);
+
         var button = $('#vsProModalContinue');
         var input = $('#vsProLicenseInput');
         var email = $('#vsProLicenseEmail');
@@ -1965,6 +1981,9 @@ $(function(){
             email.prop('disabled', false);
         }
     }
+    $(document).on('vietsoft:auth-changed', function(e, user) {
+        if (user && pendingProAction) openProModal(pendingProAction);
+    });
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
