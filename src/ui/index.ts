@@ -6,3 +6,6 @@ export * from './tabs';
 export * from './select';
 export * from './checkbox';
 export * from './textarea';
+export * from './alert';
+export * from './loading';
+export * from './toast';
