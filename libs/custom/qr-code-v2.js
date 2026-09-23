@@ -1972,10 +1972,18 @@ $(function(){
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
-    $('#vsProLicenseClear').on('click',function(){
-        window.VietSoftQrLicense.clear();
-        $('#vsProLicenseInput').val('');
-        refreshProLicenseUi();
+    $('#vsProLicenseClear').on('click',async function(){
+        var button = $(this);
+        button.prop('disabled', true);
+        $('#vsProLicenseStatus').text('Đang xóa License...');
+        try {
+            await window.VietSoftQrLicense.clear();
+            $('#vsProLicenseInput').val('');
+            $('#vsProLicenseEmail').val('');
+            await refreshProLicenseUi();
+        } finally {
+            button.prop('disabled', false);
+        }
     });
     $('#vsProLicenseInput,#vsProLicenseEmail').on('input',function(){
         $('#vsProLicenseStatus').text('');
