@@ -1085,7 +1085,18 @@ function getExportTemplate(type) {
     return exportTemplates[normalizedType] || null;
 }
 
+function syncVisibleHistorySelection() {
+    $('#vsHistory .vs-history-select-item').each(function(){
+        var checkbox = $(this);
+        var id = String(checkbox.attr('data-history-id') || '');
+        if (!id) return;
+        if (checkbox.prop('checked')) selectedHistoryIds[id] = true;
+        else delete selectedHistoryIds[id];
+    });
+}
+
 function getSelectedHistoryItems(items) {
+    syncVisibleHistorySelection();
     return (items || []).filter(function(item) { return !!selectedHistoryIds[String(item.historyId || '')]; });
 }
 
