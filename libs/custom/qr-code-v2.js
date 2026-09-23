@@ -1133,10 +1133,10 @@ function validateRecord(record) {
             if (!isValidPhone(f.phone)) return 'Vui lòng nhập số điện thoại hợp lệ.';
             break;
         case 'payment':
-            if (!/^\\d{6}$/.test(String(f.bankBin || ''))) return 'Vui lòng chọn ngân hàng.';
+            if (!/^\d{6}$/.test(String(f.bankBin || ''))) return 'Vui lòng chọn ngân hàng.';
             if (!/^.{6,19}$/.test(String(f.account || '').trim())) return 'Số tài khoản phải có từ 6 đến 19 ký tự.';
             if (!String(f.accountName || '').trim()) return 'Vui lòng nhập tên tài khoản.';
-            if (f.lockAmount && !/^\\d{1,13}$/.test(String(f.amount || '').replace(/[^0-9]/g, ''))) return 'Vui lòng nhập số tiền hợp lệ.';
+            if (f.lockAmount && !/^\d{1,13}$/.test(String(f.amount || '').replace(/[^0-9]/g, ''))) return 'Vui lòng nhập số tiền hợp lệ.';
             if (String(f.description || '').length > 25) return 'Nội dung chuyển khoản tối đa 25 ký tự.';
             break;
         case 'location':
