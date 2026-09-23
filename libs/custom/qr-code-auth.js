@@ -5,6 +5,13 @@ var SUPABASE_URL = 'https://yatmdgjkljmaohdkvzkd.supabase.co';
 var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ZTRNO7lC0PzRgIfNU9qWtQ_CvXdx6cV';
 var supabaseClient = null;
 var currentUser = null;
+var AUTH_REDIRECT_PATH = '/qr-code-generator.html';
+
+function getAuthRedirectUrl() {
+    var host = String(window.location.hostname || '').toLowerCase();
+    if (host === 'vietsofts.thangdc.com') return 'https://vietsofts.thangdc.com' + AUTH_REDIRECT_PATH;
+    return window.location.origin + window.location.pathname;
+}
 
 function setStatus(message, isError) {
     $('#vsAuthStatus').text(message || '').toggleClass('is-error', !!isError);
@@ -111,7 +118,7 @@ async function handleSignup() {
             email: email,
             password: password,
             options: {
-                emailRedirectTo: window.location.origin + window.location.pathname
+                emailRedirectTo: getAuthRedirectUrl()
             }
         });
         if (result.error) throw result.error;
@@ -143,7 +150,7 @@ async function handleForgotPassword() {
     setStatus('Đang gửi email đặt lại mật khẩu...');
     try {
         var result = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + window.location.pathname
+            redirectTo: getAuthRedirectUrl()
         });
         if (result.error) throw result.error;
         setStatus('Nếu email tồn tại, hướng dẫn đặt lại mật khẩu đã được gửi.');
