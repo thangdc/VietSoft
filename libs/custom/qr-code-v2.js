@@ -1921,7 +1921,7 @@ $(function(){
                 $('#vsProLicenseStatus').text('Vui lòng nhập License Key.');
                 return;
             }
-            result = await window.VietSoftQrLicense.activate(entered);
+            result = await window.VietSoftQrLicense.activate(entered, enteredEmail);
             if (!result.valid) {
                 $('#vsProLicenseStatus').text('✕ ' + (result.message || 'License không hợp lệ.'));
                 return;

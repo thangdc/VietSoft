@@ -1,0 +1,10 @@
+project_id = "yatmdgjkljmaohdkvzkd"
+
+[functions.activate-license]
+verify_jwt = false
+
+[functions.validate-license]
+verify_jwt = false
+
+[functions.deactivate-license]
+verify_jwt = false
