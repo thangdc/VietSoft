@@ -1870,20 +1870,26 @@ $(function(){
         $('#vsStatus').text('');
     });
     var pendingProAction = null;
+    function normalizeLicenseEmail(value) {
+        return String(value || '').trim().toLowerCase();
+    }
+
     async function refreshProLicenseUi() {
         var result = await window.VietSoftQrLicense.getActive();
         var input = $('#vsProLicenseInput');
+        var email = $('#vsProLicenseEmail');
         var status = $('#vsProLicenseStatus');
         var clear = $('#vsProLicenseClear');
         if (result.valid) {
             input.val(result.license);
-            status.text('✓ Pro đã được kích hoạt' + (result.payload && result.payload.expiresAt ? ' · Hết hạn ' + result.payload.expiresAt : ' · Lifetime'));
+            email.val(result.payload && result.payload.email ? result.payload.email : '');
+            status.text('✓ Pro đã được kích hoạt' + (result.payload && result.payload.email ? ' · ' + result.payload.email : '') + (result.payload && result.payload.expiresAt ? ' · Hết hạn ' + result.payload.expiresAt : ' · Lifetime'));
             clear.prop('hidden', false);
             $('#vsProModalContinue').text('Tiếp tục');
         } else {
             status.text(result.message || 'Chưa kích hoạt Pro.');
             clear.prop('hidden', true);
-            $('#vsProModalContinue').text('Kích hoạt để tiếp tục');
+            $('#vsProModalContinue').text('Kích hoạt & tiếp tục');
         }
     }
 
@@ -1905,7 +1911,12 @@ $(function(){
     async function continueProAction() {
         var result = await window.VietSoftQrLicense.getActive();
         if (!result.valid) {
+            var enteredEmail = normalizeLicenseEmail($('#vsProLicenseEmail').val());
             var entered = $('#vsProLicenseInput').val().trim();
+            if (!enteredEmail) {
+                $('#vsProLicenseStatus').text('Vui lòng nhập email mua License.');
+                return;
+            }
             if (!entered) {
                 $('#vsProLicenseStatus').text('Vui lòng nhập License Key.');
                 return;
@@ -1915,13 +1926,25 @@ $(function(){
                 $('#vsProLicenseStatus').text('✕ ' + (result.message || 'License không hợp lệ.'));
                 return;
             }
+            var licenseEmail = normalizeLicenseEmail(result.payload && result.payload.email);
+            if (!licenseEmail) {
+                window.VietSoftQrLicense.clear();
+                $('#vsProLicenseStatus').text('✕ License chưa chứa email. Vui lòng cấp lại License Key.');
+                return;
+            }
+            if (licenseEmail !== enteredEmail) {
+                window.VietSoftQrLicense.clear();
+                $('#vsProLicenseStatus').text('✕ Email không khớp với License Key.');
+                return;
+            }
             track('qr_pro_license_activated', {license_id: result.payload && result.payload.licenseId ? result.payload.licenseId : ''});
         }
         var action = pendingProAction;
         pendingProAction = null;
         closeProModal();
         if (action === 'import') $('#vsImportExcelInput').trigger('click');
-        else if (action === 'export') exportExcel();
+        else if (action === 'export-excel') exportExcel();
+        else if (action === 'export-zip') downloadHistoryQrs();
         else if (action === 'print') printHistoryQrs();
         else if (action === 'download') downloadHistoryQrs();
     }
@@ -1944,18 +1967,17 @@ $(function(){
     $('#vsFileExport').on('click',function(){ openFileExportModal(); });
     $('#vsFileExportModalClose').on('click',closeFileExportModal);
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
-    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); exportExcel(); });
-    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); downloadHistoryQrs(); });
+    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); openProModal('export-excel'); });
+    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); openProModal('export-zip'); });
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
-    $('#vsProLicenseActivate').on('click',continueProAction);
     $('#vsProLicenseClear').on('click',function(){
         window.VietSoftQrLicense.clear();
         $('#vsProLicenseInput').val('');
         refreshProLicenseUi();
     });
-    $('#vsProLicenseInput').on('input',function(){
+    $('#vsProLicenseInput,#vsProLicenseEmail').on('input',function(){
         $('#vsProLicenseStatus').text('');
     });
     $('#vsProModal').on('click','[data-pro-close="true"]',function(){ pendingProAction = null; closeProModal(); });
