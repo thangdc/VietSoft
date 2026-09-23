@@ -458,3 +458,16 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   .vs-modern .vs-result-design-header{padding:12px}
   .vs-modern .vs-result-design-toggle{min-height:32px;padding:6px 9px}
 }
+
+.vs-modern .vs-result-design-body > .vs-result-config{
+  margin:0!important;
+  padding:0 0 14px!important;
+  border:0!important;
+}
+.vs-modern .vs-result-design-body > .vs-result-config .vs-grid2{
+  margin-bottom:0;
+}
+.vs-modern .vs-result-design-body > .vs-result-config + .vs-grid2{
+  padding-top:14px;
+  border-top:1px solid #eaecf0;
+}
