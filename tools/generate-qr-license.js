@@ -4,15 +4,20 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 function usage() {
-  console.error('Usage: node tools/generate-qr-license.js <licenseId> [expiresAt]');
-  console.error('Example: node tools/generate-qr-license.js VSQR-8F42K');
-  console.error('Example: node tools/generate-qr-license.js VSQR-8F42K 2027-09-23');
+  console.error('Usage: node tools/generate-qr-license.js <licenseId> <email> [expiresAt]');
+  console.error('Example: node tools/generate-qr-license.js VSQR-8F42K customer@example.com');
+  console.error('Example: node tools/generate-qr-license.js VSQR-8F42K customer@example.com 2027-09-23');
   process.exit(1);
 }
 
 const licenseId = process.argv[2];
-const expiresAt = process.argv[3] || '';
-if (!licenseId) usage();
+const email = String(process.argv[3] || '').trim().toLowerCase();
+const expiresAt = process.argv[4] || '';
+if (!licenseId || !email) usage();
+if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+  console.error('Invalid email:', email);
+  process.exit(1);
+}
 
 const privateKeyPath = process.env.VIETSOFT_QR_PRIVATE_KEY || './vietsoft-qr-license-private.pem';
 if (!fs.existsSync(privateKeyPath)) {
@@ -26,6 +31,7 @@ const payload = {
   plan: 'pro',
   type: expiresAt ? 'timed' : 'lifetime',
   licenseId,
+  email,
   issuedAt: new Date().toISOString().slice(0, 10)
 };
 if (expiresAt) payload.expiresAt = expiresAt;
