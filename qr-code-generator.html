@@ -66,6 +66,7 @@
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 	<link rel="stylesheet" href="libs/custom/qr-code-v2.css?v=20260923-12">
 	<link rel="stylesheet" href="libs/custom/qr-code-pro.css?v=20260923-3">
+	<link rel="stylesheet" href="libs/custom/qr-code-auth.css?v=20260923-1">
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 	<script type="text/javascript" src="libs/custom/qr-code-license.js?v=20260923-2"></script>\n\t<script type="text/javascript" src="libs/custom/qr-code-v2.js?v=20260923-8"></script>
 </head>
@@ -82,6 +83,10 @@
 <!-- Header -->
 <header class="header">
 	<a href="https://vietsofts.thangdc.com/" class="vs-brand" aria-label="VietSoft"><img src="/images/logo.png?v=20260922" alt="VietSoft" class="vs-brand-logo"></a>
+	<div class="vs-auth-account-wrap">
+		<button class="vs-auth-button" id="vsAuthLoginButton" type="button">👤 Đăng nhập</button>
+		<button class="vs-auth-button vs-auth-account" id="vsAuthAccount" type="button" style="display:none" aria-label="Tài khoản"><span id="vsAuthAccountLabel"></span></button>
+	</div>
 	<nav class="navbar navbar-static-top" role="navigation">
 		<a class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
 			<span class="sr-only">Toggle navigation</span>
@@ -120,5 +125,27 @@
   ga('send', 'pageview');
 
 </script>
+<div class="vs-auth-modal" id="vsAuthModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="vsAuthTitle">
+	<div class="vs-auth-backdrop" data-auth-close="true"></div>
+	<div class="vs-auth-card" role="document">
+		<button class="vs-auth-close" id="vsAuthModalClose" type="button" aria-label="Đóng">×</button>
+		<div class="vs-auth-kicker">VIETSOFT ACCOUNT</div>
+		<h2 id="vsAuthTitle">Đăng nhập VietSoft</h2>
+		<p class="vs-auth-intro">Đăng nhập để quản lý tài khoản. Cloud Sync sẽ được mở cho tài khoản Pro.</p>
+		<div id="vsAuthLoginForm">
+			<div class="vs-auth-field"><label for="vsAuthEmail">Email</label><input id="vsAuthEmail" type="email" autocomplete="email" placeholder="email@example.com"></div>
+			<div class="vs-auth-field" id="vsAuthPasswordField"><label for="vsAuthPassword">Mật khẩu</label><input id="vsAuthPassword" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+			<div class="vs-auth-field" id="vsAuthConfirmPasswordField" style="display:none"><label for="vsAuthConfirmPassword">Xác nhận mật khẩu</label><input id="vsAuthConfirmPassword" type="password" autocomplete="new-password" placeholder="••••••••"></div>
+			<div class="vs-auth-actions"><button class="vs-btn vs-btn-primary" id="vsAuthSubmit" type="button">Đăng nhập</button><button class="vs-btn vs-btn-primary" id="vsAuthSignup" type="button" style="display:none">Tạo tài khoản</button></div>
+			<div class="vs-auth-links"><button id="vsAuthForgot" type="button">Quên mật khẩu?</button><button id="vsAuthBackToLogin" type="button" style="display:none">← Đăng nhập</button></div>
+		</div>
+		<div id="vsAuthForgotForm" style="display:none">
+			<div class="vs-auth-actions"><button class="vs-btn vs-btn-primary" id="vsAuthForgotSubmit" type="button">Gửi email đặt lại mật khẩu</button></div>
+		</div>
+		<div class="vs-auth-account-info" id="vsAuthAccountInfo" style="display:none"><strong>Tài khoản</strong><span id="vsAuthAccountEmail"></span></div>
+		<div class="vs-auth-actions"><button class="vs-btn vs-btn-secondary" id="vsAuthLogout" type="button" style="display:none">Đăng xuất</button></div>
+		<div class="vs-auth-status" id="vsAuthStatus" role="status"></div>
+	</div>
+</div>
 </body>
 </html>
