@@ -550,3 +550,5 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
     object-fit:contain!important;
   }
 }
+
+#vsImportExcelInput{display:none!important;width:0!important;height:0!important;position:absolute!important;left:-9999px!important;opacity:0!important;pointer-events:none!important}
