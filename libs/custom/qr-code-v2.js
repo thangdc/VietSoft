@@ -1411,6 +1411,154 @@ function importExcel(file) {
 }
 
 
+function buildStoredZip(files) {
+    var crcTable = buildCrc32Table();
+    var localParts = [];
+    var centralParts = [];
+    var offset = 0;
+    var now = new Date();
+    var dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | Math.floor(now.getSeconds() / 2);
+    var dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+
+    files.forEach(function(file) {
+        var nameBytes = new TextEncoder().encode(file.name);
+        var data = file.data;
+        var crc = crc32(data, crcTable);
+        var local = new Uint8Array(30 + nameBytes.length);
+        var view = new DataView(local.buffer);
+        view.setUint32(0, 0x04034b50, true);
+        view.setUint16(4, 20, true);
+        view.setUint16(6, 0, true);
+        view.setUint16(8, 0, true);
+        view.setUint16(10, dosTime, true);
+        view.setUint16(12, dosDate, true);
+        view.setUint32(14, crc, true);
+        view.setUint32(18, data.length, true);
+        view.setUint32(22, data.length, true);
+        view.setUint16(26, nameBytes.length, true);
+        view.setUint16(28, 0, true);
+        local.set(nameBytes, 30);
+        localParts.push(local, data);
+
+        var central = new Uint8Array(46 + nameBytes.length);
+        var centralView = new DataView(central.buffer);
+        centralView.setUint32(0, 0x02014b50, true);
+        centralView.setUint16(4, 20, true);
+        centralView.setUint16(6, 20, true);
+        centralView.setUint16(8, 0, true);
+        centralView.setUint16(10, 0, true);
+        centralView.setUint16(12, dosTime, true);
+        centralView.setUint16(14, dosDate, true);
+        centralView.setUint32(16, crc, true);
+        centralView.setUint32(20, data.length, true);
+        centralView.setUint32(24, data.length, true);
+        centralView.setUint16(28, nameBytes.length, true);
+        centralView.setUint16(30, 0, true);
+        centralView.setUint16(32, 0, true);
+        centralView.setUint16(34, 0, true);
+        centralView.setUint16(36, 0, true);
+        centralView.setUint32(38, 0, true);
+        centralView.setUint32(42, offset, true);
+        central.set(nameBytes, 46);
+        centralParts.push(central);
+        offset += local.length + data.length;
+    });
+
+    var centralOffset = offset;
+    var centralSize = centralParts.reduce(function(sum, part) { return sum + part.length; }, 0);
+    var end = new Uint8Array(22);
+    var endView = new DataView(end.buffer);
+    endView.setUint32(0, 0x06054b50, true);
+    endView.setUint16(4, 0, true);
+    endView.setUint16(6, 0, true);
+    endView.setUint16(8, files.length, true);
+    endView.setUint16(10, files.length, true);
+    endView.setUint32(12, centralSize, true);
+    endView.setUint32(16, centralOffset, true);
+    endView.setUint16(20, 0, true);
+
+    return new Blob(localParts.concat(centralParts, [end]), {type:'application/zip'});
+}
+
+function buildCrc32Table() {
+    var table = [];
+    for (var n = 0; n < 256; n++) {
+        var c = n;
+        for (var k = 0; k < 8; k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+        table[n] = c >>> 0;
+    }
+    return table;
+}
+
+function crc32(data, table) {
+    var crc = 0xffffffff;
+    for (var i = 0; i < data.length; i++) crc = (crc >>> 8) ^ table[(crc ^ data[i]) & 0xff];
+    return (crc ^ 0xffffffff) >>> 0;
+}
+
+function dataUrlToBytes(dataUrl) {
+    var base64 = String(dataUrl || '').split(',')[1] || '';
+    var binary = atob(base64);
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+}
+
+function downloadHistoryQrs() {
+    var type = String(currentType || '').toLowerCase().trim();
+    var allItems = getHistory().filter(function(item) {
+        return String(item.type || '').toLowerCase().trim() === type && item.data;
+    });
+    var selectedItems = getSelectedHistoryItems(allItems);
+    var items = selectedItems.length ? selectedItems : getHistoryViewItems();
+
+    if (!items.length) {
+        $('#vsExportStatus').text('Chưa có mã QR để tải.');
+        return;
+    }
+    if (typeof TextEncoder === 'undefined' || typeof Blob === 'undefined' || typeof URL === 'undefined') {
+        $('#vsExportStatus').text('Trình duyệt không hỗ trợ tải QR hàng loạt.');
+        return;
+    }
+
+    var button = $('#vsDownloadHistory');
+    button.prop('disabled', true);
+    $('#vsExportStatus').text('Đang chuẩn bị ' + items.length + ' mã QR...');
+
+    var files = [];
+    var renderNext = function(index) {
+        if (index >= items.length) {
+            var zip = buildStoredZip(files);
+            var url = URL.createObjectURL(zip);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'VietSoft-QR-' + type + '-' + items.length + '.zip';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+            $('#vsExportStatus').text('✓ Đã tải ' + files.length + ' mã QR vào file ZIP.');
+            button.prop('disabled', false);
+            track('qr_batch_download', {qr_type:type, record_count:files.length, selected:selectedItems.length > 0});
+            return;
+        }
+
+        var item = items[index];
+        renderQrImage(String(item.data || ''), normalizeDesign(item.design), 320, function(imageUrl) {
+            files.push({
+                name:'qr-' + type + '-' + String(index + 1) + '.png',
+                data:dataUrlToBytes(imageUrl)
+            });
+            $('#vsExportStatus').text('Đang tạo QR ' + (index + 1) + '/' + items.length + '...');
+            renderNext(index + 1);
+        }, function() {
+            renderNext(index + 1);
+        });
+    };
+
+    renderNext(0);
+}
+
 function printHistoryQrs() {
     var type = String(currentType || '').toLowerCase().trim();
     var allItems = getHistory().filter(function(item) {
@@ -1697,12 +1845,14 @@ $(function(){
         if (action === 'import') $('#vsImportExcelInput').trigger('click');
         else if (action === 'export') exportExcel();
         else if (action === 'print') printHistoryQrs();
+        else if (action === 'download') downloadHistoryQrs();
     }
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
     $('#vsExportExcel').on('click',function(){ openProModal('export'); });
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
+    $('#vsDownloadHistory').on('click',function(){ openProModal('download'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
     $('#vsProModal').on('click','[data-pro-close="true"]',function(){ pendingProAction = null; closeProModal(); });
