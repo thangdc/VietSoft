@@ -14,7 +14,7 @@ const licenseId = process.argv[2];
 const email = String(process.argv[3] || '').trim().toLowerCase();
 const expiresAt = process.argv[4] || '';
 if (!licenseId || !email) usage();
-if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
   console.error('Invalid email:', email);
   process.exit(1);
 }
