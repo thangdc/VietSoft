@@ -1272,27 +1272,45 @@ function importExcel(file) {
 
 function printHistoryQrs() {
     var items = getHistoryViewItems();
-    var sheet = $('#vsPrintSheet');
-    if (!sheet.length) return;
     if (!items.length) {
         $('#vsExportStatus').text('Chưa có mã QR để in.');
         return;
     }
 
-    sheet.empty().append('<div class="vs-print-grid"></div>');
-    var grid = sheet.find('.vs-print-grid');
+    var printWindow = window.open('', '_blank', 'width=900,height=700');
+    if (!printWindow) {
+        $('#vsExportStatus').text('Trình duyệt đã chặn cửa sổ in. Vui lòng cho phép popup rồi thử lại.');
+        return;
+    }
+
+    var qrCells = [];
     var remaining = items.length;
-    var printed = false;
-    items.forEach(function(item) {
+
+    items.forEach(function(item, index) {
         renderQrImage(String(item.data || ''), normalizeDesign(item.design), 320, function(imageUrl) {
-            var cell = $('<div class="vs-print-qr"></div>');
-            $('<img>', {src:imageUrl, alt:'QR Code'}).appendTo(cell);
-            grid.append(cell);
+            qrCells[index] = '<div class="qr-cell"><img src="' + imageUrl.replace(/"/g, '&quot;') + '" alt="QR Code"></div>';
             remaining--;
-            if (remaining === 0 && !printed) {
-                printed = true;
-                sheet.attr('aria-hidden','false');
-                setTimeout(function(){ window.print(); }, 100);
+
+            if (remaining === 0) {
+                var documentHtml = '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>In mã QR - VietSoft</title>' +
+                    '<style>' +
+                    '@page{margin:12mm}' +
+                    'html,body{margin:0;padding:0;background:#fff}' +
+                    'body{font-family:Arial,sans-serif}' +
+                    '.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14mm;align-items:start}' +
+                    '.qr-cell{display:flex;align-items:center;justify-content:center;break-inside:avoid;page-break-inside:avoid}' +
+                    '.qr-cell img{display:block;width:55mm;height:55mm;object-fit:contain}' +
+                    '@media screen{body{padding:24px}.qr-grid{max-width:760px;margin:0 auto}.qr-cell{border:1px solid #e5e7eb;border-radius:10px;padding:12px;background:#fff}}' +
+                    '</style></head><body><div class="qr-grid">' + qrCells.join('') + '</div></body></html>';
+
+                printWindow.document.open();
+                printWindow.document.write(documentHtml);
+                printWindow.document.close();
+
+                setTimeout(function() {
+                    printWindow.focus();
+                    printWindow.print();
+                }, 250);
             }
         });
     });
