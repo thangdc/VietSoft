@@ -136,8 +136,8 @@ var fields = {
 
 
 function renderResultDesignPanel() {
-    var container = $('.vs-result');
-    if (!container.length || $('#vsResultDesign').length) return;
+    var container = document.querySelector('.vs-result');
+    if (!container || document.getElementById('vsResultDesign')) return;
     var html = '<div class="vs-result-design" id="vsResultDesign">' +
         '<div class="vs-result-design-header">' +
             '<div><div class="vs-result-design-kicker">Tùy chỉnh</div><h3>Thiết kế QR</h3><p class="vs-result-design-summary">Kích thước, màu sắc, kiểu điểm và logo</p></div>' +
@@ -152,53 +152,98 @@ function renderResultDesignPanel() {
         '<div class="vs-field"><label>Logo <span class="vs-label-muted">(tùy chọn)</span></label><input id="vsDesignLogo" type="file" accept="image/png,image/jpeg,image/webp"><div id="vsDesignLogoName" class="vs-design-file-name">Chưa chọn logo</div></div>' +
         '<div class="vs-design-advanced"><div class="vs-design-advanced-title">Nâng cao</div><div class="vs-grid2"><div class="vs-field"><label>Mắt QR</label><select id="vsDesignEyeStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option></select></div><div class="vs-field"><label>Kích thước logo</label><select id="vsDesignLogoSize"><option value="0.12">Nhỏ</option><option value="0.16" selected>Vừa</option><option value="0.20">Lớn</option><option value="0.24">Rất lớn</option></select></div></div><div class="vs-field"><label>Khoảng trắng</label><select id="vsDesignQuietZone"><option value="2">2 module</option><option value="4" selected>4 module</option><option value="6">6 module</option></select></div></div>' +
         '<div class="vs-design-warning" id="vsDesignWarning">Tạo QR trước, sau đó bạn có thể tùy chỉnh.</div>' +
-        '<div class="vs-actions"><button class="vs-btn vs-btn-primary" id="vsApplyDesign" type="button" disabled><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1L12 3z"/></svg><span>Áp dụng thiết kế</span></button><button class="vs-btn vs-btn-secondary" id="vsResetDesign" type="button">Đặt lại</button></div>' +
+        '<div class="vs-actions"><button class="vs-btn vs-btn-primary" id="vsApplyDesign" type="button" disabled><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1L12 3z"/></svg><span>Áp dụng thiết kế</span></button><button class="vs-btn vs-btn-secondary" id="vsResetDesign" type="button">Đặt lại</button></div>' +
         '</div></div>';
-    container.find('.vs-result-config').after(html);
-    $('#vsResultDesignBody').prepend(container.find('.vs-result-config'));
+    var config = container.querySelector('.vs-result-config');
+    if (!config) return;
+    config.insertAdjacentHTML('afterend', html);
+    var body = document.getElementById('vsResultDesignBody');
+    if (body) body.insertBefore(config, body.firstChild);
     syncDesignColorControls();
     syncDesignFields(currentDesign);
-    $('#vsApplyDesign').prop('disabled', !currentData);
-    $('#vsDesignWarning').text(currentData ? '✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.' : 'Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
+    var applyButton = document.getElementById('vsApplyDesign');
+    var warning = document.getElementById('vsDesignWarning');
+    if (applyButton) applyButton.disabled = !currentData;
+    if (warning) warning.textContent = currentData ? '✓ Bạn có thể thay đổi thiết kế và xem kết quả ngay.' : 'Tạo QR trước, sau đó bạn có thể tùy chỉnh.';
 }
 
 function syncDesignColorControls() {
-    $('#vsResultDesignToggle').on('click', function(){
-        var expanded = $(this).attr('aria-expanded') === 'true';
-        $(this).attr('aria-expanded', String(!expanded));
-        $('#vsResultDesignBody').stop(true, true).slideToggle(160);
+    var toggle = document.getElementById('vsResultDesignToggle');
+    var body = document.getElementById('vsResultDesignBody');
+    if (toggle && body) {
+        toggle.addEventListener('click', function(){
+            var expanded = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!expanded));
+            body.hidden = expanded;
+        });
+    }
+
+    var foreground = document.getElementById('vsDesignForeground');
+    var foregroundText = document.getElementById('vsDesignForegroundText');
+    var background = document.getElementById('vsDesignBackground');
+    var backgroundText = document.getElementById('vsDesignBackgroundText');
+    if (foreground && foregroundText) {
+        foreground.addEventListener('input', function(){
+            foregroundText.value = foreground.value;
+            if (currentData) renderCustomQr();
+        });
+    }
+    if (background && backgroundText) {
+        background.addEventListener('input', function(){
+            backgroundText.value = background.value;
+            if (currentData) renderCustomQr();
+        });
+    }
+
+    [foregroundText, backgroundText].forEach(function(input){
+        if (!input) return;
+        input.addEventListener('change', function(){
+            var valueText = input.value.trim();
+            if (!/^#[0-9a-fA-F]{6}$/.test(valueText)) return;
+            var target = input === foregroundText ? foreground : background;
+            if (!target) return;
+            target.value = valueText;
+            target.dispatchEvent(new Event('input', {bubbles:true}));
+        });
     });
 
-    $('#vsDesignForeground').on('input', function(){ $('#vsDesignForegroundText').val($(this).val()); if (currentData) renderCustomQr(); });
-    $('#vsDesignBackground').on('input', function(){ $('#vsDesignBackgroundText').val($(this).val()); if (currentData) renderCustomQr(); });
-    $('#vsDesignForegroundText,#vsDesignBackgroundText').on('change', function(){
-        var valueText = $(this).val().trim();
-        if (/^#[0-9a-fA-F]{6}$/.test(valueText)) {
-            var target = this.id === 'vsDesignForegroundText' ? '#vsDesignForeground' : '#vsDesignBackground';
-            $(target).val(valueText).trigger('input');
-        }
+    ['vsDesignStyle','vsDesignEyeStyle','vsDesignLogoSize','vsDesignQuietZone'].forEach(function(id){
+        var input = document.getElementById(id);
+        if (input) input.addEventListener('change', function(){ if (currentData) renderCustomQr(); });
     });
-    $('#vsDesignStyle,#vsDesignEyeStyle,#vsDesignLogoSize,#vsDesignQuietZone').on('change', function(){ if (currentData) renderCustomQr(); });
-    $('#vsDesignLogo').on('change', function(){
-        var file = this.files && this.files[0];
-        $('#vsDesignLogoName').text(file ? file.name : 'Chưa chọn logo');
-        if (currentData) renderCustomQr();
-    });
-    $('#vsApplyDesign').on('click', applyDesign);
-    $('#vsResetDesign').on('click', function(){
-        currentDesign = normalizeDesign({foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''});
-        syncDesignFields(currentDesign);
-        $('#vsDesignLogo').val('');
-        if (currentData) {
-            renderCustomQr();
-            persistCurrentDesign(currentDesign);
-            saveCurrentQrState();
-        } else {
-            $('#vsApplyDesign').prop('disabled', true);
-            $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
-        }
-        setStatus('✓ Đã đặt lại thiết kế QR');
-    });
+
+    var logo = document.getElementById('vsDesignLogo');
+    var logoName = document.getElementById('vsDesignLogoName');
+    if (logo) {
+        logo.addEventListener('change', function(){
+            var file = logo.files && logo.files[0];
+            if (logoName) logoName.textContent = file ? file.name : 'Chưa chọn logo';
+            if (currentData) renderCustomQr();
+        });
+    }
+
+    var applyButton = document.getElementById('vsApplyDesign');
+    if (applyButton) applyButton.addEventListener('click', applyDesign);
+
+    var resetButton = document.getElementById('vsResetDesign');
+    if (resetButton) {
+        resetButton.addEventListener('click', function(){
+            currentDesign = normalizeDesign({foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''});
+            syncDesignFields(currentDesign);
+            if (logo) logo.value = '';
+            if (logoName) logoName.textContent = 'Chưa chọn logo';
+            if (currentData) {
+                renderCustomQr();
+                persistCurrentDesign(currentDesign);
+                saveCurrentQrState();
+            } else {
+                if (applyButton) applyButton.disabled = true;
+                var warning = document.getElementById('vsDesignWarning');
+                if (warning) warning.textContent = 'Tạo QR trước, sau đó bạn có thể tùy chỉnh.';
+            }
+            setStatus('✓ Đã đặt lại thiết kế QR');
+        });
+    }
 }
 
 function drawRoundedRect(ctx, x, y, size, radius) {
