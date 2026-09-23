@@ -3,6 +3,8 @@
 
 var SYNC_STATE_KEY = 'vietsoft_qr_sync_state_v1';
 var syncing = false;
+var SYNC_OVERLAP_MS = 5 * 60 * 1000;
+var FULL_SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000;
 function emitStatus(status, message) { if (global.jQuery) global.jQuery(document).trigger('vietsoft:sync-status', [{status:status,message:message||''}]); }
 
 function getState() {
@@ -12,6 +14,17 @@ function getState() {
     } catch (e) {
         return {};
     }
+}
+
+function getPullWindow(state) {
+    if (!state.lastSyncAt) return { updatedAt: '', fullSync: true };
+
+    var lastSyncTime = toTime(state.lastSyncAt);
+    var fullSync = !state.lastFullSyncAt || (Date.now() - toTime(state.lastFullSyncAt)) >= FULL_SYNC_INTERVAL_MS;
+    if (fullSync) return { updatedAt: '', fullSync: true };
+
+    var overlapTime = Math.max(0, lastSyncTime - SYNC_OVERLAP_MS);
+    return { updatedAt: new Date(overlapTime).toISOString(), fullSync: false };
 }
 
 function saveState(state) {
@@ -124,7 +137,8 @@ async function syncNow(reason) {
     syncing = true;
     try {
         var state = getState();
-        var pulled = await global.VietSoftQrCloudHistory.pullUpdatedSince(state.lastSyncAt || '');
+        var pullWindow = getPullWindow(state);
+        var pulled = await global.VietSoftQrCloudHistory.pullUpdatedSince(pullWindow.updatedAt, pullWindow.fullSync);
         if (!pulled.ok) { emitStatus('error', 'Đồng bộ thất bại'); return pulled;}
 
         var local = getLocalRecords().concat(getLocalTombstones());
@@ -140,10 +154,12 @@ async function syncNow(reason) {
             global.VietSoftQrHistoryRepository.acknowledgeTombstones(merged.localTombstonesToAck);
         }
 
+        var syncedAt = new Date().toISOString();
         saveState({
-            lastSyncAt: new Date().toISOString(),
+            lastSyncAt: syncedAt,
+            lastFullSyncAt: pullWindow.fullSync ? syncedAt : (state.lastFullSyncAt || syncedAt),
             lastReason: reason || 'manual',
-            lastSyncedAt: new Date().toISOString()
+            lastSyncedAt: syncedAt
         });
 
         var result = {ok:true,pulled:(pulled.items||[]).length,pushed:pushItems.length};
