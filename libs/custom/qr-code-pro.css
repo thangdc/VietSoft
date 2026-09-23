@@ -109,3 +109,9 @@
   .vs-modern .vs-import-preview-actions{width:100%}
   .vs-modern .vs-import-preview-actions .vs-btn{flex:1}
 }
+
+.vs-pro-license{margin-top:18px;padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc}
+.vs-pro-license label{display:block;margin-bottom:7px;font-weight:600}
+#vsProLicenseInput{width:100%;min-height:76px;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;resize:vertical;font-family:monospace;font-size:12px;background:#fff}
+.vs-pro-license-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.vs-pro-license-status{min-height:20px;margin-top:8px;font-size:13px;color:#4b5563}
