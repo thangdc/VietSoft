@@ -297,6 +297,7 @@ function renderFields(type) {
     if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
     renderHistory();
     if (type === 'location') initLocationMap();
+    if (type === 'payment') loadPaymentBanks();
     if ($('#vsResultDesign').length) {
         syncDesignFields(currentDesign);
         $('#vsApplyDesign').prop('disabled', !currentData);

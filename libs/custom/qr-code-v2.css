@@ -350,3 +350,21 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   .vs-result-design-header{display:block}
   .vs-result-design-hint{display:block;margin-top:5px}
 }
+
+/* Align checkbox controls with their labels without inheriting text-input sizing. */
+.vs-modern .vs-field input[type="checkbox"] {
+  width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  margin: 0 7px 0 0 !important;
+  padding: 0 !important;
+  vertical-align: middle;
+  line-height: normal !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+}
+.vs-modern .vs-field label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
