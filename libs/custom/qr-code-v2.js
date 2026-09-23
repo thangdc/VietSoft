@@ -9,6 +9,7 @@ var historySort = {key:'id', direction:'desc'};
 var historyPage = 1;
 var historyPageSize = 10;
 var historySearch = '';
+var selectedHistoryIds = {};
 var historyKey = 'vietsoft_qr_history_v2';
 var configKey = 'vietsoft_qr_config_v1';
 var activeTabKey = 'vietsoft_qr_active_tab_v1';
@@ -936,6 +937,15 @@ function renderHistoryQrs(){
         });
     });
 }
+function updateHistorySelectionUi() {
+    var count = Object.keys(selectedHistoryIds).length;
+    $('#vsHistorySelectedCount').text(count + ' đã chọn');
+    var pageChecks = $('#vsHistory .vs-history-select-item');
+    var checkedCount = pageChecks.filter(':checked').length;
+    var allChecked = pageChecks.length > 0 && checkedCount === pageChecks.length;
+    $('#vsHistorySelectPage,#vsHistorySelectAllPage').prop('checked', allChecked);
+}
+
 function renderHistory() {
     var allItems = getHistoryViewItems();
     var container = $('#vsHistory');
@@ -944,6 +954,8 @@ function renderHistory() {
     var toolbar = '<div class="vs-history-toolbar">' +
         '<input class="vs-history-search" id="vsHistorySearch" value="' + esc(historySearch) + '" placeholder="Lọc dữ liệu..." aria-label="Lọc lịch sử">' +
         '<div class="vs-history-toolbar-actions">' +
+        '<label class="vs-history-select-all"><input id="vsHistorySelectPage" type="checkbox"' + (!allItems.length ? ' disabled' : '') + '> <span>Chọn trang</span></label>' +
+        '<span class="vs-history-selected-count" id="vsHistorySelectedCount">0 đã chọn</span>' +
         '<button class="vs-btn vs-btn-secondary" id="vsClearHistory" type="button"' + (!allItems.length ? ' disabled' : '') + '><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l1 2h3v2H3V6h3l1-2zm0 6h2v9h2v-9h2v9h2v-9h2v11H7V10z"/></svg><span>Xóa tất cả</span></button>' +
         '</div></div>';
 
@@ -966,6 +978,7 @@ function renderHistory() {
     var html = toolbar +
         '<div class="vs-history-table-wrap"><table class="vs-history-table"><thead><tr>';
 
+    html += '<th class="vs-history-select-column" data-sortable="false"><input id="vsHistorySelectAllPage" type="checkbox" aria-label="Chọn tất cả mã QR trên trang"></th>';
     html += '<th class="vs-history-qr-column" data-sortable="false">QR</th>';
     columns.forEach(function(column) {
         var sortable = column !== 'ID';
@@ -978,6 +991,7 @@ function renderHistory() {
         var absoluteIndex = start + index;
         var table = getHistoryTable(item, absoluteIndex + 1);
         html += '<tr class="vs-history-row" data-history-id="' + esc(item.historyId) + '" title="Nhấn để chỉnh sửa QR này">';
+        html += '<td class="vs-history-select"><input type="checkbox" class="vs-history-select-item" data-history-id="' + esc(item.historyId) + '"' + (selectedHistoryIds[String(item.historyId || '')] ? ' checked' : '') + ' aria-label="Chọn QR"></td>';
         html += '<td class="vs-history-qr"><a href="#" class="vs-history-qr-trigger" data-history-id="' + esc(item.historyId) + '" title="Xem QR Code"><div class="vs-history-qr-code" data-history-id="' + esc(item.historyId) + '" aria-label="QR Code"></div></a></td>';
         table.row.forEach(function(value, cellIndex) { html += '<td class="' + (cellIndex === 0 ? 'vs-history-id' : '') + '">' + esc(value) + '</td>'; });
         html += '<td class="vs-history-actions"><button class="vs-history-delete" type="button" data-history-delete-id="' + esc(item.historyId) + '" title="Xóa" aria-label="Xóa bản ghi">' +
@@ -1021,6 +1035,7 @@ function renderHistory() {
     }
     $('#vsExportExcel').prop('disabled', !template);
     renderHistoryQrs();
+    updateHistorySelectionUi();
 }
 
 function deleteHistoryItem(historyId) {
@@ -1036,10 +1051,12 @@ function deleteHistoryItem(historyId) {
 
     if (targetIndex < 0) return;
     items.splice(targetIndex, 1);
+    delete selectedHistoryIds[String(historyId || '')];
     if (String(currentHistoryId || '') === String(historyId || '')) {
         currentHistoryId = '';
         saveCurrentQrState();
     }
+    clearHistorySelection();
     localStorage.setItem(historyKey, JSON.stringify(items));
     renderHistory();
 }
@@ -1067,6 +1084,12 @@ function getExportTemplate(type) {
     return exportTemplates[normalizedType] || null;
 }
 
+function getSelectedHistoryItems(items) {
+    return (items || []).filter(function(item) { return !!selectedHistoryIds[String(item.historyId || '')]; });
+}
+
+function clearHistorySelection() { selectedHistoryIds = {}; }
+
 function exportExcel() {
     var type = String(currentType || '').toLowerCase().trim();
     var template = getExportTemplate(type);
@@ -1088,6 +1111,9 @@ function exportExcel() {
         return;
     }
 
+    var selectedItems = getSelectedHistoryItems(items);
+    var exportItems = selectedItems.length ? selectedItems : items;
+
     if (!window.XLSX || typeof XLSX.utils === 'undefined' || typeof XLSX.writeFile !== 'function') {
         status.text('Thư viện Excel chưa sẵn sàng. Vui lòng tải lại trang.');
         return;
@@ -1098,7 +1124,7 @@ function exportExcel() {
 
     try {
         var rows = [template.columns];
-        items.slice().reverse().forEach(function(item, index) {
+        exportItems.slice().reverse().forEach(function(item, index) {
             rows.push(template.getRow(item, index + 1));
         });
 
@@ -1111,8 +1137,8 @@ function exportExcel() {
         XLSX.utils.book_append_sheet(workbook, worksheet, template.templateName.substring(0, 31));
         XLSX.writeFile(workbook, 'QR-Code-' + template.templateName + '.xlsx');
 
-        status.text('✓ Đã xuất ' + items.length + ' bản ghi.');
-        track('qr_excel_export', {qr_type:type, template_id:template.templateId, record_count:items.length});
+        status.text('✓ Đã xuất ' + exportItems.length + ' bản ghi.');
+        track('qr_excel_export', {qr_type:type, template_id:template.templateId, record_count:exportItems.length, selected:selectedItems.length > 0});
     } catch (e) {
         status.text('Xuất Excel thất bại: ' + (e && e.message ? e.message : 'lỗi không xác định') + '.');
     } finally {
@@ -1682,6 +1708,25 @@ $(function(){
     $('#vsHistory').on('click', '[data-history-delete-id]', function(){
         var historyId = $(this).attr('data-history-delete-id');
         if (confirm('Xóa bản ghi này?')) deleteHistoryItem(historyId);
+    });
+    $('#vsHistory').on('change', '.vs-history-select-item', function(e){
+        e.stopPropagation();
+        var id = String($(this).attr('data-history-id') || '');
+        if (!id) return;
+        if ($(this).prop('checked')) selectedHistoryIds[id] = true;
+        else delete selectedHistoryIds[id];
+        updateHistorySelectionUi();
+    });
+    $('#vsHistory').on('change', '#vsHistorySelectPage,#vsHistorySelectAllPage', function(e){
+        e.stopPropagation();
+        var checked = $(this).prop('checked');
+        $('#vsHistory .vs-history-select-item').each(function(){
+            var id = String($(this).attr('data-history-id') || '');
+            if (!id) return;
+            if (checked) selectedHistoryIds[id] = true;
+            else delete selectedHistoryIds[id];
+        });
+        updateHistorySelectionUi();
     });
     $('#vsHistory').on('click', '#vsClearHistory', clearCurrentHistory);
     $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
