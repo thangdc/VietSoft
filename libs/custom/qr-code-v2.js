@@ -1253,7 +1253,7 @@ function showImportPreview(result) {
         rowsHtml += '<tr class="' + (item.valid ? 'is-valid' : 'is-skipped') + '">' +
             '<td>' + esc(item.rowNumber) + '</td>' +
             '<td>' + esc(item.typeName) + '</td>' +
-            '<td title="' + esc(item.label) + '">' + esc(item.label) + '</td>' +
+            '<td>' + esc(item.label) + '</td>' +
             '<td><span class="vs-import-preview-status">' + esc(item.status) + '</span></td>' +
         '</tr>';
     });
@@ -1633,7 +1633,7 @@ $(function(){
     }
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
-    $('#vsImportPreviewConfirm').on('click',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
+    $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
     $('#vsExportExcel').on('click',function(){ openProModal('export'); });
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
