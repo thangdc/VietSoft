@@ -521,3 +521,9 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 }
 
 #vsImportExcelInput{display:none!important;width:0!important;height:0!important;position:absolute!important;left:-9999px!important;opacity:0!important;pointer-events:none!important}
+
+/* Batch export selection */
+.vs-modern .vs-history-select-column,.vs-modern .vs-history-select{width:36px!important;min-width:36px!important;max-width:36px!important;text-align:center!important;padding:6px!important;}
+.vs-modern .vs-history-select input,.vs-modern .vs-history-select-all input{width:16px!important;height:16px!important;min-height:16px!important;margin:0!important;padding:0!important;vertical-align:middle;}
+.vs-modern .vs-history-select-all{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#475467;white-space:nowrap;margin:0 4px 0 0;cursor:pointer;font-weight:600;}
+.vs-modern .vs-history-selected-count{font-size:11px;color:#667085;white-space:nowrap;}
