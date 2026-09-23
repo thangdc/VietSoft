@@ -158,7 +158,8 @@ function renderResultDesignPanel() {
     if (!config) return;
     config.insertAdjacentHTML('afterend', html);
     var body = document.getElementById('vsResultDesignBody');
-    if (body) body.insertBefore(config, body.firstChild);\n    if (body) body.hidden = true;
+    if (body) body.insertBefore(config, body.firstChild);
+    if (body) body.hidden = true;
     syncDesignColorControls();
     syncDesignFields(currentDesign);
     var applyButton = document.getElementById('vsApplyDesign');
