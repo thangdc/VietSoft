@@ -20,16 +20,16 @@ function showMode(mode) {
     var isForgot = mode === 'forgot';
     var isAccount = mode === 'account';
 
-    $('#vsAuthLoginForm').toggle(isLogin || isSignup);
+    $('#vsAuthLoginForm').toggle(!isAccount);
     $('#vsAuthAccountInfo').toggle(isAccount);
     $('#vsAuthLogout').toggle(isAccount);
-    $('#vsAuthPasswordField').toggle(!isForgot);
+    $('#vsAuthPasswordField').toggle(!isForgot && !isAccount);
     $('#vsAuthConfirmPasswordField').toggle(isSignup);
     $('#vsAuthSubmit').toggle(isLogin).text('Đăng nhập');
     $('#vsAuthSignup').toggle(isSignup).text('Tạo tài khoản');
     $('#vsAuthForgot').toggle(isLogin);
-    $('#vsAuthBackToLogin').toggle(!isLogin);
-    $('#vsAuthForgotForm').toggle(isForgot);
+    $('#vsAuthBackToLogin').toggle(!isLogin && !isAccount);
+    $('#vsAuthForgotForm').toggle(false);
     $('#vsAuthTitle').text(isSignup ? 'Tạo tài khoản VietSoft' : isForgot ? 'Đặt lại mật khẩu' : isAccount ? 'Tài khoản VietSoft' : 'Đăng nhập VietSoft');
     if (isAccount && currentUser) $('#vsAuthAccountEmail').text(currentUser.email || '');
     setStatus('');
