@@ -115,3 +115,8 @@
 #vsProLicenseInput{width:100%;min-height:76px;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;resize:vertical;font-family:monospace;font-size:12px;background:#fff}
 .vs-pro-license-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .vs-pro-license-status{min-height:20px;margin-top:8px;font-size:13px;color:#4b5563}
+
+.vs-modern .vs-pro-license{margin-bottom:20px}
+.vs-modern .vs-pro-license .vs-field{margin-bottom:12px}
+.vs-modern .vs-pro-license input[type="email"]{width:100%;min-height:42px;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;background:#fff}
+.vs-modern .vs-pro-modal-actions{padding-top:18px;border-top:1px solid #eaecf0}
