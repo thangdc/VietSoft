@@ -27,6 +27,7 @@ function showMode(mode) {
     $('#vsAuthConfirmPasswordField').toggle(isSignup);
     $('#vsAuthSubmit').toggle(isLogin).text('Đăng nhập');
     $('#vsAuthSignup').toggle(isSignup).text('Tạo tài khoản');
+    $('#vsAuthForgotSubmit').toggle(isForgot);
     $('#vsAuthForgot').toggle(isLogin);
     $('#vsAuthBackToLogin').toggle(!isLogin && !isAccount);
     $('#vsAuthForgotForm').toggle(false);
