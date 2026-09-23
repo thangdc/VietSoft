@@ -1,7 +1,7 @@
 (function () {
 'use strict';
 
-var PUBLIC_KEY_SPKI_BASE64 = 'MCowBQYDK2VwAyEAVIBf2Z0WjZJl45wg1itZL7QlVpZV3itmAUshZ31K9mg=';
+var PUBLIC_KEY_SPKI_BASE64 = 'MCowBQYDK2VwAyEAMlFMNDZxhns+ze0eW8P+bw3yNVFU4wpK2Oz8zUdfMbg=';
 var STORAGE_KEY = 'vietsoft_qr_license_v1';
 var PRODUCT = 'vietsoft-qr';
 
@@ -33,22 +33,12 @@ function parseLicense(license) {
     return { raw: String(license || '').trim(), payload: payload, payloadPart: parts[1], signaturePart: parts[2] };
 }
 
-async function importPublicKey() {
-    return crypto.subtle.importKey(
-        'spki',
-        base64UrlToBytes(bytesToBase64Url(base64UrlToBytes(btoa(String.fromCharCode.apply(null, base64UrlToBytes(PUBLIC_KEY_SPKI_BASE64)))))),
-        { name: 'Ed25519' },
-        false,
-        ['verify']
-    );
-}
-
 async function verifyLicense(license) {
     try {
         var parsed = parseLicense(license);
         var key = await crypto.subtle.importKey(
             'spki',
-            base64UrlToBytes(PUBLIC_KEY_SPKI_BASE64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')),
+            base64UrlToBytes(PUBLIC_KEY_SPKI_BASE64),
             { name: 'Ed25519' },
             false,
             ['verify']
