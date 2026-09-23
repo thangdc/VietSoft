@@ -471,3 +471,82 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   padding-top:14px;
   border-top:1px solid #eaecf0;
 }
+
+
+/* History import / export / print actions */
+.vs-modern .vs-history-export{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  justify-content:flex-end;
+}
+.vs-modern .vs-history-export .vs-btn{
+  min-height:34px;
+  padding:7px 10px;
+}
+.vs-modern #vsPrintSheet{
+  display:none;
+}
+.vs-modern .vs-print-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:24px;
+  align-items:center;
+  justify-items:center;
+}
+.vs-modern .vs-print-qr{
+  width:100%;
+  min-height:260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  page-break-inside:avoid;
+  break-inside:avoid;
+}
+.vs-modern .vs-print-qr img{
+  width:240px;
+  height:240px;
+  object-fit:contain;
+  display:block;
+}
+@media(max-width:800px){
+  .vs-modern .vs-history-export{justify-content:flex-start}
+}
+@media print{
+  @page{margin:12mm}
+  body *{visibility:hidden!important}
+  #vsPrintSheet,
+  #vsPrintSheet *{visibility:visible!important}
+  #vsPrintSheet{
+    display:block!important;
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+  }
+  #vsPrintSheet .vs-print-grid{
+    display:grid!important;
+    grid-template-columns:repeat(3,1fr)!important;
+    gap:12mm 8mm!important;
+    width:100%!important;
+  }
+  #vsPrintSheet .vs-print-qr{
+    min-height:0!important;
+    height:auto!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    page-break-inside:avoid!important;
+    break-inside:avoid!important;
+  }
+  #vsPrintSheet .vs-print-qr img{
+    width:52mm!important;
+    height:52mm!important;
+    max-width:100%!important;
+    object-fit:contain!important;
+  }
+}
