@@ -1277,10 +1277,20 @@ function printHistoryQrs() {
         return;
     }
 
-    var printWindow = window.open('', '_blank', 'width=900,height=700');
-    if (!printWindow) {
-        $('#vsExportStatus').text('Trình duyệt đã chặn cửa sổ in. Vui lòng cho phép popup rồi thử lại.');
-        return;
+    var frame = document.getElementById('vsQrPrintFrame');
+    if (!frame) {
+        frame = document.createElement('iframe');
+        frame.id = 'vsQrPrintFrame';
+        frame.setAttribute('aria-hidden', 'true');
+        frame.style.position = 'fixed';
+        frame.style.width = '1px';
+        frame.style.height = '1px';
+        frame.style.border = '0';
+        frame.style.opacity = '0';
+        frame.style.pointerEvents = 'none';
+        frame.style.left = '-10000px';
+        frame.style.top = '0';
+        document.body.appendChild(frame);
     }
 
     var qrCells = [];
@@ -1292,7 +1302,9 @@ function printHistoryQrs() {
             remaining--;
 
             if (remaining === 0) {
-                var documentHtml = '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>In mã QR - VietSoft</title>' +
+                var printDocument = frame.contentDocument || frame.contentWindow.document;
+                printDocument.open();
+                printDocument.write('<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>In mã QR</title>' +
                     '<style>' +
                     '@page{margin:12mm}' +
                     'html,body{margin:0;padding:0;background:#fff}' +
@@ -1300,16 +1312,12 @@ function printHistoryQrs() {
                     '.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14mm;align-items:start}' +
                     '.qr-cell{display:flex;align-items:center;justify-content:center;break-inside:avoid;page-break-inside:avoid}' +
                     '.qr-cell img{display:block;width:55mm;height:55mm;object-fit:contain}' +
-                    '@media screen{body{padding:24px}.qr-grid{max-width:760px;margin:0 auto}.qr-cell{border:1px solid #e5e7eb;border-radius:10px;padding:12px;background:#fff}}' +
-                    '</style></head><body><div class="qr-grid">' + qrCells.join('') + '</div></body></html>';
-
-                printWindow.document.open();
-                printWindow.document.write(documentHtml);
-                printWindow.document.close();
+                    '</style></head><body><div class="qr-grid">' + qrCells.join('') + '</div></body></html>');
+                printDocument.close();
 
                 setTimeout(function() {
-                    printWindow.focus();
-                    printWindow.print();
+                    frame.contentWindow.focus();
+                    frame.contentWindow.print();
                 }, 250);
             }
         });
