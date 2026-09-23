@@ -552,3 +552,7 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 }
 
 #vsImportExcelInput{display:none!important;width:0!important;height:0!important;position:absolute!important;left:-9999px!important;opacity:0!important;pointer-events:none!important}
+
+/* Keep the Result column anchored independently of History height. */
+.vs-modern .vs-generator{align-items:start!important}.vs-modern .vs-result{align-self:start!important}
+#vsImportExcelInput{display:none!important;width:0!important;height:0!important;position:absolute!important;left:-9999px!important;opacity:0!important;pointer-events:none!important}
