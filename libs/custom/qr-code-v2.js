@@ -1861,13 +1861,29 @@ $(function(){
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
-    $('#vsExportExcel').on('click',function(){ openProModal('export'); });
+    function closeFileExportModal() {
+        var modal = $('#vsFileExportModal');
+        if (!modal.length) return;
+        modal.removeClass('is-open').attr('aria-hidden','true');
+        $('body').removeClass('vs-file-export-modal-open');
+    }
+    function openFileExportModal() {
+        var modal = $('#vsFileExportModal');
+        if (!modal.length) return;
+        modal.addClass('is-open').attr('aria-hidden','false');
+        $('body').addClass('vs-file-export-modal-open');
+        $('#vsFileExportExcel').trigger('focus');
+    }
+    $('#vsFileExport').on('click',function(){ openFileExportModal(); });
+    $('#vsFileExportModalClose').on('click',closeFileExportModal);
+    $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
+    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); openProModal('export'); });
+    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); openProModal('download'); });
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
-    $('#vsDownloadHistory').on('click',function(){ openProModal('download'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
     $('#vsProModal').on('click','[data-pro-close="true"]',function(){ pendingProAction = null; closeProModal(); });
-    $(document).on('keydown.qrProModal',function(e){ if(e.key === 'Escape') { pendingProAction = null; closeProModal(); } });
+    $(document).on('keydown.qrProModal',function(e){ if(e.key === 'Escape') { pendingProAction = null; closeProModal(); closeFileExportModal(); } });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
