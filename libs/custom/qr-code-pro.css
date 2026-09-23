@@ -1,0 +1,33 @@
+/* QR Generator Pro feature presentation
+ * Visual-only in this phase: existing actions remain fully functional.
+ */
+.vs-modern .vs-pro-feature{
+  position:relative;
+}
+.vs-modern .vs-pro-feature > span:last-child::after{
+  content:'PRO';
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-left:6px;
+  padding:2px 5px;
+  min-height:16px;
+  border:1px solid #c7d7fe;
+  border-radius:999px;
+  background:#eef4ff;
+  color:#175cd3;
+  font-size:9px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:.04em;
+  vertical-align:middle;
+}
+.vs-modern .vs-pro-feature:hover > span:last-child::after{
+  background:#e0ecff;
+}
+@media(max-width:640px){
+  .vs-modern .vs-history-export .vs-pro-feature > span:last-child::after{
+    font-size:8px;
+    padding:2px 4px;
+  }
+}
