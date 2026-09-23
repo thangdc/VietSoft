@@ -91,10 +91,10 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-hero p{margin:0;color:var(--vs-muted);font-size:14px;max-width:760px}
 .vs-modern .vs-app{padding:8px 16px 28px}
 
-@media (min-width:801px){
+@media (min-width:761px){
   .vs-modern .vs-card{
     display:grid;
-    grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);
+    grid-template-columns:minmax(0,1fr) 380px;
     align-items:start;
   }
   .vs-modern .vs-tabs{
@@ -113,7 +113,7 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
     width:auto;
   }
 }
-@media (max-width:800px){
+@media (max-width:760px){
   .vs-modern .vs-card{
     display:block;
   }
@@ -189,7 +189,7 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-tabs a.active{background:#eff6ff!important;border-color:#dbeafe!important;color:#175cd3!important;box-shadow:none!important}
 .vs-modern .vs-generator{grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)!important}
 .vs-modern .vs-form{padding:30px!important;background:#fff!important}
-.vs-modern .vs-result{padding:30px!important;background:linear-gradient(180deg,#f9fbff 0%,#f5f7fb 100%)!important;border-left:1px solid #eaecf0!important;position:relative}
+.vs-modern .vs-result{padding:30px!important;background:linear-gradient(180deg,#f9fbff 0%,#f5f7fb 100%)!important;border-left:1px solid #eaecf0!important;position:relative;box-sizing:border-box;min-width:0}
 .vs-modern .vs-form h2,.vs-modern .vs-result h2{font-size:18px!important;margin-bottom:20px!important;color:#101828!important}
 .vs-modern .vs-form h2:after{content:' ';display:block;width:34px;height:3px;background:#2563eb;border-radius:99px;margin-top:9px}
 .vs-modern .vs-result h2{text-align:center!important;width:100%}
@@ -206,7 +206,7 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-history-table th{background:#f8fafc!important;color:#475467!important;font-size:11px!important;padding:11px 10px!important}
 .vs-modern .vs-history-table td{padding:11px 10px!important}
 .vs-modern .vs-history-footer{padding-top:4px!important}
-@media(max-width:800px){
+@media(max-width:760px){
  .vs-modern .header{padding-left:8px;padding-right:8px}
  .vs-modern .vs-generator{grid-template-columns:1fr!important}
  .vs-modern .vs-result{border-left:0!important;border-top:1px solid #eaecf0!important}
