@@ -368,3 +368,18 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   align-items: center;
   gap: 0;
 }
+
+
+/* Keep the payment tab icon aligned with the text baseline. */
+.vs-modern .vs-tabs a .vs-tab-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  vertical-align: -3px;
+  margin-right: 5px;
+  fill: currentColor;
+}
+.vs-modern .vs-tabs a[data-type="payment"] {
+  display: inline-flex;
+  align-items: center;
+}
