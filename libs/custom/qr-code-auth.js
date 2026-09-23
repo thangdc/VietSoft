@@ -11,7 +11,7 @@ function setStatus(message, isError) {
 }
 
 function setBusy(busy) {
-    $('#vsAuthSubmit,#vsAuthSignup,#vsAuthForgot,#vsAuthLogout').prop('disabled', !!busy);
+    $('#vsAuthSubmit,#vsAuthSignup,#vsAuthForgot,#vsAuthForgotSubmit,#vsAuthLogout').prop('disabled', !!busy);
 }
 
 function showMode(mode) {
@@ -30,6 +30,7 @@ function showMode(mode) {
     $('#vsAuthForgotSubmit').toggle(isForgot);
     $('#vsAuthForgot').toggle(isLogin);
     $('#vsAuthBackToLogin').toggle(!isLogin && !isAccount);
+    $('#vsAuthCreateAccount').toggle(isLogin);
     $('#vsAuthForgotForm').toggle(false);
     $('#vsAuthTitle').text(isSignup ? 'Tạo tài khoản VietSoft' : isForgot ? 'Đặt lại mật khẩu' : isAccount ? 'Tài khoản VietSoft' : 'Đăng nhập VietSoft');
     if (isAccount && currentUser) $('#vsAuthAccountEmail').text(currentUser.email || '');
