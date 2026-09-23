@@ -554,3 +554,52 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 
 
 
+
+/* Restore stable two-column generator layout independently of grid/flex overrides. */
+
+@media (min-width: 601px) {
+  .vs-modern .vs-generator {
+    display: table !important;
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  .vs-modern .vs-generator > .vs-form {
+    display: table-cell !important;
+    width: auto !important;
+    min-width: 0 !important;
+    vertical-align: top !important;
+  }
+
+  .vs-modern .vs-generator > .vs-result {
+    display: table-cell !important;
+    width: 360px !important;
+    min-width: 360px !important;
+    max-width: 360px !important;
+    vertical-align: top !important;
+    position: static !important;
+    box-sizing: border-box !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .vs-modern .vs-generator {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .vs-modern .vs-generator > .vs-form,
+  .vs-modern .vs-generator > .vs-result {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    position: static !important;
+    box-sizing: border-box !important;
+  }
+
+  .vs-modern .vs-generator > .vs-result {
+    border-left: 0 !important;
+    border-top: 1px solid #eaecf0 !important;
+  }
+}
