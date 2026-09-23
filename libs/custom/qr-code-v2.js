@@ -1202,6 +1202,92 @@ function isValidImportedFields(type, fields) {
     return false;
 }
 
+var pendingImport = null;
+
+function getImportPreviewLabel(type, fields) {
+    if (type === 'url') return fields.url || '';
+    if (type === 'text') return fields.text || '';
+    if (type === 'phone') return fields.phone || '';
+    if (type === 'sms') return (fields.phone || '') + (fields.body ? ' · ' + fields.body : '');
+    if (type === 'email') return (fields.email || '') + (fields.subject ? ' · ' + fields.subject : '');
+    if (type === 'contact') return fields.name || fields.phone || fields.email || '';
+    if (type === 'wifi') return fields.ssid || '';
+    if (type === 'location') return (fields.latitude || '') + ', ' + (fields.longitude || '');
+    if (type === 'payment') return (fields.bankBin || '') + ' · ' + (fields.account || '');
+    return '';
+}
+
+function closeImportPreview() {
+    var modal = $('#vsImportPreviewModal');
+    if (!modal.length) return;
+    modal.removeClass('is-open').attr('aria-hidden','true');
+    $('body').removeClass('vs-import-preview-open');
+    pendingImport = null;
+}
+
+function ensureImportPreviewModal() {
+    if ($('#vsImportPreviewModal').length) return;
+    var html = '<div class="vs-import-preview-modal" id="vsImportPreviewModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="vsImportPreviewTitle">' +
+        '<div class="vs-import-preview-backdrop" data-import-preview-close="true"></div>' +
+        '<div class="vs-import-preview-card" role="document">' +
+            '<button class="vs-import-preview-close" id="vsImportPreviewClose" type="button" aria-label="Đóng">×</button>' +
+            '<div class="vs-import-preview-kicker">IMPORT EXCEL</div>' +
+            '<h2 id="vsImportPreviewTitle">Xem trước dữ liệu QR</h2>' +
+            '<p class="vs-import-preview-intro" id="vsImportPreviewSummary"></p>' +
+            '<div class="vs-import-preview-table-wrap"><table class="vs-import-preview-table"><thead><tr><th>Dòng</th><th>Loại QR</th><th>Nội dung</th><th>Trạng thái</th></tr></thead><tbody id="vsImportPreviewRows"></tbody></table></div>' +
+            '<div class="vs-import-preview-footer"><span id="vsImportPreviewHint"></span><div class="vs-import-preview-actions"><button class="vs-btn vs-btn-secondary" id="vsImportPreviewCancel" type="button">Hủy</button><button class="vs-btn vs-btn-primary" id="vsImportPreviewConfirm" type="button">Nhập dữ liệu</button></div></div>' +
+        '</div></div>';
+    $('body').append(html);
+    $('#vsImportPreviewClose,#vsImportPreviewCancel').on('click', closeImportPreview);
+    $('#vsImportPreviewModal').on('click','[data-import-preview-close="true"]', closeImportPreview);
+}
+
+function showImportPreview(result) {
+    ensureImportPreviewModal();
+    var validCount = result.records.length;
+    var skippedCount = result.skipped.length;
+    var total = validCount + skippedCount;
+    $('#vsImportPreviewSummary').text('Đã đọc ' + total + ' dòng dữ liệu: ' + validCount + ' bản ghi sẽ được nhập, ' + skippedCount + ' dòng sẽ bỏ qua.');
+    var rowsHtml = '';
+    result.preview.slice(0, 30).forEach(function(item) {
+        rowsHtml += '<tr class="' + (item.valid ? 'is-valid' : 'is-skipped') + '">' +
+            '<td>' + esc(item.rowNumber) + '</td>' +
+            '<td>' + esc(item.typeName) + '</td>' +
+            '<td>' + esc(item.label) + '</td>' +
+            '<td><span class="vs-import-preview-status">' + esc(item.status) + '</span></td>' +
+        '</tr>';
+    });
+    $('#vsImportPreviewRows').html(rowsHtml || '<tr><td colspan="4">Không có dòng dữ liệu để xem trước.</td></tr>');
+    $('#vsImportPreviewHint').text(result.preview.length > 30 ? 'Đang hiển thị 30 dòng đầu tiên.' : 'Kiểm tra dữ liệu trước khi nhập vào lịch sử QR.');
+    $('#vsImportPreviewConfirm').prop('disabled', !validCount).text(validCount ? 'Nhập ' + validCount + ' bản ghi' : 'Không có dữ liệu hợp lệ');
+    $('#vsImportPreviewModal').addClass('is-open').attr('aria-hidden','false');
+    $('body').addClass('vs-import-preview-open');
+}
+
+function commitImportedRecords(result) {
+    var items = getHistory();
+    result.records.forEach(function(record) {
+        items.unshift({
+            historyId: String(Date.now()) + '-' + String(Math.random()).slice(2),
+            type: record.type,
+            fields: record.fields,
+            data: record.data,
+            design: normalizeDesign({}),
+            time: new Date().toLocaleString()
+        });
+    });
+    localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+    historyPage = 1;
+    historySearch = '';
+    currentType = result.type;
+    try { localStorage.setItem(activeTabKey, result.type); } catch (e) {}
+    renderFields(result.type);
+    renderHistory();
+    $('#vsExportStatus').text('✓ Đã nhập ' + result.records.length + ' bản ghi' + (result.skipped.length ? ' (' + result.skipped.length + ' bỏ qua).' : '.'));
+    track('qr_excel_import', {qr_type:result.type, record_count:result.records.length, skipped_count:result.skipped.length});
+    closeImportPreview();
+}
+
 function importExcel(file) {
     var status = $('#vsExportStatus');
     if (!file) return;
@@ -1210,6 +1296,7 @@ function importExcel(file) {
         return;
     }
 
+    status.text('Đang đọc Excel...');
     var reader = new FileReader();
     reader.onload = function(event) {
         try {
@@ -1223,43 +1310,46 @@ function importExcel(file) {
             var type = findImportTemplate(headers);
             if (!type) throw new Error('Không nhận diện được định dạng Excel đã xuất từ VietSoft.');
 
-            var imported = 0, skipped = 0;
+            var imported = [];
+            var skipped = [];
+            var preview = [];
             var items = getHistory();
-            rows.slice(1).forEach(function(row) {
+
+            rows.slice(1).forEach(function(row, index) {
+                var rowNumber = index + 2;
                 if (!row || !row.length || row.every(function(value){ return String(value == null ? '' : value).trim() === ''; })) return;
                 var fields = getImportedFields(type, row, headers);
-                if (!isValidImportedFields(type, fields)) { skipped++; return; }
+                if (!isValidImportedFields(type, fields)) {
+                    skipped.push({rowNumber:rowNumber, reason:'Thiếu dữ liệu bắt buộc'});
+                    preview.push({rowNumber:rowNumber,typeName:exportTemplates[type].templateName,label:getImportPreviewLabel(type,fields),valid:false,status:'Bỏ qua: thiếu dữ liệu'});
+                    return;
+                }
                 var data = buildImportedData(type, fields);
-                if (!data) { skipped++; return; }
+                if (!data) {
+                    skipped.push({rowNumber:rowNumber, reason:'Không tạo được dữ liệu QR'});
+                    preview.push({rowNumber:rowNumber,typeName:exportTemplates[type].templateName,label:getImportPreviewLabel(type,fields),valid:false,status:'Bỏ qua: dữ liệu không hợp lệ'});
+                    return;
+                }
 
                 var duplicate = items.some(function(item) {
                     return String(item.type) === type && String(item.data || '') === String(data);
+                }) || imported.some(function(item) {
+                    return String(item.data || '') === String(data);
                 });
-                if (duplicate) { skipped++; return; }
+                if (duplicate) {
+                    skipped.push({rowNumber:rowNumber, reason:'Trùng dữ liệu'});
+                    preview.push({rowNumber:rowNumber,typeName:exportTemplates[type].templateName,label:getImportPreviewLabel(type,fields),valid:false,status:'Bỏ qua: trùng dữ liệu'});
+                    return;
+                }
 
-                items.unshift({
-                    historyId: String(Date.now()) + '-' + String(Math.random()).slice(2),
-                    type: type,
-                    fields: fields,
-                    data: data,
-                    design: normalizeDesign({}),
-                    time: new Date().toLocaleString()
-                });
-                imported++;
+                imported.push({type:type,fields:fields,data:data});
+                preview.push({rowNumber:rowNumber,typeName:exportTemplates[type].templateName,label:getImportPreviewLabel(type,fields),valid:true,status:'Sẵn sàng nhập'});
             });
 
-            if (!imported && !skipped) throw new Error('File không có bản ghi dữ liệu.');
-            localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
-            historyPage = 1;
-            historySearch = '';
-            if (fields[type]) {
-                currentType = type;
-                try { localStorage.setItem(activeTabKey, type); } catch (e) {}
-                renderFields(type);
-            }
-            renderHistory();
-            status.text('✓ Đã nhập ' + imported + ' bản ghi' + (skipped ? ' (' + skipped + ' bỏ qua).' : '.'));
-            track('qr_excel_import', {qr_type:type, record_count:imported, skipped_count:skipped});
+            if (!imported.length && !skipped.length) throw new Error('File không có bản ghi dữ liệu.');
+            pendingImport = {type:type,records:imported,skipped:skipped,preview:preview};
+            showImportPreview(pendingImport);
+            status.text('');
         } catch (e) {
             status.text('Nhập Excel thất bại: ' + (e && e.message ? e.message : 'lỗi không xác định') + '.');
         } finally {
@@ -1269,6 +1359,7 @@ function importExcel(file) {
     reader.onerror = function(){ status.text('Không thể đọc file Excel.'); $('#vsImportExcelInput').val(''); };
     reader.readAsArrayBuffer(file);
 }
+
 
 function printHistoryQrs() {
     var items = getHistoryViewItems();
@@ -1542,6 +1633,7 @@ $(function(){
     }
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
+    $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
     $('#vsExportExcel').on('click',function(){ openProModal('export'); });
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
