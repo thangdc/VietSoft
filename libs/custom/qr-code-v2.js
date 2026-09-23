@@ -1937,7 +1937,7 @@ $(function(){
                 $('#vsProLicenseStatus').text('✕ Email không khớp với License Key.');
                 return;
             }
-            track('qr_pro_license_activated', {license_id: result.payload && result.payload.licenseId ? result.payload.licenseId : '', email: licenseEmail});
+            track('qr_pro_license_activated', {license_id: result.payload && result.payload.licenseId ? result.payload.licenseId : ''});
         }
         var action = pendingProAction;
         pendingProAction = null;
