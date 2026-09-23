@@ -3,6 +3,7 @@
 
 var SYNC_STATE_KEY = 'vietsoft_qr_sync_state_v1';
 var syncing = false;
+function emitStatus(status, message) { if (global.jQuery) global.jQuery(document).trigger('vietsoft:sync-status', [{status:status,message:message||''}]); }
 
 function getState() {
     try {
@@ -117,13 +118,14 @@ function mergeByTimestamp(local, cloud) {
 async function syncNow(reason) {
     if (syncing) return {ok: false, reason: 'busy'};
     if (!global.VietSoftQrHistoryRepository || !global.VietSoftQrCloudHistory) return {ok: false, reason: 'unavailable'};
-    if (!(await isProUser())) return {ok: false, reason: 'not-pro'};
+    if (!(await isProUser())) { emitStatus('hidden'); return {ok: false, reason: 'not-pro'}; }
+    emitStatus('syncing', 'Đang đồng bộ...');
 
     syncing = true;
     try {
         var state = getState();
         var pulled = await global.VietSoftQrCloudHistory.pullUpdatedSince(state.lastSyncAt || '');
-        if (!pulled.ok) return pulled;
+        if (!pulled.ok) { emitStatus('error', 'Đồng bộ thất bại'); return pulled;}
 
         var local = getLocalRecords().concat(getLocalTombstones());
         var merged = mergeByTimestamp(local, pulled.items || []);
@@ -131,7 +133,7 @@ async function syncNow(reason) {
         var pushItems = merged.push;
         if (pushItems.length) {
             var pushed = await global.VietSoftQrCloudHistory.upsert(pushItems);
-            if (!pushed.ok) return pushed;
+            if (!pushed.ok) { emitStatus('error', 'Đồng bộ thất bại'); return pushed;}
         }
 
         if (merged.localTombstonesToAck.length) {
@@ -144,11 +146,9 @@ async function syncNow(reason) {
             lastSyncedAt: new Date().toISOString()
         });
 
-        return {
-            ok: true,
-            pulled: (pulled.items || []).length,
-            pushed: pushItems.length
-        };
+        var result = {ok:true,pulled:(pulled.items||[]).length,pushed:pushItems.length};
+        emitStatus('success', 'Đã đồng bộ');
+        return result;
     } catch (e) {
         return {ok: false, reason: e && e.message ? e.message : 'Sync failed.'};
     } finally {
