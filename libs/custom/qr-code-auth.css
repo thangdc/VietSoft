@@ -1,0 +1,26 @@
+.vs-auth-account-wrap{display:flex;align-items:center;gap:8px;margin-left:auto}
+.vs-auth-button{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:6px;padding:7px 12px;font-size:13px;cursor:pointer}
+.vs-auth-button:hover{background:rgba(255,255,255,.18)}
+.vs-auth-account{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vs-auth-modal-open{overflow:hidden}
+.vs-auth-modal{display:none;position:fixed;inset:0;z-index:10000}
+.vs-auth-modal.is-open{display:flex;align-items:center;justify-content:center}
+.vs-auth-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55)}
+.vs-auth-card{position:relative;width:min(440px,calc(100vw - 32px));background:#fff;border-radius:14px;box-shadow:0 24px 70px rgba(15,23,42,.28);padding:28px}
+.vs-auth-close{position:absolute;right:14px;top:10px;border:0;background:transparent;font-size:28px;color:#64748b;cursor:pointer}
+.vs-auth-kicker{font-size:11px;letter-spacing:.12em;color:#2563eb;font-weight:700;margin-bottom:6px}
+.vs-auth-card h2{margin:0 0 8px;font-size:24px;color:#111827}
+.vs-auth-intro{margin:0 0 20px;color:#64748b;font-size:14px}
+.vs-auth-field{margin-bottom:14px}
+.vs-auth-field label{display:block;font-weight:600;margin-bottom:6px;color:#374151}
+.vs-auth-field input{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:10px 12px;font-size:14px}
+.vs-auth-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.vs-auth-actions .vs-btn{flex:1}
+.vs-auth-links{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size:13px}
+.vs-auth-links button{border:0;background:none;padding:0;color:#2563eb;cursor:pointer}
+.vs-auth-status{min-height:20px;margin-top:14px;font-size:13px;color:#15803d}
+.vs-auth-status.is-error{color:#dc2626}
+.vs-auth-account-info{padding:14px;background:#f8fafc;border-radius:10px;margin-bottom:16px}
+.vs-auth-account-info strong{display:block;color:#111827;margin-bottom:4px}
+.vs-auth-account-info span{font-size:13px;color:#64748b;word-break:break-all}
+@media(max-width:700px){.vs-auth-account-wrap{margin-left:0}.vs-auth-account{max-width:150px}.vs-auth-card{padding:22px}}
