@@ -320,6 +320,65 @@ function applyDesign() {
     });
 }
 
+function syncTabState(type) {
+    var tabs = document.getElementById('vsTabs');
+    if (!tabs) return;
+    var items = tabs.querySelectorAll('a[data-type]');
+    items.forEach(function (item) {
+        var active = item.getAttribute('data-type') === type;
+        item.classList.toggle('active', active);
+        item.setAttribute('role', 'tab');
+        item.setAttribute('aria-selected', String(active));
+        item.setAttribute('tabindex', active ? '0' : '-1');
+    });
+}
+
+function initializeQrTabs(initialType) {
+    var tabs = document.getElementById('vsTabs');
+    if (!tabs) return;
+
+    tabs.setAttribute('role', 'tablist');
+    syncTabState(initialType);
+
+    tabs.addEventListener('click', function (event) {
+        var target = event.target.closest('a[data-type]');
+        if (!target || !tabs.contains(target)) return;
+
+        event.preventDefault();
+        var type = target.getAttribute('data-type');
+        if (!fields[type]) return;
+
+        try { localStorage.setItem(activeTabKey, type); } catch (e) {}
+        try {
+            var url = new URL(window.location.href);
+            url.searchParams.set('type', type);
+            window.history.replaceState(null, '', url.toString());
+        } catch (e) {}
+
+        renderFields(type);
+    });
+
+    tabs.addEventListener('keydown', function (event) {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+
+        var target = event.target.closest('a[data-type]');
+        if (!target || !tabs.contains(target)) return;
+
+        var items = Array.prototype.slice.call(tabs.querySelectorAll('a[data-type]'));
+        var index = items.indexOf(target);
+        if (index < 0) return;
+
+        event.preventDefault();
+        var offset = event.key === 'ArrowRight' ? 1 : -1;
+        var next = items[(index + offset + items.length) % items.length];
+        if (!next) return;
+
+        next.focus();
+        var type = next.getAttribute('data-type');
+        if (fields[type]) renderFields(type);
+    });
+}
+
 function renderFields(type) {
     var typeChanged = currentType !== type;
     if (typeChanged) clearHistorySelection();
@@ -340,7 +399,7 @@ function renderFields(type) {
         currentDesign = normalizeDesign({});
         try { localStorage.removeItem(currentQrKey); } catch (e) {}
     }
-    $('#vsTabs a').removeClass('active').filter('[data-type="' + type + '"]').addClass('active');
+    syncTabState(type);
     if (locationMap) { locationMap.remove(); locationMap = null; locationMarker = null; }
     renderHistory();
     if (type === 'location') initLocationMap();
@@ -1818,20 +1877,7 @@ $(function(){
     renderResultDesignPanel();
     loadPaymentBanks();
     restoreCurrentQrState();
-    $('#vsTabs').off('click.qrTabs').on('click.qrTabs', 'a[data-type]', function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        var type = $(this).attr('data-type');
-        try { localStorage.setItem(activeTabKey, type); } catch (e) {}
-        try {
-            var url = new URL(window.location.href);
-            url.searchParams.set('type', type);
-            window.history.replaceState(null, '', url.toString());
-        } catch (e) {}
-        if (fields[type]) {
-            renderFields(type);
-        }
-    });
+    initializeQrTabs(initialType);
     $('#vsGenerate').on('click',generate);
     $('#vsClear').on('click',function(){
         currentData = '';
@@ -1998,88 +2044,3 @@ $(function(){
             await window.VietSoftQrLicense.clear();
             $('#vsProLicenseInput').val('');
             $('#vsProLicenseEmail').val('');
-            await refreshProLicenseUi();
-        } finally {
-            button.prop('disabled', false);
-        }
-    });
-    $('#vsProLicenseInput,#vsProLicenseEmail').on('input',function(){
-        $('#vsProLicenseStatus').text('');
-    });
-    $('#vsProModal').on('click','[data-pro-close="true"]',function(){ pendingProAction = null; closeProModal(); });
-    $(document).on('keydown.qrProModal',function(e){ if(e.key === 'Escape') { pendingProAction = null; closeProModal(); closeFileExportModal(); } });
-    $('#vsSize,#vsLevel').on('change', function(){
-        saveQrConfig();
-        if (currentData) {
-            renderQrImage(currentData, currentDesign, qrConfig.size || 300, function(imageUrl) {
-                currentImage = imageUrl;
-                var preview = document.getElementById('vsPreview');
-                if (!preview) return;
-                preview.innerHTML = '';
-                var image = new Image();
-                image.alt = 'QR Code';
-                image.src = currentImage;
-                preview.appendChild(image);
-                $('#vsDownload,#vsCopy,#vsOpen').prop('disabled', false);
-                saveCurrentQrState();
-            });
-        }
-    });
-    $('#vsHistory').on('input', '#vsHistorySearch', function(){
-        historySearch = $(this).val();
-        historyPage = 1;
-        renderHistory();
-    });
-    $('#vsHistory').on('change', '#vsHistoryPageSize', function(){
-        historyPageSize = parseInt($(this).val(), 10) || 10;
-        historyPage = 1;
-        renderHistory();
-    });
-    $('#vsHistory').on('click', '[data-history-sort]', function(){
-        var key = $(this).attr('data-history-sort');
-        if (key === 'ID') return;
-        if (historySort.key === key) historySort.direction = historySort.direction === 'asc' ? 'desc' : 'asc';
-        else { historySort.key = key; historySort.direction = 'asc'; }
-        historyPage = 1;
-        renderHistory();
-    });
-    $('#vsHistory').on('click', '[data-history-page]', function(){
-        var page = parseInt($(this).attr('data-history-page'), 10);
-        if (page > 0) { historyPage = page; renderHistory(); }
-    });
-    $('#vsHistory').on('click', '[data-history-delete-id]', function(){
-        var historyId = $(this).attr('data-history-delete-id');
-        if (confirm('Xóa bản ghi này?')) deleteHistoryItem(historyId);
-    });
-    // Let the browser own checkbox state; only stop row/label click propagation.
-    $('#vsHistory').on('click', '.vs-history-select-item,#vsHistorySelectPage,#vsHistorySelectAllPage', function(e){
-        e.stopPropagation();
-    });
-    $('#vsHistory').on('change', '.vs-history-select-item', function(){
-        var checkbox = $(this);
-        var id = String(checkbox.attr('data-history-id') || '');
-        if (!id) return;
-        if (checkbox.prop('checked')) selectedHistoryIds[id] = true;
-        else delete selectedHistoryIds[id];
-        updateHistorySelectionUi();
-    });
-    $('#vsHistory').on('change', '#vsHistorySelectPage,#vsHistorySelectAllPage', function(){
-        var checked = $(this).prop('checked');
-        $('#vsHistory .vs-history-select-item').each(function(){
-            var id = String($(this).attr('data-history-id') || '');
-            if (!id) return;
-            $(this).prop('checked', checked);
-            if (checked) selectedHistoryIds[id] = true;
-            else delete selectedHistoryIds[id];
-        });
-        updateHistorySelectionUi();
-    });
-    $('#vsHistory').on('click', '#vsClearHistory', clearCurrentHistory);
-    $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
-    $('#vsCopy').on('click',async function(){if(!currentImage)return;try{var blob=await (await fetch(currentImage)).blob();await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setStatus('✓ Đã sao chép ảnh QR');track('qr_copy',{qr_type:currentType});}catch(e){setStatus('Trình duyệt không hỗ trợ sao chép ảnh. Hãy dùng Tải PNG.');}});
-    $('#vsOpen').on('click',function(){if(currentImage)window.open(currentImage,'_blank');});
-    $(window).off('resize.qrLocation').on('resize.qrLocation', function(){
-        if (locationMap) locationMap.invalidateSize(true);
-    });
-});
-})();
