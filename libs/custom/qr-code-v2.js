@@ -229,7 +229,7 @@ function drawFinder(ctx, x, y, moduleSize, foreground, background, style) {
 
 var qrRenderSequence = 0;
 
-function renderQrImage(data, design, size, callback, onError) {
+function renderQrImage(data, design, size, callback, onError, allowConcurrent) {
     onError = onError || function() {};
     if (!data || typeof qrcode !== 'function') {
         onError(new Error('QR renderer is unavailable.'));
@@ -265,7 +265,7 @@ function renderQrImage(data, design, size, callback, onError) {
     drawFinder(ctx, offset + (count-7)*moduleSize, offset, moduleSize, foreground, background, design.eyeStyle);
     drawFinder(ctx, offset, offset + (count-7)*moduleSize, moduleSize, foreground, background, design.eyeStyle);
     var done = function(logo){
-        if (renderSequence !== qrRenderSequence) return;
+        if (!allowConcurrent && renderSequence !== qrRenderSequence) return;
         if (logo) {
             var logoSize=size*design.logoSize, lx=(size-logoSize)/2, ly=(size-logoSize)/2;
             var padding=Math.max(4, Math.round(size*.012));
@@ -963,7 +963,9 @@ function renderHistoryQrs(){
         if(!item || !item.data) return;
         renderQrImage(String(item.data), normalizeDesign(item.design), 56, function(imageUrl){
             $(element).empty().append($('<img>', {src:imageUrl, alt:'QR Code'}));
-        });
+        }, function(){
+            $(element).empty();
+        }, true);
     });
 }
 function updateHistorySelectionUi() {
