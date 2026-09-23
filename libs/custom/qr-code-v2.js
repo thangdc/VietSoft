@@ -1261,12 +1261,33 @@ function ensureImportPreviewModal() {
             '<div class="vs-import-preview-kicker">IMPORT EXCEL</div>' +
             '<h2 id="vsImportPreviewTitle">Xem trước dữ liệu QR</h2>' +
             '<p class="vs-import-preview-intro" id="vsImportPreviewSummary"></p>' +
-            '<div class="vs-import-preview-table-wrap"><table class="vs-import-preview-table"><thead><tr><th>Dòng</th><th>Loại QR</th><th>Nội dung</th><th>Trạng thái</th></tr></thead><tbody id="vsImportPreviewRows"></tbody></table></div>' +
+            '<div class="vs-import-preview-table-wrap"><table class="vs-import-preview-table"><thead><tr><th>Dòng</th><th>Loại QR</th><th>Nội dung</th><th>QR</th><th>Trạng thái</th></tr></thead><tbody id="vsImportPreviewRows"></tbody></table></div>' +
             '<div class="vs-import-preview-footer"><span id="vsImportPreviewHint"></span><div class="vs-import-preview-actions"><button class="vs-btn vs-btn-secondary" id="vsImportPreviewCancel" type="button">Hủy</button><button class="vs-btn vs-btn-primary" id="vsImportPreviewConfirm" type="button">Nhập dữ liệu</button></div></div>' +
         '</div></div>';
     $('body').append(html);
     $('#vsImportPreviewClose,#vsImportPreviewCancel').on('click', closeImportPreview);
     $('#vsImportPreviewModal').on('click','[data-import-preview-close="true"]', closeImportPreview);
+}
+
+function renderImportPreviewQrs(result) {
+    var rows = result.preview.slice(0, 30);
+    var renderNext = function(index) {
+        if (index >= rows.length) return;
+        var item = rows[index];
+        if (!item.valid) {
+            renderNext(index + 1);
+            return;
+        }
+        renderQrImage(String(item.data || ''), normalizeDesign({}), 96, function(imageUrl) {
+            item.qrImage = imageUrl;
+            $('#vsImportPreviewRows tr[data-import-preview-row="' + item.rowNumber + '"] .vs-import-preview-qr').html('<img src="' + imageUrl.replace(/"/g, '&quot;') + '" alt="QR Code">');
+            renderNext(index + 1);
+        }, function() {
+            item.qrImage = '';
+            renderNext(index + 1);
+        });
+    };
+    renderNext(0);
 }
 
 function showImportPreview(result) {
@@ -1277,18 +1298,20 @@ function showImportPreview(result) {
     $('#vsImportPreviewSummary').text('Đã đọc ' + total + ' dòng dữ liệu: ' + validCount + ' bản ghi sẽ được nhập, ' + skippedCount + ' dòng sẽ bỏ qua.');
     var rowsHtml = '';
     result.preview.slice(0, 30).forEach(function(item) {
-        rowsHtml += '<tr class="' + (item.valid ? 'is-valid' : 'is-skipped') + '">' +
+        rowsHtml += '<tr class="' + (item.valid ? 'is-valid' : 'is-skipped') + '" data-import-preview-row="' + esc(item.rowNumber) + '">' +
             '<td>' + esc(item.rowNumber) + '</td>' +
             '<td>' + esc(item.typeName) + '</td>' +
             '<td>' + esc(item.label) + '</td>' +
+            '<td class="vs-import-preview-qr">' + (item.valid ? '<span class="vs-import-preview-qr-loading">Đang tạo...</span>' : '<span class="vs-import-preview-qr-empty">—</span>') + '</td>' +
             '<td><span class="vs-import-preview-status">' + esc(item.status) + '</span></td>' +
         '</tr>';
     });
-    $('#vsImportPreviewRows').html(rowsHtml || '<tr><td colspan="4">Không có dòng dữ liệu để xem trước.</td></tr>');
-    $('#vsImportPreviewHint').text(result.preview.length > 30 ? 'Đang hiển thị 30 dòng đầu tiên.' : 'Kiểm tra dữ liệu trước khi nhập vào lịch sử QR.');
+    $('#vsImportPreviewRows').html(rowsHtml || '<tr><td colspan="5">Không có dòng dữ liệu để xem trước.</td></tr>');
+    $('#vsImportPreviewHint').text(result.preview.length > 30 ? 'Đang hiển thị 30 dòng đầu tiên. QR được tạo tuần tự để preview.' : 'QR được tạo ngay trong preview để kiểm tra trước khi nhập.');
     $('#vsImportPreviewConfirm').prop('disabled', !validCount).text(validCount ? 'Nhập ' + validCount + ' bản ghi' : 'Không có dữ liệu hợp lệ');
     $('#vsImportPreviewModal').addClass('is-open').attr('aria-hidden','false');
     $('body').addClass('vs-import-preview-open');
+    renderImportPreviewQrs(result);
 }
 
 function commitImportedRecords(result) {
