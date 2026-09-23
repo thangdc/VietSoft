@@ -148,6 +148,7 @@ function renderResultDesignPanel() {
         '</div>' +
         '<div class="vs-field"><label>Kiểu điểm</label><select id="vsDesignStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option><option value="dot">Chấm</option></select></div>' +
         '<div class="vs-field"><label>Logo <span class="vs-label-muted">(tùy chọn)</span></label><input id="vsDesignLogo" type="file" accept="image/png,image/jpeg,image/webp"><div id="vsDesignLogoName" class="vs-design-file-name">Chưa chọn logo</div></div>' +
+        '<div class="vs-design-advanced"><div class="vs-design-advanced-title">Nâng cao</div><div class="vs-grid2"><div class="vs-field"><label>Mắt QR</label><select id="vsDesignEyeStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option></select></div><div class="vs-field"><label>Kích thước logo</label><select id="vsDesignLogoSize"><option value="0.12">Nhỏ</option><option value="0.16" selected>Vừa</option><option value="0.20">Lớn</option><option value="0.24">Rất lớn</option></select></div></div><div class="vs-field"><label>Khoảng trắng</label><select id="vsDesignQuietZone"><option value="2">2 module</option><option value="4" selected>4 module</option><option value="6">6 module</option></select></div></div>' +
         '<div class="vs-design-warning" id="vsDesignWarning">Tạo QR trước, sau đó bạn có thể tùy chỉnh.</div>' +
         '<div class="vs-actions"><button class="vs-btn vs-btn-primary" id="vsApplyDesign" type="button" disabled><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1L12 3z"/></svg><span>Áp dụng thiết kế</span></button><button class="vs-btn vs-btn-secondary" id="vsResetDesign" type="button">Đặt lại</button></div>' +
         '</div></div>';
@@ -175,7 +176,7 @@ function syncDesignColorControls() {
             $(target).val(valueText).trigger('input');
         }
     });
-    $('#vsDesignStyle').on('change', function(){ if (currentData) renderCustomQr(); });
+    $('#vsDesignStyle,#vsDesignEyeStyle,#vsDesignLogoSize,#vsDesignQuietZone').on('change', function(){ if (currentData) renderCustomQr(); });
     $('#vsDesignLogo').on('change', function(){
         var file = this.files && this.files[0];
         $('#vsDesignLogoName').text(file ? file.name : 'Chưa chọn logo');
@@ -207,10 +208,22 @@ function isFinderModule(row, col, count) {
     return (row < 7 && col < 7) || (row < 7 && col >= count - 7) || (row >= count - 7 && col < 7);
 }
 
-function drawFinder(ctx, x, y, moduleSize, foreground, background) {
-    ctx.fillStyle = foreground; ctx.fillRect(x, y, moduleSize * 7, moduleSize * 7);
-    ctx.fillStyle = background; ctx.fillRect(x + moduleSize, y + moduleSize, moduleSize * 5, moduleSize * 5);
-    ctx.fillStyle = foreground; ctx.fillRect(x + moduleSize * 2, y + moduleSize * 2, moduleSize * 3, moduleSize * 3);
+function drawFinder(ctx, x, y, moduleSize, foreground, background, style) {
+    var size = moduleSize * 7;
+    var inner = moduleSize * 5;
+    var center = moduleSize * 3;
+    if (style === 'rounded') {
+        ctx.fillStyle = foreground;
+        drawRoundedRect(ctx, x, y, size, Math.min(moduleSize * 1.2, size / 4));
+        ctx.fillStyle = background;
+        drawRoundedRect(ctx, x + moduleSize, y + moduleSize, inner, Math.min(moduleSize * 0.9, inner / 4));
+        ctx.fillStyle = foreground;
+        drawRoundedRect(ctx, x + moduleSize * 2, y + moduleSize * 2, center, Math.min(moduleSize * 0.7, center / 4));
+        return;
+    }
+    ctx.fillStyle = foreground; ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = background; ctx.fillRect(x + moduleSize, y + moduleSize, inner, inner);
+    ctx.fillStyle = foreground; ctx.fillRect(x + moduleSize * 2, y + moduleSize * 2, center, center);
 }
 
 var qrRenderSequence = 0;
@@ -238,7 +251,7 @@ function renderQrImage(data, design, size, callback, onError) {
     var ctx = canvas.getContext('2d');
     var foreground = design.foreground, background = design.background, style = design.style;
     ctx.fillStyle = background; ctx.fillRect(0, 0, size, size);
-    var quiet = 4, total = count + quiet * 2, moduleSize = size / total, offset = quiet * moduleSize;
+    var quiet = design.quietZone, total = count + quiet * 2, moduleSize = size / total, offset = quiet * moduleSize;
     for (var row=0; row<count; row++) for (var col=0; col<count; col++) {
         if (!qr.isDark(row,col) || isFinderModule(row,col,count)) continue;
         var x=offset+col*moduleSize, y=offset+row*moduleSize;
@@ -247,13 +260,13 @@ function renderQrImage(data, design, size, callback, onError) {
         else if (style === 'rounded') drawRoundedRect(ctx,x+moduleSize*.08,y+moduleSize*.08,moduleSize*.84,moduleSize*.84);
         else ctx.fillRect(x,y,Math.ceil(moduleSize+.1),Math.ceil(moduleSize+.1));
     }
-    drawFinder(ctx, offset, offset, moduleSize, foreground, background);
-    drawFinder(ctx, offset + (count-7)*moduleSize, offset, moduleSize, foreground, background);
-    drawFinder(ctx, offset, offset + (count-7)*moduleSize, moduleSize, foreground, background);
+    drawFinder(ctx, offset, offset, moduleSize, foreground, background, design.eyeStyle);
+    drawFinder(ctx, offset + (count-7)*moduleSize, offset, moduleSize, foreground, background, design.eyeStyle);
+    drawFinder(ctx, offset, offset + (count-7)*moduleSize, moduleSize, foreground, background, design.eyeStyle);
     var done = function(logo){
         if (renderSequence !== qrRenderSequence) return;
         if (logo) {
-            var logoSize=size*.16, lx=(size-logoSize)/2, ly=(size-logoSize)/2;
+            var logoSize=size*design.logoSize, lx=(size-logoSize)/2, ly=(size-logoSize)/2;
             var padding=Math.max(4, Math.round(size*.012));
             ctx.fillStyle=background; ctx.fillRect(lx-padding,ly-padding,logoSize+padding*2,logoSize+padding*2);
             ctx.drawImage(logo,lx,ly,logoSize,logoSize);
@@ -274,7 +287,10 @@ function renderCustomQr() {
     var design = normalizeDesign({
         foreground: $('#vsDesignForeground').val(),
         background: $('#vsDesignBackground').val(),
-        style: $('#vsDesignStyle').val()
+        style: $('#vsDesignStyle').val(),
+        eyeStyle: $('#vsDesignEyeStyle').val(),
+        logoSize: $('#vsDesignLogoSize').val(),
+        quietZone: $('#vsDesignQuietZone').val()
     });
     getCurrentDesign(function(captured) {
         currentDesign = captured;
@@ -591,10 +607,15 @@ function saveHistory(data, record) {
 
 function normalizeDesign(design) {
     design = design || {};
+    var logoSize = parseFloat(design.logoSize);
+    var quietZone = parseInt(design.quietZone, 10);
     return {
         foreground: /^#[0-9a-fA-F]{6}$/.test(String(design.foreground || '')) ? String(design.foreground) : '#111827',
         background: /^#[0-9a-fA-F]{6}$/.test(String(design.background || '')) ? String(design.background) : '#FFFFFF',
         style: ['square','rounded','dot'].indexOf(String(design.style || '')) !== -1 ? String(design.style) : 'square',
+        eyeStyle: ['square','rounded'].indexOf(String(design.eyeStyle || '')) !== -1 ? String(design.eyeStyle) : 'square',
+        logoSize: isFinite(logoSize) && logoSize >= 0.12 && logoSize <= 0.24 ? logoSize : 0.16,
+        quietZone: [2,4,6].indexOf(quietZone) !== -1 ? quietZone : 4,
         logoDataUrl: String(design.logoDataUrl || '')
     };
 }
@@ -604,6 +625,9 @@ function getCurrentDesign(callback) {
         foreground: $('#vsDesignForeground').val() || '#111827',
         background: $('#vsDesignBackground').val() || '#FFFFFF',
         style: $('#vsDesignStyle').val() || 'square',
+        eyeStyle: $('#vsDesignEyeStyle').val() || 'square',
+        logoSize: parseFloat($('#vsDesignLogoSize').val()) || 0.16,
+        quietZone: parseInt($('#vsDesignQuietZone').val(), 10) || 4,
         logoDataUrl: ''
     };
     var file = document.getElementById('vsDesignLogo');
@@ -885,6 +909,9 @@ function syncDesignFields(design) {
     $('#vsDesignBackground').val(design.background);
     $('#vsDesignBackgroundText').val(design.background);
     $('#vsDesignStyle').val(design.style);
+    $('#vsDesignEyeStyle').val(design.eyeStyle);
+    $('#vsDesignLogoSize').val(String(design.logoSize));
+    $('#vsDesignQuietZone').val(String(design.quietZone));
     $('#vsDesignLogoName').text(design.logoDataUrl ? 'Logo đã lưu' : 'Chưa chọn logo');
 }
 function showHistoryQrResult(item) {
