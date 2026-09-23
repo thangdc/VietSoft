@@ -119,7 +119,7 @@ function renderResultDesignPanel() {
     if (!container.length || $('#vsResultDesign').length) return;
     var html = '<div class="vs-result-design" id="vsResultDesign">' +
         '<div class="vs-result-design-header">' +
-            '<div><div class="vs-result-design-kicker">Tùy chọn</div><h3>Thiết kế QR</h3><p class="vs-result-design-summary">Màu sắc, kiểu điểm và logo</p></div>' +
+            '<div><div class="vs-result-design-kicker">Tùy chỉnh</div><h3>Thiết kế QR</h3><p class="vs-result-design-summary">Kích thước, màu sắc, kiểu điểm và logo</p></div>' +
             '<button class="vs-result-design-toggle" id="vsResultDesignToggle" type="button" aria-expanded="false"><span>Tùy chỉnh QR</span><span class="vs-result-design-chevron" aria-hidden="true">⌄</span></button>' +
         '</div>' +
         '<div class="vs-result-design-body" id="vsResultDesignBody">' +
@@ -133,6 +133,7 @@ function renderResultDesignPanel() {
         '<div class="vs-actions"><button class="vs-btn vs-btn-primary" id="vsApplyDesign" type="button" disabled><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1L12 3z"/></svg><span>Áp dụng thiết kế</span></button><button class="vs-btn vs-btn-secondary" id="vsResetDesign" type="button">Đặt lại</button></div>' +
         '</div></div>';
     container.find('.vs-result-config').after(html);
+    $('#vsResultDesignBody').prepend(container.find('.vs-result-config'));
     syncDesignColorControls();
     syncDesignFields(currentDesign);
     $('#vsApplyDesign').prop('disabled', !currentData);
