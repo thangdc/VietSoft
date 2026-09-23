@@ -1517,10 +1517,26 @@ $(function(){
         $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
         $('#vsStatus').text('');
     });
-    $('#vsImportExcel').on('click',function(){ $('#vsImportExcelInput').trigger('click'); });
+    function openProModal() {
+        var modal = $('#vsProModal');
+        if (!modal.length) return;
+        modal.addClass('is-open').attr('aria-hidden','false');
+        $('body').addClass('vs-pro-modal-open');
+        $('#vsProModalContinue').trigger('focus');
+    }
+    function closeProModal() {
+        var modal = $('#vsProModal');
+        if (!modal.length) return;
+        modal.removeClass('is-open').attr('aria-hidden','true');
+        $('body').removeClass('vs-pro-modal-open');
+    }
+    $('#vsImportExcel').on('click',function(){ openProModal(); $('#vsImportExcelInput').trigger('click'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
-    $('#vsExportExcel').on('click',exportExcel);
-    $('#vsPrintHistory').on('click',printHistoryQrs);
+    $('#vsExportExcel').on('click',function(){ openProModal(); exportExcel(); });
+    $('#vsPrintHistory').on('click',function(){ openProModal(); printHistoryQrs(); });
+    $('#vsProModalClose,#vsProModalContinue').on('click',closeProModal);
+    $('#vsProModal').on('click','[data-pro-close="true"]',closeProModal);
+    $(document).on('keydown.qrProModal',function(e){ if(e.key === 'Escape') closeProModal(); });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
