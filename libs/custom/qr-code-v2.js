@@ -414,8 +414,9 @@ function getRecord() {
 
 
 function normalizePaymentText(value, maxLength) {
-    var text = String(value == null ? '' : value).normalize('NFD').replace(/[\\u0300-\\u036f]/g, '');
-    text = text.toUpperCase().replace(/[^A-Z0-9 .\\-_/]/g, ' ').replace(/\\s+/g, ' ').trim();
+    var text = String(value == null ? '' : value).normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    text = text.replace(/[Đđ]/g, function(ch) { return ch === 'Đ' ? 'D' : 'd'; });
+    text = text.toUpperCase().replace(/[^A-Z0-9 .\-_/]/g, ' ').replace(/\s+/g, ' ').trim();
     return maxLength ? text.substring(0, maxLength) : text;
 }
 
