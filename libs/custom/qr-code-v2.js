@@ -952,6 +952,8 @@ function renderHistory() {
             (historySearch ? 'Không tìm thấy dữ liệu phù hợp.' : 'Chưa có dữ liệu lịch sử cho ' + esc((fields[currentType] ? fields[currentType].title : 'loại QR hiện tại').replace('Tạo QR cho ','')) + '.') +
             '</div>');
         $('#vsExportExcel').prop('disabled', !template);
+    $('#vsPrintHistory').prop('disabled', false);
+        $('#vsPrintHistory').prop('disabled', true);
         return;
     }
 
