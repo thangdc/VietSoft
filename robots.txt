@@ -1,1 +1,4 @@
- 
+User-agent: *
+Allow: /
+
+Sitemap: https://vietsofts.thangdc.com/sitemap.xml
