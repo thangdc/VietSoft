@@ -15,7 +15,8 @@ var configKey = 'vietsoft_qr_config_v1';
 var activeTabKey = 'vietsoft_qr_active_tab_v1';
 var currentQrKey = 'vietsoft_qr_current_v1';
 var qrConfig = {size:300, level:'M'};
-var currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''};
+var FREE_BRAND_LOGO_URL = '/images/logo.png?v=20260922';
+var currentDesign = {foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:FREE_BRAND_LOGO_URL};
 var locationMap = null;
 var locationMarker = null;
 var locationTileLayer = null;
@@ -616,7 +617,7 @@ function normalizeDesign(design) {
         eyeStyle: ['square','rounded'].indexOf(String(design.eyeStyle || '')) !== -1 ? String(design.eyeStyle) : 'square',
         logoSize: isFinite(logoSize) && logoSize >= 0.12 && logoSize <= 0.24 ? logoSize : 0.16,
         quietZone: [2,4,6].indexOf(quietZone) !== -1 ? quietZone : 4,
-        logoDataUrl: String(design.logoDataUrl || '')
+        logoDataUrl: String(design.logoDataUrl || FREE_BRAND_LOGO_URL)
     };
 }
 
