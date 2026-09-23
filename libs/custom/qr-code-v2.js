@@ -1910,8 +1910,10 @@ $(function(){
     loadPaymentBanks();
     restoreCurrentQrState();
     initializeQrTabs(initialType);
-    $('#vsGenerate').on('click',generate);
-    $('#vsClear').on('click',function(){
+    var generateButton = document.getElementById('vsGenerate');
+    if (generateButton) generateButton.addEventListener('click', generate);
+    var clearButton = document.getElementById('vsClear');
+    if (clearButton) clearButton.addEventListener('click', function(){
         currentData = '';
         currentImage = '';
         currentHistoryId = '';
@@ -1998,17 +2000,3 @@ $(function(){
         try {
             var result = await window.VietSoftQrLicense.getActive();
             if (!result.valid) {
-                var enteredEmail = normalizeLicenseEmail(email.val());
-                var entered = input.val().trim();
-                if (!enteredEmail) {
-                    status.text('Vui lòng nhập email mua License.');
-                    return;
-                }
-                if (!entered) {
-                    status.text('Vui lòng nhập License Key.');
-                    return;
-                }
-                status.text('Đang kích hoạt License...');
-                result = await window.VietSoftQrLicense.activate(entered, enteredEmail);
-                if (!result.valid) {
-                    status.text('✕ ' + (result.message || 'License không hợp lệ.'));
