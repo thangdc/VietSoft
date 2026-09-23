@@ -65,6 +65,24 @@ var exportTemplates = {
             return [id, item.fields.name || '', item.fields.phone || '', item.fields.website || '', item.fields.email || '', item.fields.address || ''];
         }
     },
+    wifi: {
+        templateId: 7,
+        templateName: 'Wi-Fi',
+        columns: ['ID', 'Tên mạng (SSID)', 'Mật khẩu', 'Bảo mật', 'Mạng ẩn'],
+        getRow: function (item, id) { return [id, item.fields.ssid || '', item.fields.password || '', item.fields.auth || '', item.fields.hidden ? 'Có' : 'Không']; }
+    },
+    location: {
+        templateId: 10,
+        templateName: 'Vị trí',
+        columns: ['ID', 'Latitude', 'Longitude'],
+        getRow: function (item, id) { return [id, item.fields.latitude || '', item.fields.longitude || '']; }
+    },
+    payment: {
+        templateId: 11,
+        templateName: 'Thanh toán',
+        columns: ['ID', 'Ngân hàng', 'Số tài khoản', 'Tên tài khoản', 'Số tiền', 'Nội dung', 'Khóa số tiền'],
+        getRow: function (item, id) { return [id, item.fields.bankName || item.fields.bankBin || '', item.fields.account || '', item.fields.accountName || '', item.fields.amount || '', item.fields.description || '', item.fields.lockAmount ? 'Có' : 'Không']; }
+    },
     product: {
         templateId: 4,
         templateName: 'Sản Phẩm',
@@ -934,6 +952,8 @@ function renderHistory() {
             (historySearch ? 'Không tìm thấy dữ liệu phù hợp.' : 'Chưa có dữ liệu lịch sử cho ' + esc((fields[currentType] ? fields[currentType].title : 'loại QR hiện tại').replace('Tạo QR cho ','')) + '.') +
             '</div>');
         $('#vsExportExcel').prop('disabled', !template);
+    $('#vsPrintHistory').prop('disabled', false);
+        $('#vsPrintHistory').prop('disabled', true);
         return;
     }
 
@@ -1100,6 +1120,184 @@ function exportExcel() {
     }
 }
 
+function normalizeImportHeader(value) {
+    return String(value == null ? '' : value)
+        .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]+/g, '');
+}
+
+function findImportTemplate(headers) {
+    var normalized = headers.map(normalizeImportHeader);
+    var types = Object.keys(exportTemplates);
+    for (var i = 0; i < types.length; i++) {
+        var type = types[i];
+        var columns = exportTemplates[type].columns.map(normalizeImportHeader);
+        if (columns.length !== normalized.length) continue;
+        var matched = true;
+        for (var j = 0; j < columns.length; j++) {
+            if (columns[j] !== normalized[j]) { matched = false; break; }
+        }
+        if (matched) return type;
+    }
+    return null;
+}
+
+function parseImportBoolean(value) {
+    var text = String(value == null ? '' : value).trim().toLowerCase();
+    return text === 'true' || text === '1' || text === 'yes' || text === 'co' || text === 'có';
+}
+
+function resolveImportedBank(value) {
+    var raw = String(value == null ? '' : value).trim();
+    if (/^\\d{6}$/.test(raw)) return raw;
+    var options = $('#vsPaymentBank option');
+    for (var i = 0; i < options.length; i++) {
+        if (String($(options[i]).text()).trim().toLowerCase() === raw.toLowerCase()) return String($(options[i]).val() || '');
+    }
+    var fallback = {
+        'vietcombank':'970436','vietinbank':'970415','bidv':'970418','mbbank':'970422',
+        'techcombank':'970407','vpbank':'970432','acb':'970416','tpbank':'970423',
+        'vib':'970441','sacombank':'970403','hdbank':'970437','agribank':'970405'
+    };
+    return fallback[raw.toLowerCase().replace(/\\s+/g,'')] || '';
+}
+
+function getImportedFields(type, row, headers) {
+    var values = {};
+    var map = {};
+    headers.forEach(function(header, index) { map[normalizeImportHeader(header)] = row[index] == null ? '' : row[index]; });
+    function value(name) { return map[normalizeImportHeader(name)] == null ? '' : map[normalizeImportHeader(name)]; }
+
+    if (type === 'url') values = {url:String(value('Địa chỉ trang web')).trim()};
+    else if (type === 'text') values = {text:String(value('Nội Dung'))};
+    else if (type === 'phone') values = {phone:String(value('Số Điện Thoại')).trim()};
+    else if (type === 'sms') values = {phone:String(value('Số Điện Thoại')).trim(),body:String(value('Nội Dung'))};
+    else if (type === 'email') values = {email:String(value('Email')).trim(),subject:String(value('Tiêu Đề')),body:String(value('Nội Dung'))};
+    else if (type === 'contact') values = {name:String(value('Họ Tên')),phone:String(value('Số Điện Thoại')).trim(),website:String(value('Website')).trim(),email:String(value('Email')).trim(),address:String(value('Địa chỉ'))};
+    else if (type === 'wifi') values = {ssid:String(value('Tên mạng (SSID)')),password:String(value('Mật khẩu')),auth:String(value('Bảo mật') || 'WPA'),hidden:parseImportBoolean(value('Mạng ẩn'))};
+    else if (type === 'location') values = {latitude:String(value('Latitude')).trim(),longitude:String(value('Longitude')).trim()};
+    else if (type === 'payment') values = {bankBin:resolveImportedBank(value('Ngân hàng')),account:String(value('Số tài khoản')).trim(),accountName:String(value('Tên tài khoản')),amount:String(value('Số tiền')).trim(),description:String(value('Nội dung')),lockAmount:parseImportBoolean(value('Khóa số tiền'))};
+    return values;
+}
+
+function buildImportedData(type, fields) {
+    var previousType = currentType;
+    currentType = type;
+    var data = '';
+    try { data = buildData({fields:fields}); } catch (e) { data = ''; }
+    currentType = previousType;
+    return data;
+}
+
+function isValidImportedFields(type, fields) {
+    if (type === 'url') return !!fields.url;
+    if (type === 'text') return !!fields.text;
+    if (type === 'phone') return !!fields.phone;
+    if (type === 'sms') return !!fields.phone;
+    if (type === 'email') return !!fields.email;
+    if (type === 'contact') return !!fields.name || !!fields.phone || !!fields.email;
+    if (type === 'wifi') return !!fields.ssid;
+    if (type === 'location') return fields.latitude !== '' && fields.longitude !== '';
+    if (type === 'payment') return !!fields.bankBin && !!fields.account;
+    return false;
+}
+
+function importExcel(file) {
+    var status = $('#vsExportStatus');
+    if (!file) return;
+    if (!window.XLSX || typeof XLSX.read !== 'function' || typeof XLSX.utils.sheet_to_json !== 'function') {
+        status.text('Thư viện Excel chưa sẵn sàng. Vui lòng tải lại trang.');
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(event) {
+        try {
+            var workbook = XLSX.read(event.target.result, {type:'array'});
+            if (!workbook.SheetNames || !workbook.SheetNames.length) throw new Error('File không có sheet dữ liệu.');
+            var sheet = workbook.Sheets[workbook.SheetNames[0]];
+            var rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:''});
+            if (!rows.length) throw new Error('Sheet không có dữ liệu.');
+
+            var headers = rows[0].map(function(value){ return String(value == null ? '' : value).trim(); });
+            var type = findImportTemplate(headers);
+            if (!type) throw new Error('Không nhận diện được định dạng Excel đã xuất từ VietSoft.');
+
+            var imported = 0, skipped = 0;
+            var items = getHistory();
+            rows.slice(1).forEach(function(row) {
+                if (!row || !row.length || row.every(function(value){ return String(value == null ? '' : value).trim() === ''; })) return;
+                var fields = getImportedFields(type, row, headers);
+                if (!isValidImportedFields(type, fields)) { skipped++; return; }
+                var data = buildImportedData(type, fields);
+                if (!data) { skipped++; return; }
+
+                var duplicate = items.some(function(item) {
+                    return String(item.type) === type && String(item.data || '') === String(data);
+                });
+                if (duplicate) { skipped++; return; }
+
+                items.unshift({
+                    historyId: String(Date.now()) + '-' + String(Math.random()).slice(2),
+                    type: type,
+                    fields: fields,
+                    data: data,
+                    design: normalizeDesign({}),
+                    time: new Date().toLocaleString()
+                });
+                imported++;
+            });
+
+            if (!imported && !skipped) throw new Error('File không có bản ghi dữ liệu.');
+            localStorage.setItem(historyKey, JSON.stringify(items.slice(0, 50)));
+            historyPage = 1;
+            historySearch = '';
+            if (fields[type]) {
+                currentType = type;
+                try { localStorage.setItem(activeTabKey, type); } catch (e) {}
+                renderFields(type);
+            }
+            renderHistory();
+            status.text('✓ Đã nhập ' + imported + ' bản ghi' + (skipped ? ' (' + skipped + ' bỏ qua).' : '.'));
+            track('qr_excel_import', {qr_type:type, record_count:imported, skipped_count:skipped});
+        } catch (e) {
+            status.text('Nhập Excel thất bại: ' + (e && e.message ? e.message : 'lỗi không xác định') + '.');
+        } finally {
+            $('#vsImportExcelInput').val('');
+        }
+    };
+    reader.onerror = function(){ status.text('Không thể đọc file Excel.'); $('#vsImportExcelInput').val(''); };
+    reader.readAsArrayBuffer(file);
+}
+
+function printHistoryQrs() {
+    var items = getHistoryViewItems();
+    var sheet = $('#vsPrintSheet');
+    if (!sheet.length) return;
+    if (!items.length) {
+        $('#vsExportStatus').text('Chưa có mã QR để in.');
+        return;
+    }
+
+    sheet.empty().append('<div class="vs-print-grid"></div>');
+    var grid = sheet.find('.vs-print-grid');
+    var remaining = items.length;
+    var printed = false;
+    items.forEach(function(item) {
+        renderQrImage(String(item.data || ''), normalizeDesign(item.design), 320, function(imageUrl) {
+            var cell = $('<div class="vs-print-qr"></div>');
+            $('<img>', {src:imageUrl, alt:'QR Code'}).appendTo(cell);
+            grid.append(cell);
+            remaining--;
+            if (remaining === 0 && !printed) {
+                printed = true;
+                sheet.attr('aria-hidden','false');
+                setTimeout(function(){ window.print(); }, 100);
+            }
+        });
+    });
+}
+ 
 function setStatus(text) { $('#vsStatus').text(text); }
 
 function isValidEmail(email) {
@@ -1293,7 +1491,10 @@ $(function(){
         $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
         $('#vsStatus').text('');
     });
+    $('#vsImportExcel').on('click',function(){ $('#vsImportExcelInput').trigger('click'); });
+    $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $('#vsExportExcel').on('click',exportExcel);
+    $('#vsPrintHistory').on('click',printHistoryQrs);
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
