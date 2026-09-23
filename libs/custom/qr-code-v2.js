@@ -1517,10 +1517,37 @@ $(function(){
         $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
         $('#vsStatus').text('');
     });
-    $('#vsImportExcel').on('click',function(){ $('#vsImportExcelInput').trigger('click'); });
+    var pendingProAction = null;
+    function openProModal(action) {
+        var modal = $('#vsProModal');
+        if (!modal.length) return;
+        pendingProAction = action || null;
+        modal.addClass('is-open').attr('aria-hidden','false');
+        $('body').addClass('vs-pro-modal-open');
+        $('#vsProModalContinue').trigger('focus');
+    }
+    function closeProModal() {
+        var modal = $('#vsProModal');
+        if (!modal.length) return;
+        modal.removeClass('is-open').attr('aria-hidden','true');
+        $('body').removeClass('vs-pro-modal-open');
+    }
+    function continueProAction() {
+        var action = pendingProAction;
+        pendingProAction = null;
+        closeProModal();
+        if (action === 'import') $('#vsImportExcelInput').trigger('click');
+        else if (action === 'export') exportExcel();
+        else if (action === 'print') printHistoryQrs();
+    }
+    $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
-    $('#vsExportExcel').on('click',exportExcel);
-    $('#vsPrintHistory').on('click',printHistoryQrs);
+    $('#vsExportExcel').on('click',function(){ openProModal('export'); });
+    $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
+    $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
+    $('#vsProModalContinue').on('click',continueProAction);
+    $('#vsProModal').on('click','[data-pro-close="true"]',function(){ pendingProAction = null; closeProModal(); });
+    $(document).on('keydown.qrProModal',function(e){ if(e.key === 'Escape') { pendingProAction = null; closeProModal(); } });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
