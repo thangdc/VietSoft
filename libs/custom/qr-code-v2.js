@@ -102,14 +102,16 @@ function loadQrConfig() {
 }
 
 function saveQrConfig() {
-    qrConfig.size = parseInt($('#vsSize').val(), 10) || 300;
-    qrConfig.level = $('#vsLevel').val() || 'M';
+    qrConfig.size = parseInt(value('vsSize'), 10) || 300;
+    qrConfig.level = value('vsLevel') || 'M';
     localStorage.setItem(configKey, JSON.stringify(qrConfig));
 }
 
 function applyQrConfig() {
-    $('#vsSize').val(String(qrConfig.size));
-    $('#vsLevel').val(qrConfig.level);
+    var size = document.getElementById('vsSize');
+    var level = document.getElementById('vsLevel');
+    if (size) size.value = String(qrConfig.size);
+    if (level) level.value = qrConfig.level;
 }
 
 function track(name, params) {
@@ -1730,7 +1732,10 @@ function printHistoryQrs() {
     renderNext(0);
 }
  
-function setStatus(text) { $('#vsStatus').text(text); }
+function setStatus(text) {
+    var status = document.getElementById('vsStatus');
+    if (status) status.textContent = text || '';
+}
 
 function isValidEmail(email) {
     return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(String(email || '').trim());
