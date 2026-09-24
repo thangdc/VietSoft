@@ -1870,14 +1870,17 @@ $(function(){
         }
     }
 
-    function openProModal(action) {
+    function openProModal(action, view) {
         pendingProAction = action || null;
         var modal = $('#vsProModal');
         if (!modal.length) return;
+        var showLicense = view === 'license';
+        $('#vsProUpgradeView').prop('hidden', showLicense);
+        $('#vsProLicenseView').prop('hidden', !showLicense);
         modal.addClass('is-open').attr('aria-hidden','false');
         $('body').addClass('vs-pro-modal-open');
         refreshProLicenseUi();
-        $('#vsProLicenseInput').trigger('focus');
+        $(showLicense ? '#vsProLicenseInput' : '#vsProUpgradeCta').trigger('focus');
     }
     function closeProModal() {
         var modal = $('#vsProModal');
@@ -1967,10 +1970,20 @@ $(function(){
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
+    $('#vsProUpgradeCta').on('click',function(){
+        closeProModal();
+        $('#vsUpgradePro').trigger('click');
+    });
+    $('#vsProOpenLicense').on('click',function(){
+        openProModal(pendingProAction, 'license');
+    });
+    $('#vsProBackToUpgrade').on('click',function(){
+        openProModal(pendingProAction, 'upgrade');
+    });
     $('#vsPaymentOpenLicense').on('click',function(){
         $('#vsPaymentModal').removeClass('is-open').attr('aria-hidden','true');
         $('body').removeClass('vs-payment-modal-open');
-        openProModal(null);
+        openProModal(null, 'license');
     });
     $('#vsProLicenseClear').on('click',async function(){
         var button = $(this);
