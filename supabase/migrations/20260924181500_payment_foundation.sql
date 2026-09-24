@@ -57,13 +57,6 @@ revoke all on public.payment_products from anon, authenticated;
 revoke all on public.payments from anon, authenticated;
 revoke all on public.payment_events from anon, authenticated;
 
-insert into public.payment_products (product_code, plan_code, name, amount)
-values
-    ('vietsoft-qr', 'monthly', 'VietSoft QR Pro Monthly', 39000),
-    ('vietsoft-qr', 'annual', 'VietSoft QR Pro Annual', 199000)
-on conflict (product_code, plan_code) do update
-set name = excluded.name, amount = excluded.amount, currency = excluded.currency, active = true;
-
 create or replace function public.set_payment_updated_at()
 returns trigger language plpgsql as $$
 begin
