@@ -1967,6 +1967,7 @@ $(function(){
         if (user && pendingProAction) openProModal(pendingProAction);
     });
     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
+    $('#vsUpgradePro').on('click',function(){ openProModal('upgrade'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
     function closeFileExportModal() {
