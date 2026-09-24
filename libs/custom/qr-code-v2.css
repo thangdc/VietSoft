@@ -567,3 +567,20 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-history-table tbody tr.vs-history-row.is-selected:hover td{
   background:#eaf2ff!important;
 }
+
+
+/* QR print metadata options */
+.vs-qr-print-options{display:none;position:fixed;inset:0;z-index:10002;align-items:center;justify-content:center;padding:20px}
+.vs-qr-print-options.is-open{display:flex}
+.vs-qr-print-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.48)}
+.vs-qr-print-card{position:relative;width:min(460px,100%);padding:24px;border:1px solid #e4e7ec;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.22)}
+.vs-qr-print-kicker{margin-bottom:6px;color:#175cd3;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.vs-qr-print-card h3{margin:0 0 7px;color:#101828;font-size:20px}
+.vs-qr-print-card>p{margin:0 0 16px;color:#667085;font-size:13px;line-height:1.5}
+.vs-qr-print-check{display:flex;align-items:flex-start;gap:10px;padding:13px;border:1px solid #dbeafe;border-radius:10px;background:#f8fbff;cursor:pointer}
+.vs-qr-print-check input{width:16px!important;height:16px!important;min-width:16px!important;margin:2px 0 0!important;padding:0!important}
+.vs-qr-print-check span{display:flex;flex-direction:column;gap:3px}
+.vs-qr-print-check strong{color:#344054;font-size:13px}
+.vs-qr-print-check small{color:#667085;font-size:11px;line-height:1.45}
+.vs-qr-print-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+@media(max-width:640px){.vs-qr-print-options{padding:10px}.vs-qr-print-card{padding:20px 16px;border-radius:14px}}
