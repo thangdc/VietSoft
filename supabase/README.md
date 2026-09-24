@@ -1,60 +1,58 @@
-# VietSoft QR Code - Supabase License Backend
+# VietSoft QR Code - Supabase Backend
 
 Supabase project:
 
-`https://yatmdgjkljmaohdkvzkd.supabase.co`
+https://yatmdgjkljmaohdkvzkd.supabase.co
 
-The browser does not need a Supabase service-role key.
+## Payment foundation
 
-## Existing Edge Functions
+The payment backend is provider-oriented and currently prepared for ZaloPay.
 
-The three Edge Functions are created in the Supabase Dashboard:
+### Database
 
-- `activate-license`
-- `validate-license`
-- `deactivate-license`
+Migration:
 
-They are called by `libs/custom/qr-code-license.js`.
+supabase/migrations/20260924181500_payment_foundation.sql
 
-Expected public endpoints:
+Tables:
 
-- `/functions/v1/activate-license`
-- `/functions/v1/validate-license`
-- `/functions/v1/deactivate-license`
+- payment_products: server-side product/plan/price catalog.
+- payments: one row per payment order.
+- payment_events: callback/audit events.
 
-## Database
+The migration seeds the existing VietSoft QR Pro prices:
 
-Run:
+- monthly: 39,000 VND
+- annual: 199,000 VND
 
-`supabase db push`
+### Edge Functions
 
-or apply:
+- create-zalopay-payment: creates a ZaloPay order and returns the QR/order URL.
+- zalopay-callback: validates the ZaloPay callback MAC and marks the payment paid.
+- check-zalopay-payment: queries ZaloPay when callback delivery is delayed.
 
-`supabase/migrations/20260923113000_license_backend.sql`
+The create-order implementation follows ZaloPay's current API contract: Vietnam yymmdd transaction prefixes, HMAC-SHA256 with key1, and the QR multi-function payment method via VietQR.
 
-The product code is **vietsoft-qr** and must match the product value used by the Edge Functions.
+### Required Supabase secrets
 
-## Frontend activation flow
+Set these only after ZaloPay approves the merchant integration:
 
-The QR Generator stores only local activation state:
+- ZALOPAY_APP_ID
+- ZALOPAY_KEY1
+- ZALOPAY_KEY2
+- ZALOPAY_CREATE_ORDER_URL
+- ZALOPAY_QUERY_ORDER_URL
+- ZALOPAY_CALLBACK_URL
 
-- license key
-- email
-- device ID
-- activation token
+Never commit ZaloPay keys or Supabase secret/service-role keys.
 
-The license key itself is still verified locally with the existing Ed25519 public key.
+### Not included yet
 
-After successful activation, the browser receives an activation token from Supabase. Subsequent Pro checks validate that token against the server.
+This PR deliberately does not:
 
-No login/account is required.
+- modify the QR Generator UI.
+- issue a License automatically after payment.
+- deploy ZaloPay credentials.
+- enable production payment.
 
-## Important
-
-Do not commit:
-
-- Supabase service-role keys
-- database passwords
-- private signing keys
-
-Only the public Supabase project URL and publishable key belong in browser code.
+The next step after ZaloPay approval is to configure the secrets, test sandbox callbacks/querying, then connect a successful payment to the existing VietSoft QR license issuance flow.
