@@ -123,3 +123,19 @@
 .vs-modern .vs-pro-license .vs-field{margin-bottom:12px}
 .vs-modern .vs-pro-license input[type="email"]{width:100%;min-height:42px;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;background:#fff}
 .vs-modern .vs-pro-modal-actions{padding-top:18px;border-top:1px solid #eaecf0}
+
+/* Pro pricing */
+.vs-modern .vs-plan-pricing{display:grid;gap:8px;margin:0 0 14px}
+.vs-modern .vs-plan-price{display:flex;align-items:baseline;gap:5px;color:#101828}
+.vs-modern .vs-plan-price strong{font-size:22px;line-height:1.15}
+.vs-modern .vs-plan-price span{color:#667085;font-size:12px}
+.vs-modern .vs-plan-price-annual{padding:8px 10px;border-radius:9px;background:#eef4ff}
+.vs-modern .vs-plan-price-annual strong{font-size:18px;color:#175cd3}
+.vs-modern .vs-plan-price-annual em{margin-left:auto;color:#175cd3;font-size:10px;font-style:normal;font-weight:700}
+.vs-modern .vs-plan-cta-note{margin-top:7px;color:#98a2b3;font-size:10px;line-height:1.4;text-align:center}
+.vs-modern .vs-modal-pricing{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 18px}
+.vs-modern .vs-modal-pricing>div{padding:10px 12px;border:1px solid #eaecf0;border-radius:10px;background:#fcfcfd}
+.vs-modern .vs-modal-pricing strong{font-size:18px;color:#101828}
+.vs-modern .vs-modal-pricing span{margin-left:4px;color:#667085;font-size:11px}
+.vs-modern .vs-modal-pricing em{display:block;margin-top:3px;color:#175cd3;font-size:10px;font-style:normal;font-weight:700}
+@media(max-width:640px){.vs-modern .vs-modal-pricing{grid-template-columns:1fr}.vs-modern .vs-plan-price strong{font-size:20px}}
