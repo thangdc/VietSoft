@@ -40,12 +40,15 @@
 .vs-modern .vs-pro-modal-close{position:absolute;top:12px;right:14px;width:34px;height:34px;border:0;border-radius:50%;background:#f2f4f7;color:#475467;font-size:24px;line-height:1;cursor:pointer}
 .vs-modern .vs-pro-modal-kicker{margin-bottom:7px;color:#175cd3;font-size:11px;font-weight:800;letter-spacing:.1em}
 .vs-modern .vs-pro-modal-card h2{margin:0 36px 8px 0;font-size:24px;line-height:1.25}
-.vs-modern .vs-pro-modal-intro{margin:0 0 20px;color:#667085;line-height:1.6}
-.vs-modern .vs-pro-modal-features{display:grid;gap:10px;margin-bottom:22px}
+.vs-modern .vs-pro-modal-intro{margin:0 0 18px;color:#667085;line-height:1.55}
+.vs-modern .vs-pro-modal-features{display:grid;gap:10px;margin-bottom:18px}
 .vs-modern .vs-pro-modal-features>div{display:flex;gap:12px;padding:13px;border:1px solid #eaecf0;border-radius:12px;background:#fcfcfd}
 .vs-modern .vs-pro-modal-icon{display:flex;flex:0 0 34px;width:34px;height:34px;align-items:center;justify-content:center;border-radius:9px;background:#eef4ff;color:#175cd3;font-weight:800}
 .vs-modern .vs-pro-modal-features strong{display:block;margin-bottom:3px;color:#101828}
 .vs-modern .vs-pro-modal-features p{margin:0;color:#667085;font-size:13px;line-height:1.45}
+.vs-modern .vs-pro-license-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.vs-modern .vs-pro-license-heading strong{color:#101828;font-size:13px}
+.vs-modern .vs-pro-license-heading span{color:#98a2b3;font-size:11px}
 .vs-modern .vs-pro-license-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
 .vs-modern .vs-pro-license-actions .vs-btn{margin:0}
 .vs-modern .vs-pro-license-note{margin-top:8px;color:#98a2b3;font-size:11px}
@@ -125,20 +128,22 @@
 .vs-modern .vs-pro-modal-actions{padding-top:18px;border-top:1px solid #eaecf0}
 
 /* Pro pricing */
-.vs-modern .vs-plan-pricing{display:grid;gap:8px;margin:0 0 14px}
-.vs-modern .vs-plan-price{display:flex;align-items:baseline;gap:5px;color:#101828}
-.vs-modern .vs-plan-price strong{font-size:22px;line-height:1.15}
-.vs-modern .vs-plan-price span{color:#667085;font-size:12px}
-.vs-modern .vs-plan-price-annual{padding:8px 10px;border-radius:9px;background:#eef4ff}
-.vs-modern .vs-plan-price-annual strong{font-size:18px;color:#175cd3}
-.vs-modern .vs-plan-price-annual em{margin-left:auto;color:#175cd3;font-size:10px;font-style:normal;font-weight:700}
+.vs-modern .vs-plan-pricing{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}
+.vs-modern .vs-plan-price{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0;padding:10px 11px;border:1px solid #eaecf0;border-radius:10px;background:#fff;color:#101828}
+.vs-modern .vs-plan-price strong{font-size:21px;line-height:1.15}
+.vs-modern .vs-plan-price span{color:#667085;font-size:11px}
+.vs-modern .vs-plan-price-annual{background:#eef4ff;border-color:#c7d7fe}
+.vs-modern .vs-plan-price-annual strong{font-size:21px;color:#175cd3}
+.vs-modern .vs-plan-price-annual em{margin-top:2px;color:#175cd3;font-size:10px;font-style:normal;font-weight:700}
 .vs-modern .vs-plan-cta-note{margin-top:7px;color:#98a2b3;font-size:10px;line-height:1.4;text-align:center}
+.vs-modern .vs-payment-license-link{display:block;margin:12px auto 0;border:0;background:none;color:#175cd3;font-size:12px;font-weight:650;cursor:pointer}
+.vs-modern .vs-payment-license-link:hover{text-decoration:underline}
 .vs-modern .vs-modal-pricing{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 18px}
 .vs-modern .vs-modal-pricing>div{padding:10px 12px;border:1px solid #eaecf0;border-radius:10px;background:#fcfcfd}
 .vs-modern .vs-modal-pricing strong{font-size:18px;color:#101828}
 .vs-modern .vs-modal-pricing span{margin-left:4px;color:#667085;font-size:11px}
 .vs-modern .vs-modal-pricing em{display:block;margin-top:3px;color:#175cd3;font-size:10px;font-style:normal;font-weight:700}
-@media(max-width:640px){.vs-modern .vs-modal-pricing{grid-template-columns:1fr}.vs-modern .vs-plan-price strong{font-size:20px}}
+@media(max-width:640px){.vs-modern .vs-modal-pricing{grid-template-columns:1fr}.vs-modern .vs-plan-pricing{grid-template-columns:1fr 1fr}.vs-modern .vs-plan-price strong{font-size:19px}.vs-modern .vs-pro-license-heading{display:block}.vs-modern .vs-pro-license-heading span{display:block;margin-top:3px}}
 
 
 /* Manual Pro payment */
@@ -182,3 +187,10 @@
   .vs-modern .vs-payment-steps{grid-template-columns:1fr}
   .vs-modern .vs-payment-actions .vs-btn{width:100%}
 }
+
+/* Payment flow hierarchy */
+.vs-modern .vs-payment-plan,.vs-modern .vs-payment-email{padding:12px 14px;border:1px solid #eaecf0;border-radius:10px;background:#fff}
+.vs-modern .vs-payment-plan{margin-bottom:8px}
+.vs-modern .vs-payment-email{margin-bottom:0}
+.vs-modern .vs-payment-plan label,.vs-modern .vs-payment-email label{font-size:13px}
+.vs-modern .vs-payment-layout{margin-top:12px}

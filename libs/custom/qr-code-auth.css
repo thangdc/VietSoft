@@ -25,3 +25,19 @@
 .vs-auth-account-info span{font-size:13px;color:#64748b;word-break:break-all}
 @media(max-width:700px){.vs-auth-account-wrap{margin-left:0}.vs-auth-account{max-width:150px}.vs-auth-card{padding:22px}}
 .vs-sync-status{display:none;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:rgba(255,255,255,.92);border-radius:6px;padding:7px 10px;font-size:12px;cursor:pointer}.vs-sync-status:hover{background:rgba(255,255,255,.14)}.vs-sync-status.is-syncing{cursor:wait}.vs-sync-status.is-error{color:#fecaca;border-color:rgba(248,113,113,.4)}.vs-sync-status.is-success{color:#dcfce7}@media(max-width:700px){.vs-sync-status{padding:7px 8px}.vs-sync-status #vsSyncStatusLabel{display:none}}
+
+/* Header account placement and hierarchy */
+.vs-modern .header .navbar{flex:0 0 auto!important;order:2}
+.vs-modern .header .vs-auth-account-wrap{order:3;margin-left:auto!important;padding:0 15px}
+.vs-modern .header .vs-auth-button{border:1px solid #d0d5dd;background:#fff;color:#344054;border-radius:9px;min-height:38px;padding:0 11px;font-weight:650;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.vs-modern .header .vs-auth-button:hover{background:#f8fafc;border-color:#b8c1cc}
+.vs-modern .header .vs-auth-account{max-width:260px}
+.vs-modern .header .vs-auth-user-icon{font-size:15px;line-height:1}
+.vs-modern .header .vs-auth-chevron{font-size:15px;color:#667085;margin-left:2px;line-height:1}
+.vs-modern .header .vs-sync-status{color:#475467;border-color:#d0d5dd;background:#fff}
+@media(max-width:700px){
+  .vs-modern .header .vs-auth-account-wrap{padding:0 10px}
+  .vs-modern .header .vs-auth-button{padding:0 9px}
+  .vs-modern .header .vs-auth-account{max-width:170px}
+  .vs-modern .header .vs-auth-account #vsAuthAccountLabel{max-width:105px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
