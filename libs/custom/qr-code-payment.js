@@ -11,10 +11,8 @@ function formatVnd(value) {
 }
 
 function buildPaymentQrUrl(amount, email, plan) {
-    var cleanEmail = String(email || '').trim().toLowerCase();
-    var planCode = plan === 'annual' ? 'PRONAM' : 'PROMON';
-    var suffix = cleanEmail ? cleanEmail.replace(/[^a-z0-9]/g, '').slice(0, 12) : 'EMAIL';
-    var addInfo = ('VIETSOFT ' + planCode + ' ' + suffix).slice(0, 25);
+    var cleanEmail = String(email || '').trim();
+    var addInfo = 'Mua QR - ' + (cleanEmail || 'Email');
     var params = new URLSearchParams();
     if (amount) params.set('amount', String(amount));
     params.set('addInfo', addInfo);
@@ -48,8 +46,7 @@ function updatePaymentQr() {
     $('#vsPaymentQr').attr('src', qrUrl);
     $('#vsPaymentAmount').text(formatVnd(amount));
     $('#vsPaymentTransferContent').text(
-        ('VIETSOFT ' + (plan === 'annual' ? 'PRONAM' : 'PROMON') + ' ' +
-        (email.trim() ? email.trim() : 'EMAIL')).slice(0, 25)
+        'Mua QR - ' + (email.trim() ? email.trim() : 'Email')
     );
 }
 
