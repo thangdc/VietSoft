@@ -1582,6 +1582,75 @@ function downloadHistoryQrs() {
     renderNext(0);
 }
 
+function getPrintMetadata(item) {
+    var type = String(item && item.type || '').toLowerCase().trim();
+    var f = item && item.fields ? item.fields : {};
+    var lines = [];
+
+    if (type === 'payment') {
+        if (String(f.accountName || '').trim()) lines.push(String(f.accountName).trim());
+        if (String(f.amount || '').trim()) lines.push(String(f.amount).trim().replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.') + 'đ');
+        if (String(f.description || '').trim()) lines.push(String(f.description).trim());
+    } else if (type === 'contact') {
+        if (String(f.name || '').trim()) lines.push(String(f.name).trim());
+        if (String(f.phone || '').trim()) lines.push(String(f.phone).trim());
+        if (String(f.email || '').trim()) lines.push(String(f.email).trim());
+    } else if (type === 'wifi') {
+        if (String(f.ssid || '').trim()) lines.push('Wi-Fi: ' + String(f.ssid).trim());
+    } else if (type === 'email') {
+        if (String(f.email || '').trim()) lines.push(String(f.email).trim());
+        if (String(f.subject || '').trim()) lines.push(String(f.subject).trim());
+    } else if (type === 'sms') {
+        if (String(f.phone || '').trim()) lines.push(String(f.phone).trim());
+        if (String(f.body || '').trim()) lines.push(String(f.body).trim());
+    } else if (type === 'phone') {
+        if (String(f.phone || '').trim()) lines.push(String(f.phone).trim());
+    } else if (type === 'url') {
+        if (String(f.url || '').trim()) lines.push(String(f.url).trim());
+    } else if (type === 'text') {
+        if (String(f.text || '').trim()) lines.push(String(f.text).trim());
+    } else if (type === 'location') {
+        if (String(f.latitude || '').trim() || String(f.longitude || '').trim()) {
+            lines.push(String(f.latitude || '').trim() + ', ' + String(f.longitude || '').trim());
+        }
+    }
+
+    return lines.slice(0, 3);
+}
+
+function escapePrintText(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function getPrintMetadataOptions() {
+    var existing = document.getElementById('vsQrPrintOptions');
+    if (existing) return existing;
+
+    var modal = document.createElement('div');
+    modal.id = 'vsQrPrintOptions';
+    modal.className = 'vs-qr-print-options';
+    modal.innerHTML =
+        '<div class="vs-qr-print-backdrop"></div>' +
+        '<div class="vs-qr-print-card" role="dialog" aria-modal="true" aria-labelledby="vsQrPrintTitle">' +
+            '<div class="vs-qr-print-kicker">In QR</div>' +
+            '<h3 id="vsQrPrintTitle">Chọn nội dung in</h3>' +
+            '<p>Thêm thông tin dưới mỗi mã QR để dễ nhận biết khi in nhiều mã.</p>' +
+            '<label class="vs-qr-print-check"><input id="vsQrPrintWithMetadata" type="checkbox" checked><span><strong>In thông tin dưới QR</strong><small>Hiển thị thông tin nhận diện phù hợp với từng loại QR.</small></span></label>' +
+            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">Tiếp tục in</button></div>' +
+        '</div>';
+    document.body.appendChild(modal);
+
+    $('#vsQrPrintCancel,.vs-qr-print-backdrop').on('click', function() {
+        $(modal).removeClass('is-open');
+    });
+    return modal;
+}
+
 function printHistoryQrs() {
     var type = String(currentType || '').toLowerCase().trim();
     var allItems = getHistory().filter(function(item) {
@@ -1595,6 +1664,16 @@ function printHistoryQrs() {
         return;
     }
 
+    var modal = getPrintMetadataOptions();
+    $(modal).addClass('is-open');
+
+    $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
+        $(modal).removeClass('is-open');
+        startPrintHistoryQrs(items, $('#vsQrPrintWithMetadata').prop('checked'));
+    });
+}
+
+function startPrintHistoryQrs(items, withMetadata) {
     var button = $('#vsPrintHistory');
     button.prop('disabled', true);
     $('#vsExportStatus').text('Đang chuẩn bị ' + items.length + ' mã QR để in...');
@@ -1624,10 +1703,12 @@ function printHistoryQrs() {
                 '<style>' +
                 '@page{margin:12mm}' +
                 'html,body{margin:0;padding:0;background:#fff}' +
-                'body{font-family:Arial,sans-serif}' +
-                '.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14mm;align-items:start}' +
-                '.qr-cell{display:flex;align-items:center;justify-content:center;break-inside:avoid;page-break-inside:avoid}' +
+                'body{font-family:Arial,sans-serif;color:#101828}' +
+                '.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10mm 12mm;align-items:start}' +
+                '.qr-cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;break-inside:avoid;page-break-inside:avoid;text-align:center;min-width:0}' +
                 '.qr-cell img{display:block;width:55mm;height:55mm;object-fit:contain}' +
+                '.qr-meta{width:100%;margin-top:3mm;font-size:10pt;line-height:1.35;overflow-wrap:anywhere;word-break:break-word}' +
+                '.qr-meta-line{margin:0 0 1mm}' +
                 '</style></head><body><div class="qr-grid">' + qrCells.join('') + '</div></body></html>');
             printDocument.close();
 
@@ -1641,8 +1722,12 @@ function printHistoryQrs() {
         }
 
         var item = items[index];
+        var metadata = withMetadata ? getPrintMetadata(item) : [];
         renderQrImage(String(item.data || ''), normalizeDesign(item.design), 320, function(imageUrl) {
-            qrCells[index] = '<div class="qr-cell"><img src="' + imageUrl.replace(/"/g, '&quot;') + '" alt="QR Code"></div>';
+            var metaHtml = metadata.length ? '<div class="qr-meta">' + metadata.map(function(line) {
+                return '<div class="qr-meta-line">' + escapePrintText(line) + '</div>';
+            }).join('') + '</div>' : '';
+            qrCells[index] = '<div class="qr-cell"><img src="' + imageUrl.replace(/"/g, '&quot;') + '" alt="QR Code">' + metaHtml + '</div>';
             renderNext(index + 1);
         }, function() {
             qrCells[index] = '';
@@ -1652,7 +1737,7 @@ function printHistoryQrs() {
 
     renderNext(0);
 }
- 
+
 function setStatus(text) { $('#vsStatus').text(text); }
 
 function isValidEmail(email) {
