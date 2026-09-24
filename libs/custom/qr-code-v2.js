@@ -1870,14 +1870,22 @@ $(function(){
         }
     }
 
-    function openProModal(action) {
+    function openProModal(action, view) {
         pendingProAction = action || null;
         var modal = $('#vsProModal');
+        var licenseView = view === 'license';
+        $('#vsProUpgradeView').prop('hidden', licenseView);
+        $('#vsProLicenseView').prop('hidden', !licenseView);
+        $('#vsProModalKicker').text(licenseView ? 'KÍCH HOẠT QR CODE PRO' : 'QR CODE PRO');
+        $('#vsProModalTitle').text(licenseView ? 'Kích hoạt Pro' : 'Nâng cấp Pro');
+        $('#vsProModalIntro').text(licenseView
+            ? 'Đã mua License Key? Nhập email đã dùng khi mua và License Key để kích hoạt Pro.'
+            : 'Mở khóa workflow nhiều mã QR với Excel, xuất dữ liệu, in hàng loạt và tùy chỉnh nâng cao.');
         if (!modal.length) return;
         modal.addClass('is-open').attr('aria-hidden','false');
         $('body').addClass('vs-pro-modal-open');
         refreshProLicenseUi();
-        $('#vsProLicenseInput').trigger('focus');
+        $(licenseView ? '#vsProLicenseEmail' : '#vsProUpgradeCta').trigger('focus');
     }
     function closeProModal() {
         var modal = $('#vsProModal');
@@ -1967,10 +1975,13 @@ $(function(){
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
+    $('#vsProUpgradeCta').on('click',function(){ closeProModal(); $('#vsUpgradePro').trigger('click'); });
+    $('#vsProOpenLicense').on('click',function(){ openProModal(pendingProAction,'license'); });
+    $('#vsProBackToUpgrade').on('click',function(){ openProModal(pendingProAction,'upgrade'); });
     $('#vsPaymentOpenLicense').on('click',function(){
         $('#vsPaymentModal').removeClass('is-open').attr('aria-hidden','true');
         $('body').removeClass('vs-payment-modal-open');
-        openProModal(null);
+        openProModal(null,'license');
     });
     $('#vsProLicenseClear').on('click',async function(){
         var button = $(this);
