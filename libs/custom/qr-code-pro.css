@@ -65,6 +65,8 @@
 .vs-modern .vs-plan-label{display:inline-flex;align-items:center;min-height:22px;padding:3px 8px;border-radius:999px;background:#f2f4f7;color:#475467;font-size:10px;font-weight:800;letter-spacing:.08em}
 .vs-modern .vs-plan-card-pro .vs-plan-label{background:#eef4ff;color:#175cd3}
 .vs-modern .vs-plan-card h3{margin:10px 0 12px;color:#101828;font-size:17px}
+.vs-modern .vs-plan-cta{width:100%;margin-top:16px;justify-content:center}
+.vs-modern .vs-plan-card-pro{box-shadow:0 8px 24px rgba(23,92,211,.08)}
 .vs-modern .vs-plan-card ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .vs-modern .vs-plan-card li{display:flex;gap:8px;align-items:flex-start;color:#475467;font-size:13px;line-height:1.4}
 .vs-modern .vs-plan-card li>span{flex:0 0 16px;color:#12b76a;font-weight:800;text-align:center}
