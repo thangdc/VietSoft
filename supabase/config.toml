@@ -8,3 +8,12 @@ verify_jwt = false
 
 [functions.deactivate-license]
 verify_jwt = false
+
+[functions.create-zalopay-payment]
+verify_jwt = false
+
+[functions.zalopay-callback]
+verify_jwt = false
+
+[functions.check-zalopay-payment]
+verify_jwt = false
