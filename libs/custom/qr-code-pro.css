@@ -139,3 +139,46 @@
 .vs-modern .vs-modal-pricing span{margin-left:4px;color:#667085;font-size:11px}
 .vs-modern .vs-modal-pricing em{display:block;margin-top:3px;color:#175cd3;font-size:10px;font-style:normal;font-weight:700}
 @media(max-width:640px){.vs-modern .vs-modal-pricing{grid-template-columns:1fr}.vs-modern .vs-plan-price strong{font-size:20px}}
+
+
+/* Manual Pro payment */
+.vs-modern.vs-payment-modal-open{overflow:hidden}
+.vs-modern .vs-payment-modal{display:none;position:fixed;inset:0;z-index:10002}
+.vs-modern .vs-payment-modal.is-open{display:flex;align-items:center;justify-content:center;padding:20px}
+.vs-modern .vs-payment-modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.52)}
+.vs-modern .vs-payment-modal-card{position:relative;width:min(760px,100%);max-height:calc(100vh - 40px);overflow:auto;padding:28px;border:1px solid #e4e7ec;border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.24)}
+.vs-modern .vs-payment-modal-close{position:absolute;top:12px;right:14px;width:34px;height:34px;border:0;border-radius:50%;background:#f2f4f7;color:#475467;font-size:24px;line-height:1;cursor:pointer}
+.vs-modern .vs-payment-modal-kicker{margin-bottom:7px;color:#175cd3;font-size:11px;font-weight:800;letter-spacing:.1em}
+.vs-modern .vs-payment-modal-card h2{margin:0 40px 8px 0;font-size:24px;line-height:1.25}
+.vs-modern .vs-payment-modal-intro{margin:0 0 18px;color:#667085;line-height:1.55}
+.vs-modern .vs-payment-plan,.vs-modern .vs-payment-email{margin-bottom:13px}
+.vs-modern .vs-payment-plan label,.vs-modern .vs-payment-email label{display:block;margin-bottom:6px;font-weight:600;color:#344054}
+.vs-modern .vs-payment-plan select,.vs-modern .vs-payment-email input{width:100%;min-height:42px;padding:9px 11px;border:1px solid #d1d5db;border-radius:8px;background:#fff}
+.vs-modern .vs-payment-email small{display:block;margin-top:5px;color:#98a2b3;font-size:11px}
+.vs-modern .vs-payment-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;margin-top:18px;padding:16px;border:1px solid #eaecf0;border-radius:14px;background:#f8fafc}
+.vs-modern .vs-payment-qr-wrap{text-align:center}
+.vs-modern .vs-payment-qr-wrap img{display:block;width:240px;max-width:100%;height:auto;margin:0 auto;border-radius:10px;background:#fff}
+.vs-modern .vs-payment-qr-caption{margin-top:7px;color:#667085;font-size:11px}
+.vs-modern .vs-payment-details{display:grid;align-content:start;gap:8px}
+.vs-modern .vs-payment-detail{display:flex;justify-content:space-between;gap:14px;padding:9px 10px;border-radius:8px;background:#fff}
+.vs-modern .vs-payment-detail span{color:#667085;font-size:12px}
+.vs-modern .vs-payment-detail strong{text-align:right;color:#101828;font-size:13px;word-break:break-word}
+.vs-modern .vs-payment-copy{width:100%;margin-top:2px;justify-content:center}
+.vs-modern .vs-payment-copy-status{min-height:16px;color:#027a48;font-size:11px}
+.vs-modern .vs-payment-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
+.vs-modern .vs-payment-steps>div{display:flex;gap:8px;align-items:flex-start;padding:10px;border:1px solid #eaecf0;border-radius:10px}
+.vs-modern .vs-payment-steps b{display:flex;flex:0 0 22px;width:22px;height:22px;align-items:center;justify-content:center;border-radius:50%;background:#eef4ff;color:#175cd3;font-size:11px}
+.vs-modern .vs-payment-steps span{color:#475467;font-size:11px;line-height:1.4}
+.vs-modern .vs-payment-status{min-height:20px;margin-top:12px;color:#027a48;font-size:12px;line-height:1.5}
+.vs-modern .vs-payment-actions{display:flex;justify-content:flex-end;margin-top:8px}
+.vs-modern .vs-payment-actions .vs-btn{margin:0}
+.vs-modern .vs-payment-note{margin-top:10px;color:#98a2b3;font-size:10px;line-height:1.4}
+@media(max-width:640px){
+  .vs-modern .vs-payment-modal.is-open{padding:10px}
+  .vs-modern .vs-payment-modal-card{max-height:calc(100vh - 20px);padding:22px 14px;border-radius:15px}
+  .vs-modern .vs-payment-modal-card h2{font-size:21px}
+  .vs-modern .vs-payment-layout{grid-template-columns:1fr;padding:12px}
+  .vs-modern .vs-payment-qr-wrap img{width:min(300px,100%)}
+  .vs-modern .vs-payment-steps{grid-template-columns:1fr}
+  .vs-modern .vs-payment-actions .vs-btn{width:100%}
+}
