@@ -1872,11 +1872,6 @@ $(function(){
 
     function openProModal(action) {
         pendingProAction = action || null;
-        if (!window.VietSoftQrAuth || !window.VietSoftQrAuth.isAuthenticated()) {
-            window.VietSoftQrAuth.open('login');
-            return;
-        }
-
         var modal = $('#vsProModal');
         if (!modal.length) return;
         modal.addClass('is-open').attr('aria-hidden','false');
@@ -1891,22 +1886,6 @@ $(function(){
         $('body').removeClass('vs-pro-modal-open');
     }
     async function continueProAction() {
-        if (!window.VietSoftQrAuth || !window.VietSoftQrAuth.isAuthenticated()) {
-            pendingProAction = pendingProAction || null;
-            closeProModal();
-            window.VietSoftQrAuth.open('login');
-            return;
-        }
-
-        var user = window.VietSoftQrAuth.getUser();
-        var accountEmail = normalizeLicenseEmail(user && user.email);
-        var enteredEmail = normalizeLicenseEmail($('#vsProLicenseEmail').val());
-        if (accountEmail && enteredEmail && accountEmail !== enteredEmail) {
-            $('#vsProLicenseStatus').text('Email tài khoản phải trùng với email mua License.');
-            return;
-        }
-        if (accountEmail && !enteredEmail) $('#vsProLicenseEmail').val(accountEmail);
-
         var button = $('#vsProModalContinue');
         var input = $('#vsProLicenseInput');
         var email = $('#vsProLicenseEmail');
@@ -1923,7 +1902,7 @@ $(function(){
                 var enteredEmail = normalizeLicenseEmail(email.val());
                 var entered = input.val().trim();
                 if (!enteredEmail) {
-                    status.text('Vui lòng nhập email mua License.');
+                    status.text('Vui lòng nhập email đã dùng khi mua License.');
                     return;
                 }
                 if (!entered) {
@@ -1963,10 +1942,7 @@ $(function(){
             email.prop('disabled', false);
         }
     }
-    $(document).on('vietsoft:auth-changed', function(e, user) {
-        if (user && pendingProAction) openProModal(pendingProAction);
-    });
-    $('#vsImportExcel').on('click',function(){ openProModal('import'); });
+     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
     $('#vsUpgradePro').on('click',function(){ openProModal('upgrade'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
@@ -1991,6 +1967,11 @@ $(function(){
     $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
+    $('#vsPaymentOpenLicense').on('click',function(){
+        $('#vsPaymentModal').removeClass('is-open').attr('aria-hidden','true');
+        $('body').removeClass('vs-payment-modal-open');
+        openProModal(null);
+    });
     $('#vsProLicenseClear').on('click',async function(){
         var button = $(this);
         button.prop('disabled', true);
