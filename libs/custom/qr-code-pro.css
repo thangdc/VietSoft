@@ -194,3 +194,20 @@
 .vs-modern .vs-payment-email{margin-bottom:0}
 .vs-modern .vs-payment-plan label,.vs-modern .vs-payment-email label{font-size:13px}
 .vs-modern .vs-payment-layout{margin-top:12px}
+
+
+/* Pro modal: purchase first, license as secondary path */
+.vs-modern .vs-pro-modal-pricing{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}
+.vs-modern .vs-pro-modal-pricing>div{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 11px;border:1px solid #eaecf0;border-radius:10px;background:#fff}
+.vs-modern .vs-pro-modal-pricing strong{font-size:21px;line-height:1.15}
+.vs-modern .vs-pro-modal-pricing span{color:#667085;font-size:11px}
+.vs-modern .vs-pro-modal-pricing>div:last-child{background:#eef4ff;border-color:#c7d7fe}
+.vs-modern .vs-pro-modal-pricing>div:last-child strong,.vs-modern .vs-pro-modal-pricing em{color:#175cd3}
+.vs-modern .vs-pro-modal-pricing em{margin-top:2px;font-size:10px;font-style:normal;font-weight:700}
+.vs-modern .vs-pro-upgrade-cta{width:100%;min-height:44px}
+.vs-modern .vs-pro-upgrade-note{text-align:center;margin:7px 0 0;color:#98a2b3;font-size:10px}
+.vs-modern .vs-pro-license-link,.vs-modern .vs-pro-back-link{display:block;margin:14px auto 0;border:0;background:none;color:#175cd3;font-size:12px;font-weight:650;cursor:pointer}
+.vs-modern .vs-pro-license-link:hover,.vs-modern .vs-pro-back-link:hover{text-decoration:underline}
+.vs-modern #vsProLicenseView .vs-pro-license{margin-top:0}
+.vs-modern .vs-pro-license-explanation{margin-top:10px;color:#98a2b3;font-size:11px;line-height:1.45}
+@media(max-width:640px){.vs-modern .vs-pro-modal-pricing{grid-template-columns:1fr 1fr}}
