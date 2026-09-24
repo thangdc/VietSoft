@@ -1589,7 +1589,7 @@ function getPrintMetadata(item) {
 
     if (type === 'payment') {
         if (String(f.accountName || '').trim()) lines.push(String(f.accountName).trim());
-        if (String(f.amount || '').trim()) lines.push(String(f.amount).trim().replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.') + 'đ');
+        if (String(f.amount || '').trim()) lines.push(String(f.amount).trim().replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ');
         if (String(f.description || '').trim()) lines.push(String(f.description).trim());
     } else if (type === 'contact') {
         if (String(f.name || '').trim()) lines.push(String(f.name).trim());
