@@ -1847,6 +1847,22 @@ $(function(){
         $('#vsStatus').text('');
     });
     var pendingProAction = null;
+    function executeProAction(action) {
+        if (action === 'import') $('#vsImportExcelInput').trigger('click');
+        else if (action === 'export-excel') exportExcel();
+        else if (action === 'export-zip') downloadHistoryQrs();
+        else if (action === 'print') printHistoryQrs();
+        else if (action === 'download') downloadHistoryQrs();
+    }
+    async function gateProAction(action) {
+        var result = await window.VietSoftQrLicense.getActive();
+        if (result.valid) {
+            executeProAction(action);
+            return true;
+        }
+        openProModal(action);
+        return false;
+    }
     function normalizeLicenseEmail(value) {
         return String(value || '').trim().toLowerCase();
     }
@@ -1934,19 +1950,14 @@ $(function(){
             var action = pendingProAction;
             pendingProAction = null;
             closeProModal();
-            if (action === 'import') $('#vsImportExcelInput').trigger('click');
-            else if (action === 'export-excel') exportExcel();
-            else if (action === 'export-zip') downloadHistoryQrs();
-            else if (action === 'print') printHistoryQrs();
-            else if (action === 'download') downloadHistoryQrs();
+            executeProAction(action);
         } finally {
             button.prop('disabled', false).text(originalText);
             input.prop('disabled', false);
             email.prop('disabled', false);
         }
     }
-     $('#vsImportExcel').on('click',function(){ openProModal('import'); });
-    $('#vsUpgradePro').on('click',function(){ openProModal('upgrade'); });
+     $('#vsImportExcel').on('click',function(){ gateProAction('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
     function closeFileExportModal() {
@@ -1965,9 +1976,9 @@ $(function(){
     $('#vsFileExport').on('click',function(){ openFileExportModal(); });
     $('#vsFileExportModalClose').on('click',closeFileExportModal);
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
-    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); openProModal('export-excel'); });
-    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); openProModal('export-zip'); });
-    $('#vsPrintHistory').on('click',function(){ openProModal('print'); });
+    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); gateProAction('export-excel'); });
+    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); gateProAction('export-zip'); });
+    $('#vsPrintHistory').on('click',function(){ gateProAction('print'); });
     $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
     $('#vsProModalContinue').on('click',continueProAction);
     $('#vsProUpgradeCta').on('click',function(){

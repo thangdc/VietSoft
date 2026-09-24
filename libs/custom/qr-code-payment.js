@@ -53,9 +53,24 @@ function updatePaymentQr() {
 $(function () {
     if (!$('#vsPaymentModal').length) return;
 
-    $('#vsUpgradePro').off('click').on('click', function () {
+    window.VietSoftQrLicense.getActive().then(function (result) {
+        if (result.valid) $('#vsUpgradePro').text('Pro đã kích hoạt').prop('disabled', true);
+    });
+
+    $('#vsUpgradePro').off('click').on('click', async function () {
+        var button = $(this);
+        var result = await window.VietSoftQrLicense.getActive();
+        if (result.valid) {
+            button.text('Pro đã kích hoạt').prop('disabled', true);
+            return;
+        }
         openPaymentModal('annual');
     });
+
+    window.VietSoftQrPayment = {
+        open: openPaymentModal,
+        close: closePaymentModal
+    };
 
     $('#vsPaymentPlan').on('change', updatePaymentQr);
     $('#vsPaymentEmail').on('input', updatePaymentQr);
