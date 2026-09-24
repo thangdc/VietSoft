@@ -182,3 +182,27 @@
   .vs-modern .vs-payment-steps{grid-template-columns:1fr}
   .vs-modern .vs-payment-actions .vs-btn{width:100%}
 }
+
+@media(max-width:640px){
+  .vs-modern .vs-payment-modal.is-open{align-items:flex-start;padding:0}
+  .vs-modern .vs-payment-modal-card{width:100%;height:100dvh;max-height:none;min-height:0;overflow-y:auto;padding:18px 14px 24px;border:0;border-radius:0;box-shadow:none}
+  .vs-modern .vs-payment-modal-close{position:sticky;float:right;top:0;right:auto;z-index:2;margin:-4px -2px 2px 0}
+  .vs-modern .vs-payment-modal-kicker{clear:both;padding-top:4px;font-size:10px}
+  .vs-modern .vs-payment-modal-card h2{font-size:20px;margin-bottom:6px}
+  .vs-modern .vs-payment-modal-intro{font-size:12px;line-height:1.45;margin-bottom:14px}
+  .vs-modern .vs-payment-plan,.vs-modern .vs-payment-email{margin-bottom:11px}
+  .vs-modern .vs-payment-plan select,.vs-modern .vs-payment-email input{min-height:44px;font-size:16px}
+  .vs-modern .vs-payment-layout{display:flex;flex-direction:column;gap:12px;margin-top:12px;padding:12px}
+  .vs-modern .vs-payment-qr-wrap{order:0}
+  .vs-modern .vs-payment-qr-wrap img{width:190px;max-width:70vw}
+  .vs-modern .vs-payment-details{order:1;gap:6px}
+  .vs-modern .vs-payment-detail{display:block;padding:8px 9px}
+  .vs-modern .vs-payment-detail span,.vs-modern .vs-payment-detail strong{display:block;text-align:left}
+  .vs-modern .vs-payment-detail strong{margin-top:2px;font-size:13px}
+  .vs-modern .vs-payment-copy{min-height:42px}
+  .vs-modern .vs-payment-steps{display:block;margin-top:12px}
+  .vs-modern .vs-payment-steps>div{margin-top:6px;padding:8px}
+  .vs-modern .vs-payment-actions{position:sticky;bottom:0;margin:12px -14px 0;padding:10px 14px;background:rgba(255,255,255,.96);border-top:1px solid #eaecf0;z-index:2}
+  .vs-modern .vs-payment-actions .vs-btn{width:100%;min-height:44px}
+  .vs-modern .vs-payment-note{padding-bottom:4px}
+}
