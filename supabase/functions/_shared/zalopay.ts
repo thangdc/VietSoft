@@ -142,6 +142,32 @@ export function callbackMac(
   return hmacSha256Hex(data, config.key2);
 }
 
+export async function triggerLicenseIssuance(paymentId: string): Promise<void> {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.error("License issuance trigger is not configured.");
+    return;
+  }
+
+  try {
+    const response = await fetch(supabaseUrl + "/functions/v1/issue-license-from-payment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": serviceRoleKey,
+        "Authorization": "Bearer " + serviceRoleKey,
+      },
+      body: JSON.stringify({ paymentId }),
+    });
+    if (!response.ok) {
+      console.error("License issuance failed:", await response.text());
+    }
+  } catch (error) {
+    console.error("License issuance trigger failed:", error);
+  }
+}
+
 export function addPaymentEvent(
   supabase: any,
   paymentId: string,
