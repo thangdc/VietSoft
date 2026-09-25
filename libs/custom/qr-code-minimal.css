@@ -277,8 +277,8 @@ body.vs-modern {
 .vs-modern .vs-btn:disabled { opacity: .5; cursor: not-allowed; }
 
 .vs-modern .vs-preview {
-  width: 260px !important;
-  height: 260px !important;
+  width: 300px !important;
+  height: 300px !important;
   max-width: 100%;
   border: 1px solid var(--mu-border) !important;
   border-radius: var(--mu-radius-md) !important;
