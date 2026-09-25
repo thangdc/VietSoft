@@ -179,10 +179,29 @@ body.vs-modern {
   width: auto !important;
   min-width: 0;
   padding: 24px !important;
-  align-items: center;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 12px !important;
   background: var(--mu-surface-muted) !important;
   border-left: 1px solid var(--mu-border) !important;
   border-top: 0 !important;
+}
+
+/* Result is a single vertical composition. Do not let legacy child margins
+   or flex alignment create independent vertical spacing. */
+.vs-modern .vs-result > h2,
+.vs-modern .vs-result > .vs-preview,
+.vs-modern .vs-result > .vs-result-config,
+.vs-modern .vs-result > .vs-status,
+.vs-modern .vs-result > .vs-actions {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.vs-modern .vs-result > .vs-result-config,
+.vs-modern .vs-result > .vs-actions {
+  width: 100% !important;
 }
 .vs-modern .vs-form h2,
 .vs-modern .vs-result h2 {
@@ -294,21 +313,21 @@ body.vs-modern {
 }
 .vs-modern .vs-status {
   min-height: 20px;
-  margin-top: 12px;
+  margin-top: 0 !important;
   color: var(--mu-muted);
   font-size: 12px;
   text-align: center;
 }
- .vs-modern .vs-result > .vs-actions {
+.vs-modern .vs-result > .vs-actions {
   width: 100% !important;
   justify-content: flex-start !important;
-  margin-top: 8px !important;
+  margin-top: 0 !important;
 }
 .vs-modern .vs-result > .vs-actions .vs-btn { flex: 1 1 auto; }
 
 .vs-modern .vs-result-design {
   width: 100%;
-  margin-top: 12px !important;
+  margin-top: 0 !important;
   border: 1px solid var(--mu-border) !important;
   border-radius: var(--mu-radius-md) !important;
   background: var(--mu-surface) !important;
