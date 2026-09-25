@@ -178,7 +178,7 @@ body.vs-modern {
   grid-row: 2;
   width: auto !important;
   min-width: 0;
-  padding: 28px !important;
+  padding: 24px !important;
   align-items: center;
   background: var(--mu-surface-muted) !important;
   border-left: 1px solid var(--mu-border) !important;
@@ -186,7 +186,7 @@ body.vs-modern {
 }
 .vs-modern .vs-form h2,
 .vs-modern .vs-result h2 {
-  margin: 0 0 20px !important;
+  margin: 0 0 12px !important;
   color: var(--mu-text) !important;
   font-size: 18px !important;
   line-height: 1.35;
@@ -303,13 +303,13 @@ body.vs-modern {
 .vs-modern .vs-result > .vs-actions {
   width: 100% !important;
   justify-content: flex-start !important;
-  margin-top: 16px !important;
+  margin-top: 12px !important;
 }
 .vs-modern .vs-result > .vs-actions .vs-btn { flex: 1 1 auto; }
 
 .vs-modern .vs-result-design {
   width: 100%;
-  margin-top: 16px !important;
+  margin-top: 12px !important;
   border: 1px solid var(--mu-border) !important;
   border-radius: var(--mu-radius-md) !important;
   background: var(--mu-surface) !important;
@@ -320,6 +320,7 @@ body.vs-modern {
   margin: 0 !important;
 }
 .vs-modern .vs-result-design-body { background: var(--mu-surface-muted) !important; }
+.vs-modern .vs-result-design .vs-actions { margin-top: 12px !important; }
 .vs-modern .vs-result-design-toggle {
   min-height: 34px;
   border: 1px solid var(--mu-border-strong) !important;
