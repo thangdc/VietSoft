@@ -70,6 +70,18 @@ documents:
     impacts:
       - all
 
+  roadmap:
+    path: docs/roadmap.md
+    type: roadmap
+    impacts:
+      - product
+      - architecture
+      - workflows
+      - integrations
+      - data
+      - design-system
+      - ai-rules
+
   change-impact:
     path: docs/CHANGE_IMPACT.md
     type: process
