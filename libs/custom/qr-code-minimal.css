@@ -278,7 +278,6 @@ body.vs-modern {
 
 .vs-modern .vs-preview {
   width: 100% !important;
-  max-width: 360px;
   aspect-ratio: 1 / 1;
   height: auto !important;
   border: 1px solid var(--mu-border) !important;
