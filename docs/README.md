@@ -39,6 +39,7 @@ A change that affects product behavior, workflow, architecture, integration, dat
 - [Workflows](workflows.md)
 - [Design system](design-system.md)
 - [AI rules](ai-rules.md)
+- [Roadmap](roadmap.md)
 - [Document dependency map](document-map.yml)
 - [Change impact template](CHANGE_IMPACT.md)
 
