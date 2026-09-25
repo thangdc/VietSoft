@@ -30,7 +30,7 @@ export default createSupabaseHandler(async (req, ctx) => {
     .maybeSingle();
 
   if (paymentError || !payment) return json({ success: false, code: "PAYMENT_NOT_FOUND", message: "Không tìm thấy giao dịch." }, 404);
-  if (payment.status === "paid") return json({ success: true, payment });
+  if (payment.status === "paid") {\n    await triggerLicenseIssuance(payment.id);\n    return json({ success: true, payment });\n  }
 
   const appTransId = payment.provider_order_id;
   const mac = await queryOrderMac(config, appTransId);
