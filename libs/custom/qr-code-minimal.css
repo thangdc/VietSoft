@@ -194,7 +194,7 @@ body.vs-modern {
   letter-spacing: -0.01em;
 }
 .vs-modern .vs-form h2:after { display: none !important; }
-.vs-modern .vs-result h2 { text-align: left !important; }
+.vs-modern .vs-result h2 { text-align: center !important; }
 
 .vs-modern .vs-field { margin-bottom: 16px !important; }
 .vs-modern .vs-field label {
