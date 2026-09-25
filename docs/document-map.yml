@@ -1,0 +1,126 @@
+version: 1
+
+documents:
+  project:
+    path: docs/README.md
+    type: source-of-truth
+    impacts:
+      - product
+      - architecture
+      - data
+      - integrations
+      - workflows
+      - design-system
+      - ai-rules
+
+  product:
+    path: docs/product.md
+    type: product
+    impacts:
+      - workflows
+      - architecture
+      - design-system
+
+  architecture:
+    path: docs/architecture.md
+    type: architecture
+    impacts:
+      - data
+      - integrations
+      - workflows
+      - design-system
+
+  data:
+    path: docs/data-model.md
+    type: data
+    impacts:
+      - architecture
+      - integrations
+      - workflows
+
+  integrations:
+    path: docs/integrations.md
+    type: integration
+    impacts:
+      - architecture
+      - data
+      - workflows
+      - product
+
+  workflows:
+    path: docs/workflows.md
+    type: workflow
+    impacts:
+      - product
+      - architecture
+      - integrations
+      - data
+      - design-system
+
+  design-system:
+    path: docs/design-system.md
+    type: ux
+    impacts:
+      - workflows
+      - product
+
+  ai-rules:
+    path: docs/ai-rules.md
+    type: governance
+    impacts:
+      - all
+
+  roadmap:
+    path: docs/roadmap.md
+    type: roadmap
+    impacts:
+      - product
+      - architecture
+      - workflows
+      - integrations
+      - data
+      - design-system
+      - ai-rules
+
+  change-impact:
+    path: docs/CHANGE_IMPACT.md
+    type: process
+    impacts:
+      - all
+
+impact_rules:
+  product_change:
+    update:
+      - product
+      - affected_workflows
+      - affected_design_system
+  workflow_change:
+    update:
+      - workflows
+      - affected_architecture
+      - affected_integrations
+      - affected_data
+      - affected_product_rules
+  architecture_change:
+    update:
+      - architecture
+      - affected_integrations
+      - affected_data
+      - affected_workflows
+  integration_change:
+    update:
+      - integrations
+      - affected_workflows
+      - affected_architecture
+      - affected_data
+  data_change:
+    update:
+      - data
+      - affected_integrations
+      - affected_workflows
+      - affected_architecture
+  ux_change:
+    update:
+      - design-system
+      - affected_workflows
+      - product_if_behavior_changes
