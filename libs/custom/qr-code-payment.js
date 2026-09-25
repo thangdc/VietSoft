@@ -87,6 +87,7 @@ function updatePaymentSummary() {
     var plan = $('#vsPaymentPlan').val() || 'annual';
     var amount = plan === 'annual' ? 199000 : 39000;
     $('#vsPaymentAmount').text(formatVnd(amount));
+    $('#vsPaymentPlanLabel').text(plan === 'annual' ? 'Pro / năm' : 'Pro / tháng');
 }
 
 async function createPayment() {
@@ -102,6 +103,7 @@ async function createPayment() {
     stopPolling();
     $('#vsPaymentDone').prop('disabled', true).text('Đang tạo giao dịch...');
     $('#vsPaymentStatus').text('Đang tạo mã thanh toán ZaloPay...');
+    $('#vsPaymentStatusShort').text('Đang tạo giao dịch');
 
     try {
         var result = await callFunction(CREATE_PAYMENT_URL, {
@@ -115,6 +117,7 @@ async function createPayment() {
         $('#vsPaymentOrderId').text(currentPayment.provider_order_id || currentPayment.id);
         $('#vsPaymentDone').text('Tôi đã thanh toán');
         $('#vsPaymentStatus').text('Quét QR để thanh toán. Hệ thống sẽ tự kiểm tra trạng thái giao dịch.');
+        $('#vsPaymentStatusShort').text('Đang chờ thanh toán');
         $('#vsPaymentQrCaption').text('Quét bằng ZaloPay hoặc ứng dụng ngân hàng hỗ trợ VietQR');
 
         if (!renderPaymentQr(currentPayment.qr_code)) {
@@ -155,11 +158,13 @@ async function pollPayment() {
         currentPayment = result.payment || currentPayment;
 
         if (currentPayment.status === 'paid') {
+            $('#vsPaymentStatusShort').text('Đã thanh toán');
             await issueLicense();
             return;
         }
 
         $('#vsPaymentStatus').text('Đang chờ xác nhận thanh toán...');
+        $('#vsPaymentStatusShort').text('Đang chờ thanh toán');
     } catch (e) {
         $('#vsPaymentStatus').text('Chưa xác nhận được thanh toán. Hệ thống sẽ tự kiểm tra lại.');
     }
@@ -171,6 +176,7 @@ async function issueLicense() {
     stopPolling();
     $('#vsPaymentDone').prop('disabled', true).text('Đang cấp License...');
     $('#vsPaymentStatus').text('Thanh toán đã xác nhận. Đang cấp License Key...');
+    $('#vsPaymentStatusShort').text('Đang cấp License');
 
     try {
         var result = await callFunction(ISSUE_LICENSE_URL, { paymentId: currentPayment.id });
@@ -187,6 +193,7 @@ async function issueLicense() {
         );
 
         $('#vsPaymentDone').text('Đã cấp License').prop('disabled', true);
+        $('#vsPaymentStatusShort').text('Pro đã cấp');
         $('#vsPaymentOpenGateway').hide();
 
         $('#vsPaymentCopyLicense').off('click').on('click', async function () {
@@ -240,16 +247,6 @@ $(function () {
     });
     $('#vsPaymentModalClose').on('click', closePaymentModal);
     $('#vsPaymentModal').on('click', '[data-payment-close="true"]', closePaymentModal);
-
-    $('#vsPaymentCopyContent').on('click', async function () {
-        var content = $('#vsPaymentTransferContent').text();
-        try {
-            await navigator.clipboard.writeText(content);
-            $('#vsPaymentCopyStatus').text('✓ Đã sao chép');
-        } catch (e) {
-            $('#vsPaymentCopyStatus').text('Hãy sao chép thủ công.');
-        }
-    });
 
     $('#vsPaymentDone').on('click', async function () {
         if (currentPayment && currentPayment.status !== 'paid') {
