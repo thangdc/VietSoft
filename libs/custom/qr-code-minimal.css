@@ -354,27 +354,92 @@ body.vs-modern {
 .vs-modern .vs-result-config { border: 0 !important; }
 
 .vs-modern .vs-history {
-  margin-top: 28px !important;
-  padding-top: 16px !important;
-  border-top: 1px solid var(--mu-border) !important;
+  margin-top: 24px !important;
+  padding: 0 !important;
+  border-top: 0 !important;
+  border: 1px solid var(--mu-border) !important;
+  border-radius: var(--mu-radius-lg) !important;
+  background: var(--mu-surface) !important;
+  overflow: hidden;
 }
+
 .vs-modern .vs-history-header {
-  margin-bottom: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin: 0 !important;
+  padding: 16px 20px !important;
+  border-bottom: 1px solid var(--mu-border) !important;
+  background: var(--mu-surface) !important;
 }
+
 .vs-modern .vs-history-header h3 {
   margin: 0 !important;
   color: var(--mu-text) !important;
   font-size: 15px !important;
   font-weight: 650 !important;
 }
+
 .vs-modern .vs-history-export {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap;
   gap: 6px !important;
-  justify-content: flex-start !important;
+  justify-content: flex-end !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
+
 .vs-modern .vs-history-export .vs-btn {
   min-height: 36px !important;
   height: 36px !important;
 }
+
+.vs-modern #vsHistory {
+  margin: 0 !important;
+  padding: 16px 20px 20px !important;
+  background: var(--mu-surface) !important;
+}
+
+.vs-modern .vs-history-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+}
+
+.vs-modern .vs-history-toolbar .vs-history-search {
+  flex: 1 1 auto;
+  min-width: 180px;
+}
+
+.vs-modern .vs-history-toolbar-actions {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+.vs-modern .vs-history-select-all {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  white-space: nowrap;
+  color: var(--mu-muted) !important;
+  font-size: 13px !important;
+}
+
+.vs-modern .vs-history-selected-count {
+  color: var(--mu-muted) !important;
+  font-size: 12px !important;
+  white-space: nowrap;
+}
+
 .vs-modern .vs-history-table-wrap {
   margin: 0 !important;
   width: 100% !important;
@@ -383,6 +448,7 @@ body.vs-modern {
   box-shadow: none !important;
   background: #fff !important;
 }
+
 .vs-modern .vs-history-table th {
   background: var(--mu-surface-muted) !important;
   color: #4b5563 !important;
@@ -390,23 +456,28 @@ body.vs-modern {
   font-size: 11px !important;
   font-weight: 650 !important;
 }
+
 .vs-modern .vs-history-table td {
   background: #fff !important;
   color: #4b5563 !important;
   border-bottom: 1px solid #f0f1f3 !important;
 }
+
 .vs-modern .vs-history-table tbody tr.vs-history-row:hover td {
   background: #f9fafb !important;
 }
+
 .vs-modern .vs-history-table tbody tr.vs-history-row.is-selected td {
   background: #eff6ff !important;
 }
+
 .vs-modern .vs-history-page-buttons button {
   border: 1px solid var(--mu-border-strong);
   border-radius: var(--mu-radius-sm);
   background: #fff;
   box-shadow: none;
 }
+
 .vs-modern .vs-history-page-buttons button.active {
   color: var(--mu-primary);
   background: #eff6ff;
@@ -469,6 +540,24 @@ body.vs-modern {
   .vs-modern .vs-result > .vs-actions { display: grid; grid-template-columns: 1fr; }
   .vs-modern .vs-result > .vs-actions .vs-btn { width: 100%; }
   .vs-modern .vs-grid2 { grid-template-columns: 1fr !important; }
+  .vs-modern #vsHistory { padding: 14px 16px 16px !important; }
+  .vs-modern .vs-history-header {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    padding: 14px 16px !important;
+  }
+  .vs-modern .vs-history-export {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+  .vs-modern .vs-history-export .vs-btn { flex: 1 1 auto; }
+  .vs-modern .vs-history-toolbar {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+  .vs-modern .vs-history-toolbar-actions {
+    justify-content: flex-start !important;
+  }
   .vs-modern .vs-info-section { padding: 0 12px !important; }
   .vs-modern .vs-info-card { padding: 18px !important; }
 }
