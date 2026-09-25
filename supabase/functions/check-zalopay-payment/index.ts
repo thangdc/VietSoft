@@ -7,6 +7,7 @@ import {
   readConfig,
   readJson,
   PROVIDER,
+  triggerLicenseIssuance,
 } from "../_shared/zalopay.ts";
 
 export default createSupabaseHandler(async (req, ctx) => {
@@ -70,6 +71,7 @@ export default createSupabaseHandler(async (req, ctx) => {
       .eq("status", "pending");
 
     if (updateError) return json({ success: false, code: "PAYMENT_PERSIST_FAILED", message: "Không thể lưu trạng thái thanh toán." }, 500);
+    await triggerLicenseIssuance(payment.id);
   }
 
   const { data: refreshed } = await ctx.supabaseAdmin
