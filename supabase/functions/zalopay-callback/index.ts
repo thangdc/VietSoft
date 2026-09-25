@@ -7,6 +7,7 @@ import {
   readJson,
   safeEqual,
   PROVIDER,
+  triggerLicenseIssuance,
 } from "../_shared/zalopay.ts";
 
 Deno.serve(async (req) => {
@@ -62,7 +63,10 @@ Deno.serve(async (req) => {
 
   await addPaymentEvent(supabase, payment.id, "callback", zpTransId, callback);
 
-  if (payment.status === "paid") return json({ return_code: 1, return_message: "success" });
+  if (payment.status === "paid") {
+    await triggerLicenseIssuance(payment.id);
+    return json({ return_code: 1, return_message: "success" });
+  }
 
   if (Number(payment.amount) !== amount) {
     return json({ return_code: 0, return_message: "Amount mismatch." }, 400);
@@ -84,5 +88,6 @@ Deno.serve(async (req) => {
     return json({ return_code: 0, return_message: "Could not persist payment." }, 500);
   }
 
+  await triggerLicenseIssuance(payment.id);
   return json({ return_code: 1, return_message: "success" });
 });
