@@ -330,7 +330,7 @@ body.vs-modern {
 
 .vs-modern .vs-history {
   margin-top: 28px !important;
-  padding-top: 24px !important;
+  padding-top: 16px !important;
   border-top: 1px solid var(--mu-border) !important;
 }
 .vs-modern .vs-history-header {
@@ -437,10 +437,10 @@ body.vs-modern {
   .vs-modern .vs-hero h1 { font-size: 26px !important; }
   .vs-modern .vs-app { padding: 0 12px 24px !important; }
   .vs-modern .vs-form,
-  .vs-modern .vs-result { padding: 20px !important; }
+  .vs-modern .vs-result { padding: 16px !important; }
   .vs-modern .vs-tabs { padding: 6px !important; }
   .vs-modern .vs-tabs a { min-height: 34px; padding: 0 10px !important; }
-  .vs-modern .vs-preview { width: min(280px, 100%) !important; height: min(280px, 100vw - 64px) !important; }
+  .vs-modern .vs-preview { width: min(260px, 100%) !important; height: min(260px, 100vw - 56px) !important; }
   .vs-modern .vs-result > .vs-actions { display: grid; grid-template-columns: 1fr; }
   .vs-modern .vs-result > .vs-actions .vs-btn { width: 100%; }
   .vs-modern .vs-grid2 { grid-template-columns: 1fr !important; }
