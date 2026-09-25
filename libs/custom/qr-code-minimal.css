@@ -299,10 +299,10 @@ body.vs-modern {
   font-size: 12px;
   text-align: center;
 }
-.vs-modern .vs-result > .vs-actions {
+ .vs-modern .vs-result > .vs-actions {
   width: 100% !important;
   justify-content: flex-start !important;
-  margin-top: 12px !important;
+  margin-top: 8px !important;
 }
 .vs-modern .vs-result > .vs-actions .vs-btn { flex: 1 1 auto; }
 
