@@ -82,7 +82,7 @@ body.vs-modern {
 
 .vs-modern .wrapper,
 .vs-modern .content { background: var(--mu-bg) !important; }
-.vs-modern .content { min-height: calc(100vh - 56px) !important; padding: 0 0 48px !important; }
+.vs-modern .content { min-height: calc(100vh - 56px) !important; padding: 0 !important; }
 
 .vs-modern .vs-hero {
   max-width: 1120px;
