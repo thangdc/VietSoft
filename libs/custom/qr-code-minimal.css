@@ -311,8 +311,8 @@ body.vs-modern {
   font-size: 13px;
   line-height: 1.5;
 }
-.vs-modern .vs-status {
-  min-height: 20px;
+ .vs-modern .vs-status {
+  min-height: 0 !important;
   margin-top: 0 !important;
   color: var(--mu-muted);
   font-size: 12px;
