@@ -405,6 +405,8 @@ body.vs-modern {
 
 .vs-modern .vs-history-toolbar {
   display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   align-items: center !important;
   justify-content: space-between !important;
   gap: 12px !important;
@@ -600,8 +602,9 @@ body.vs-modern {
     padding: 0 !important;
   }
   .vs-modern .vs-history-toolbar {
-    align-items: stretch !important;
-    flex-direction: column !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
   }
   .vs-modern .vs-history-toolbar-actions {
     justify-content: flex-start !important;
