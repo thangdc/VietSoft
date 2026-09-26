@@ -356,7 +356,6 @@ body.vs-modern {
 .vs-modern .vs-history {
   margin-top: 24px !important;
   padding: 0 !important;
-  border-top: 0 !important;
   border: 1px solid var(--mu-border) !important;
   border-radius: var(--mu-radius-lg) !important;
   background: var(--mu-surface) !important;
@@ -369,12 +368,13 @@ body.vs-modern {
   justify-content: space-between !important;
   gap: 16px !important;
   margin: 0 !important;
-  padding: 16px 20px !important;
+  padding: 14px 20px !important;
   border-bottom: 1px solid var(--mu-border) !important;
   background: var(--mu-surface) !important;
 }
 
 .vs-modern .vs-history-header h3 {
+  flex: 0 0 auto;
   margin: 0 !important;
   color: var(--mu-text) !important;
   font-size: 15px !important;
@@ -384,7 +384,7 @@ body.vs-modern {
 .vs-modern .vs-history-export {
   display: flex !important;
   align-items: center !important;
-  flex-wrap: wrap;
+  flex-wrap: nowrap !important;
   gap: 6px !important;
   justify-content: flex-end !important;
   margin: 0 !important;
@@ -392,8 +392,9 @@ body.vs-modern {
 }
 
 .vs-modern .vs-history-export .vs-btn {
-  min-height: 36px !important;
-  height: 36px !important;
+  min-height: 34px !important;
+  height: 34px !important;
+  white-space: nowrap;
 }
 
 .vs-modern #vsHistory {
@@ -551,6 +552,29 @@ body.vs-modern {
     justify-content: flex-start !important;
   }
   .vs-modern .vs-history-export .vs-btn { flex: 1 1 auto; }
+  .vs-modern .vs-history-toolbar {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+  .vs-modern .vs-history-toolbar-actions {
+    justify-content: flex-start !important;
+  }
+  .vs-modern .vs-history-header {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    padding: 14px 16px !important;
+  }
+  .vs-modern .vs-history-export {
+    width: 100%;
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+  }
+  .vs-modern .vs-history-export .vs-btn {
+    flex: 1 1 auto;
+  }
+  .vs-modern #vsHistory {
+    padding: 14px 16px 16px !important;
+  }
   .vs-modern .vs-history-toolbar {
     align-items: stretch !important;
     flex-direction: column !important;
