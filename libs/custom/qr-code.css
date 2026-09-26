@@ -78,6 +78,7 @@ body.vs-modern {
 .vs-modern .vs-auth-account-wrap { display: flex; align-items: center; gap: var(--mu-space-2); margin-left: auto; }
 .vs-modern .vs-auth-button,
 .vs-modern .vs-sync-status {
+  appearance: none;
   min-height: var(--mu-control-sm);
   border: 1px solid transparent;
   border-radius: var(--mu-radius-md);
@@ -183,8 +184,22 @@ body.vs-modern {
   min-width: 0;
 }
 .vs-modern .vs-form {
-  padding: 28px;
+  padding: 32px;
   background: var(--mu-surface);
+}
+
+.vs-modern .vs-form > #vsFields {
+  display: block;
+}
+
+.vs-modern .vs-field:last-child {
+  margin-bottom: 0;
+}
+
+.vs-modern .vs-field + .vs-grid2,
+.vs-modern .vs-grid2 + .vs-field,
+.vs-modern .vs-grid2 + .vs-grid2 {
+  margin-top: 0;
 }
 .vs-modern .vs-result {
   grid-column: 2;
@@ -228,10 +243,13 @@ body.vs-modern {
 .vs-modern .vs-form h2:after { display: none; }
 .vs-modern .vs-result h2 { text-align: center; }
 
-.vs-modern .vs-field { margin-bottom: 16px; }
+.vs-modern .vs-field {
+  margin-bottom: var(--mu-space-4);
+  min-width: 0;
+}
 .vs-modern .vs-field label {
   display: block;
-  margin-bottom: var(--mu-space-2);
+  margin-bottom: 6px;
   color: #374151;
   font-size: var(--mu-font-md);
   font-weight: 600;
@@ -251,9 +269,17 @@ body.vs-modern {
   color: var(--mu-text);
   box-shadow: none;
   font-size: var(--mu-font-base);
+  line-height: 1.4;
 }
 .vs-modern .vs-field input,
-.vs-modern .vs-field select { height: var(--mu-control-md); padding: 0 11px; }
+.vs-modern .vs-field select {
+  height: var(--mu-control-md);
+  padding: 0 12px;
+}
+.vs-modern .vs-field select {
+  padding-right: 34px;
+  cursor: pointer;
+}
 .vs-modern .vs-field textarea { padding: 9px 11px; line-height: 1.5; }
 .vs-modern .vs-field input:hover,
 .vs-modern .vs-field textarea:hover,
@@ -267,7 +293,23 @@ body.vs-modern {
   box-shadow: 0 0 0 3px #dbeafe;
 }
 
-.vs-modern .vs-grid2 { gap: var(--mu-space-3); }
+.vs-modern .vs-grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--mu-space-4);
+  min-width: 0;
+}
+.vs-modern button,
+.vs-modern input,
+.vs-modern select,
+.vs-modern textarea {
+  font: inherit;
+}
+
+.vs-modern button {
+  margin: 0;
+}
+
 .vs-modern .vs-actions {
   display: flex;
   align-items: center;
@@ -276,17 +318,27 @@ body.vs-modern {
   margin-top: 20px;
 }
 .vs-modern .vs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
   min-height: var(--mu-control-md);
   height: var(--mu-control-md);
+  box-sizing: border-box;
   padding: 0 14px;
-  border-radius: var(--mu-radius-sm);
-  box-shadow: none;
+  border: 1px solid transparent;
+  border-radius: var(--mu-radius-md);
+  background: var(--mu-surface);
+  color: var(--mu-text);
+  box-shadow: 0 1px 2px rgba(16,24,40,.04);
+  cursor: pointer;
   transform: none;
   font-size: var(--mu-font-md);
   font-weight: 600;
   transition: background-color .12s ease, border-color .12s ease, color .12s ease;
 }
-.vs-modern .vs-btn:hover { transform: none; box-shadow: none; }
+.vs-modern .vs-btn:hover { transform: none; box-shadow: 0 2px 5px rgba(16,24,40,.08); }
+.vs-modern .vs-btn:active { transform: translateY(1px); box-shadow: none; }
 .vs-modern .vs-btn:focus-visible,
 .vs-modern .vs-auth-button:focus-visible,
 .vs-modern .vs-sync-status:focus-visible,
@@ -311,6 +363,9 @@ body.vs-modern {
 .vs-modern .vs-preview {
   width: 100%;
   aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: auto;
   border: 1px solid var(--mu-border);
   border-radius: var(--mu-radius-md);
@@ -319,7 +374,10 @@ body.vs-modern {
 }
 .vs-modern .vs-preview img { max-width: 100%; max-height: 100%; }
 .vs-modern .vs-empty {
+  width: 100%;
+  box-sizing: border-box;
   padding: 24px;
+  text-align: center;
   color: var(--mu-subtle);
   font-size: var(--mu-font-md);
   line-height: 1.5;
@@ -571,8 +629,7 @@ body.vs-modern {
   .vs-modern .vs-preview { width: 100%; max-width: 320px; height: auto; aspect-ratio: 1 / 1; }
   .vs-modern .vs-result > .vs-actions { display: grid; grid-template-columns: 1fr; }
   .vs-modern .vs-result > .vs-actions .vs-btn { width: 100%; }
-  .vs-modern .vs-grid2 { grid-template-columns: 1fr; }
-  .vs-modern #vsHistory { padding: 14px 16px 16px; }
+  .vs-modern .vs-grid2 { grid-template-columns: 1fr; gap: var(--mu-space-3); }
   .vs-modern .vs-history-header {
     align-items: flex-start;
     flex-direction: column;
@@ -1057,4 +1114,3 @@ body.vs-modern {
   .vs-modern .header .vs-auth-account{max-width:170px}
   .vs-modern .header .vs-auth-account #vsAuthAccountLabel{max-width:105px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
-
