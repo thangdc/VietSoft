@@ -583,11 +583,11 @@ body.vs-modern{.vs-modern margin: 0;
  * All application selectors remain under .vs-modern.
  * -------------------------------------------------------------------------- */
 /* Location map picker */
-.vs-location-search{.vs-modern display:flex;gap:8px;margin-bottom:10px}.vs-location-search input{.vs-modern flex:1;height: var(--mu-control-md);box-sizing:border-box;border:1px solid #d0d5dd;border-radius: var(--mu-radius-md);padding:0 12px;font-size: var(--mu-font-md);outline:none}.vs-location-search input:focus{.vs-modern border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}.vs-location-search .vs-btn{.vs-modern height: var(--mu-control-md);min-width:58px}.vs-location-map{.vs-modern height:320px;width:100%;border:1px solid #d0d5dd;border-radius: var(--mu-radius-xl);overflow:hidden;background:#f2f4f7}.vs-location-selected{.vs-modern display:flex;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 12px;border:1px solid #eaecf0;border-radius: var(--mu-radius-md);background:#f8fafc;font-size: var(--mu-font-sm)}.vs-location-selected span:first-child{.vs-modern color:#344054;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vs-location-selected span:last-child{.vs-modern color:#667085;white-space:nowrap;font-variant-numeric:tabular-nums}.vs-location-help{.vs-modern margin:8px 0 0;color:#667085;font-size: var(--mu-font-sm)}@media(max-width:640px){.vs-modern .vs-location-map{.vs-modern height:280px}.vs-location-selected{.vs-modern display:block}.vs-location-selected span{.vs-modern display:block}.vs-location-selected span:last-child{.vs-modern margin-top:4px}}
-.vs-history-table-wrap{.vs-modern overflow-x:hidden}
+.vs-modern .vs-location-search{.vs-modern display:flex;gap:8px;margin-bottom:10px}.vs-location-search input{.vs-modern flex:1;height: var(--mu-control-md);box-sizing:border-box;border:1px solid #d0d5dd;border-radius: var(--mu-radius-md);padding:0 12px;font-size: var(--mu-font-md);outline:none}.vs-location-search input:focus{.vs-modern border-color:#84adff;box-shadow:0 0 0 3px #eff4ff}.vs-location-search .vs-btn{.vs-modern height: var(--mu-control-md);min-width:58px}.vs-location-map{.vs-modern height:320px;width:100%;border:1px solid #d0d5dd;border-radius: var(--mu-radius-xl);overflow:hidden;background:#f2f4f7}.vs-location-selected{.vs-modern display:flex;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 12px;border:1px solid #eaecf0;border-radius: var(--mu-radius-md);background:#f8fafc;font-size: var(--mu-font-sm)}.vs-location-selected span:first-child{.vs-modern color:#344054;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vs-location-selected span:last-child{.vs-modern color:#667085;white-space:nowrap;font-variant-numeric:tabular-nums}.vs-location-help{.vs-modern margin:8px 0 0;color:#667085;font-size: var(--mu-font-sm)}@media(max-width:640px){.vs-modern .vs-location-map{.vs-modern height:280px}.vs-location-selected{.vs-modern display:block}.vs-location-selected span{.vs-modern display:block}.vs-location-selected span:last-child{.vs-modern margin-top:4px}}
+.vs-modern .vs-history-table-wrap{.vs-modern overflow-x:hidden}
 .vs-history-table th:first-child,.vs-modern .vs-history-table td:first-child{.vs-modern width:42px}
 @media(max-width:640px){.vs-modern .vs-history-footer{.vs-modern flex-wrap:wrap}.vs-history-pagination{.vs-modern margin-left:auto}.vs-history-table th,.vs-modern .vs-history-table td{.vs-modern padding:9px 7px}.vs-history-table th:first-child,.vs-modern .vs-history-table td:first-child{.vs-modern width:34px}.vs-history-table th:last-child,.vs-modern .vs-history-table td:last-child{.vs-modern width:42px;min-width:42px;max-width:42px}.vs-history-filter{.vs-modern min-width:0;max-width:none}.vs-history-toolbar-actions{.vs-modern width:100%;justify-content:flex-end}}
-.vs-btn-icon{.vs-modern width:15px;height:15px;flex:0 0 15px;fill:currentColor}.vs-history-delete .vs-btn-icon{.vs-modern width:15px;height:15px}.vs-history-toolbar-actions .vs-btn{min-height: var(--mu-control-sm)}
+.vs-modern .vs-btn-icon{.vs-modern width:15px;height:15px;flex:0 0 15px;fill:currentColor}.vs-history-delete .vs-btn-icon{.vs-modern width:15px;height:15px}.vs-history-toolbar-actions .vs-btn{min-height: var(--mu-control-sm)}
 
 
 /* History QR thumbnail */
@@ -701,20 +701,20 @@ body.vs-modern{.vs-modern margin: 0;
 
 
 /* QR print metadata options */
-.vs-qr-print-options{.vs-modern display:none;position:fixed;inset:0;z-index:10002;align-items:center;justify-content:center;padding:20px}
-.vs-qr-print-options.is-open{.vs-modern display:flex}
-.vs-qr-print-backdrop{.vs-modern position:absolute;inset:0;background:rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .48)}
-.vs-qr-print-card{.vs-modern position:relative;width:min(460px,.vs-modern 100%);padding:24px;border:1px solid #e4e7ec;border-radius: var(--mu-radius-xl);background:#fff;box-shadow:0 24px 70px rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .22)}
-.vs-qr-print-kicker{.vs-modern margin-bottom:6px;color:#175cd3;font-size: var(--mu-font-sm);font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-.vs-qr-print-card h3{.vs-modern margin:0 0 7px;color:#101828;font-size: var(--mu-font-2xl)}
-.vs-qr-print-card>p{.vs-modern margin:0 0 16px;color:#667085;font-size: var(--mu-font-md);line-height:1.5}
-.vs-qr-print-check{.vs-modern display:flex;align-items:flex-start;gap:10px;padding:13px;border:1px solid #dbeafe;border-radius: var(--mu-radius-lg);background:#f8fbff;cursor:pointer}
-.vs-qr-print-check input{.vs-modern width:16px;height:16px;min-width:16px;margin:2px 0 0;padding:0}
-.vs-qr-print-check span{.vs-modern display:flex;flex-direction:column;gap:3px}
-.vs-qr-print-check strong{.vs-modern color:#344054;font-size: var(--mu-font-md)}
-.vs-qr-print-check small{.vs-modern color:#667085;font-size: var(--mu-font-sm);line-height:1.45}
-.vs-qr-print-actions{.vs-modern display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
-@media(max-width:640px){.vs-modern .vs-qr-print-options{.vs-modern padding:10px}.vs-qr-print-card{padding:20px 16px;border-radius: var(--mu-radius-xl)}}
+.vs-modern .vs-qr-print-options{.vs-modern display:none;position:fixed;inset:0;z-index:10002;align-items:center;justify-content:center;padding:20px}
+.vs-modern .vs-qr-print-options.is-open{.vs-modern display:flex}
+.vs-modern .vs-qr-print-backdrop{.vs-modern position:absolute;inset:0;background:rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .48)}
+.vs-modern .vs-qr-print-card{.vs-modern position:relative;width:min(460px,.vs-modern 100%);padding:24px;border:1px solid #e4e7ec;border-radius: var(--mu-radius-xl);background:#fff;box-shadow:0 24px 70px rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .22)}
+.vs-modern .vs-qr-print-kicker{.vs-modern margin-bottom:6px;color:#175cd3;font-size: var(--mu-font-sm);font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.vs-modern .vs-qr-print-card h3{.vs-modern margin:0 0 7px;color:#101828;font-size: var(--mu-font-2xl)}
+.vs-modern .vs-qr-print-card>p{.vs-modern margin:0 0 16px;color:#667085;font-size: var(--mu-font-md);line-height:1.5}
+.vs-modern .vs-qr-print-check{.vs-modern display:flex;align-items:flex-start;gap:10px;padding:13px;border:1px solid #dbeafe;border-radius: var(--mu-radius-lg);background:#f8fbff;cursor:pointer}
+.vs-modern .vs-qr-print-check input{.vs-modern width:16px;height:16px;min-width:16px;margin:2px 0 0;padding:0}
+.vs-modern .vs-qr-print-check span{.vs-modern display:flex;flex-direction:column;gap:3px}
+.vs-modern .vs-qr-print-check strong{.vs-modern color:#344054;font-size: var(--mu-font-md)}
+.vs-modern .vs-qr-print-check small{.vs-modern color:#667085;font-size: var(--mu-font-sm);line-height:1.45}
+.vs-modern .vs-qr-print-actions{.vs-modern display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+@media(max-width:640px){.vs-modern .vs-qr-print-options{.vs-modern padding:10px}.vs-modern .vs-qr-print-card{padding:20px 16px;border-radius: var(--mu-radius-xl)}}
 
 
 /* Guide and FAQ: align the lower content with the application shell. */
@@ -832,11 +832,11 @@ body.vs-modern{.vs-modern margin: 0;
   .vs-modern .vs-import-preview-actions .vs-btn{.vs-modern flex:1}
 }
 
-.vs-pro-license{.vs-modern margin-top:18px;padding:16px;border:1px solid #e5e7eb;border-radius: var(--mu-radius-xl);background:#f8fafc}
-.vs-pro-license label{.vs-modern display:block;margin-bottom:7px;font-weight:600}
-#vsProLicenseInput{.vs-modern width:100%;min-height:76px;padding:10px 12px;border:1px solid #d1d5db;border-radius: var(--mu-radius-md);resize:vertical;font-family:monospace;font-size: var(--mu-font-sm);background:#fff}
-.vs-pro-license-actions{.vs-modern display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.vs-pro-license-status{min-height:20px;margin-top:8px;font-size: var(--mu-font-md);color:#4b5563}
+.vs-modern .vs-pro-license{.vs-modern margin-top:18px;padding:16px;border:1px solid #e5e7eb;border-radius: var(--mu-radius-xl);background:#f8fafc}
+.vs-modern .vs-pro-license label{.vs-modern display:block;margin-bottom:7px;font-weight:600}
+.vs-modern #vsProLicenseInput{.vs-modern width:100%;min-height:76px;padding:10px 12px;border:1px solid #d1d5db;border-radius: var(--mu-radius-md);resize:vertical;font-family:monospace;font-size: var(--mu-font-sm);background:#fff}
+.vs-modern .vs-pro-license-actions{.vs-modern display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.vs-modern .vs-pro-license-status{min-height:20px;margin-top:8px;font-size: var(--mu-font-md);color:#4b5563}
 
 .vs-modern .vs-pro-license{margin-bottom:20px}
 .vs-modern .vs-pro-license .vs-field{margin-bottom:12px}
@@ -931,33 +931,33 @@ body.vs-modern{.vs-modern margin: 0;
 /* --------------------------------------------------------------------------
  * Authentication
  * -------------------------------------------------------------------------- */
-.vs-auth-account-wrap{.vs-modern display:flex;align-items:center;gap:8px;margin-left:auto}
-.vs-auth-button{.vs-modern display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .35);background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .1);color:#fff;border-radius: var(--mu-radius-sm);padding:7px 12px;font-size: var(--mu-font-md);cursor:pointer}
-.vs-auth-button:hover{.vs-modern background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .18)}
-.vs-auth-account{.vs-modern max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.vs-auth-modal-open{.vs-modern overflow:hidden}
-.vs-auth-modal{.vs-modern display:none;position:fixed;inset:0;z-index:10000}
-.vs-auth-modal.is-open{.vs-modern display:flex;align-items:center;justify-content:center}
-.vs-auth-backdrop{.vs-modern position:absolute;inset:0;background:rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .55)}
-.vs-auth-card{.vs-modern position:relative;width:min(440px,.vs-modern calc(100vw - 32px));background:#fff;border-radius: var(--mu-radius-xl);box-shadow:0 24px 70px rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .28);padding:28px}
-.vs-auth-close{.vs-modern position:absolute;right:14px;top:10px;border:0;background:transparent;font-size:28px;color:#64748b;cursor:pointer}
-.vs-auth-kicker{.vs-modern font-size: var(--mu-font-sm);letter-spacing:.12em;color:#2563eb;font-weight:700;margin-bottom:6px}
-.vs-auth-card h2{.vs-modern margin:0 0 8px;font-size:24px;color:#111827}
-.vs-auth-intro{.vs-modern margin:0 0 20px;color:#64748b;font-size: var(--mu-font-base)}
-.vs-auth-field{.vs-modern margin-bottom:14px}
-.vs-auth-field label{.vs-modern display:block;font-weight:600;margin-bottom:6px;color:#374151}
-.vs-auth-field input{.vs-modern width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius: var(--mu-radius-md);padding:10px 12px;font-size: var(--mu-font-base)}
-.vs-auth-actions{.vs-modern display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-.vs-auth-actions .vs-btn{.vs-modern flex:1}
-.vs-auth-links{.vs-modern display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size: var(--mu-font-md)}
-.vs-auth-links button{.vs-modern border:0;background:none;padding:0;color:#2563eb;cursor:pointer}
-.vs-auth-status{.vs-modern min-height:20px;margin-top:14px;font-size: var(--mu-font-md);color:#15803d}
-.vs-auth-status.is-error{.vs-modern color:#dc2626}
-.vs-auth-account-info{.vs-modern padding:14px;background:#f8fafc;border-radius: var(--mu-radius-lg);margin-bottom:16px}
-.vs-auth-account-info strong{.vs-modern display:block;color:#111827;margin-bottom:4px}
-.vs-auth-account-info span{.vs-modern font-size: var(--mu-font-md);color:#64748b;word-break:break-all}
-@media(max-width:700px){.vs-modern .vs-auth-account-wrap{.vs-modern margin-left:0}.vs-auth-account{.vs-modern max-width:150px}.vs-auth-card{.vs-modern padding:22px}}
-.vs-sync-status{.vs-modern display:none;align-items:center;gap:5px;border:1px solid rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .25);background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .06);color:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .92);border-radius: var(--mu-radius-sm);padding:7px 10px;font-size: var(--mu-font-sm);cursor:pointer}.vs-sync-status:hover{.vs-modern background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .14)}.vs-sync-status.is-syncing{.vs-modern cursor:wait}.vs-sync-status.is-error{.vs-modern color:#fecaca;border-color:rgba(248,.vs-modern 113,.vs-modern 113,.vs-modern .4)}.vs-sync-status.is-success{.vs-modern color:#dcfce7}@media(max-width:700px){.vs-modern .vs-sync-status{.vs-modern padding:7px 8px}.vs-sync-status #vsSyncStatusLabel{display:none}}
+.vs-modern .vs-auth-account-wrap{.vs-modern display:flex;align-items:center;gap:8px;margin-left:auto}
+.vs-modern .vs-auth-button{.vs-modern display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .35);background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .1);color:#fff;border-radius: var(--mu-radius-sm);padding:7px 12px;font-size: var(--mu-font-md);cursor:pointer}
+.vs-modern .vs-auth-button:hover{.vs-modern background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .18)}
+.vs-modern .vs-auth-account{.vs-modern max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.vs-modern.vs-auth-modal-open{.vs-modern overflow:hidden}
+.vs-modern .vs-auth-modal{.vs-modern display:none;position:fixed;inset:0;z-index:10000}
+.vs-modern .vs-auth-modal.is-open{.vs-modern display:flex;align-items:center;justify-content:center}
+.vs-modern .vs-auth-backdrop{.vs-modern position:absolute;inset:0;background:rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .55)}
+.vs-modern .vs-auth-card{.vs-modern position:relative;width:min(440px,.vs-modern calc(100vw - 32px));background:#fff;border-radius: var(--mu-radius-xl);box-shadow:0 24px 70px rgba(15,.vs-modern 23,.vs-modern 42,.vs-modern .28);padding:28px}
+.vs-modern .vs-auth-close{.vs-modern position:absolute;right:14px;top:10px;border:0;background:transparent;font-size:28px;color:#64748b;cursor:pointer}
+.vs-modern .vs-auth-kicker{.vs-modern font-size: var(--mu-font-sm);letter-spacing:.12em;color:#2563eb;font-weight:700;margin-bottom:6px}
+.vs-modern .vs-auth-card h2{.vs-modern margin:0 0 8px;font-size:24px;color:#111827}
+.vs-modern .vs-auth-intro{.vs-modern margin:0 0 20px;color:#64748b;font-size: var(--mu-font-base)}
+.vs-modern .vs-auth-field{.vs-modern margin-bottom:14px}
+.vs-modern .vs-auth-field label{.vs-modern display:block;font-weight:600;margin-bottom:6px;color:#374151}
+.vs-modern .vs-auth-field input{.vs-modern width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius: var(--mu-radius-md);padding:10px 12px;font-size: var(--mu-font-base)}
+.vs-modern .vs-auth-actions{.vs-modern display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.vs-modern .vs-auth-actions .vs-btn{.vs-modern flex:1}
+.vs-modern .vs-auth-links{.vs-modern display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size: var(--mu-font-md)}
+.vs-modern .vs-auth-links button{.vs-modern border:0;background:none;padding:0;color:#2563eb;cursor:pointer}
+.vs-modern .vs-auth-status{.vs-modern min-height:20px;margin-top:14px;font-size: var(--mu-font-md);color:#15803d}
+.vs-modern .vs-auth-status.is-error{.vs-modern color:#dc2626}
+.vs-modern .vs-auth-account-info{.vs-modern padding:14px;background:#f8fafc;border-radius: var(--mu-radius-lg);margin-bottom:16px}
+.vs-modern .vs-auth-account-info strong{.vs-modern display:block;color:#111827;margin-bottom:4px}
+.vs-modern .vs-auth-account-info span{.vs-modern font-size: var(--mu-font-md);color:#64748b;word-break:break-all}
+@media(max-width:700px){.vs-modern .vs-auth-account-wrap{.vs-modern margin-left:0}.vs-modern .vs-auth-account{.vs-modern max-width:150px}.vs-modern .vs-auth-card{.vs-modern padding:22px}}
+.vs-modern .vs-sync-status{.vs-modern display:none;align-items:center;gap:5px;border:1px solid rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .25);background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .06);color:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .92);border-radius: var(--mu-radius-sm);padding:7px 10px;font-size: var(--mu-font-sm);cursor:pointer}.vs-sync-status:hover{.vs-modern background:rgba(255,.vs-modern 255,.vs-modern 255,.vs-modern .14)}.vs-sync-status.is-syncing{.vs-modern cursor:wait}.vs-sync-status.is-error{.vs-modern color:#fecaca;border-color:rgba(248,.vs-modern 113,.vs-modern 113,.vs-modern .4)}.vs-sync-status.is-success{.vs-modern color:#dcfce7}@media(max-width:700px){.vs-modern .vs-sync-status{.vs-modern padding:7px 8px}.vs-sync-status #vsSyncStatusLabel{display:none}}
 
 /* Header account placement and hierarchy */
 .vs-modern .header .navbar{flex:0 0 auto;order:2}
