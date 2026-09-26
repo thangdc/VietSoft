@@ -398,8 +398,8 @@ body.vs-modern {
 }
 
 .vs-modern #vsHistory {
-  margin: 0 !important;
-  padding: 16px 20px 20px !important;
+  margin: 16px 20px 20px !important;
+  padding: 0 !important;
   background: var(--mu-surface) !important;
 }
 
@@ -573,7 +573,8 @@ body.vs-modern {
     flex: 1 1 auto;
   }
   .vs-modern #vsHistory {
-    padding: 14px 16px 16px !important;
+    margin: 14px 16px 16px !important;
+    padding: 0 !important;
   }
   .vs-modern .vs-history-toolbar {
     align-items: stretch !important;
