@@ -151,6 +151,24 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-modern .vs-history-table-wrap{border-color:#e4e7ec;border-radius:10px;box-shadow:0 1px 2px rgba(16,24,40,.02)}
 .vs-modern .vs-history-table th{background:#f8fafc;color:#344054;font-size:11px;text-transform:none}
 .vs-modern .vs-history-table td{background:#fff;font-size:12px}
+.vs-modern .vs-history-table th {
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+.vs-modern .vs-history-table th,
+.vs-modern .vs-history-table td {
+  line-height: 1.4 !important;
+}
+.vs-modern .vs-history-page-size,
+.vs-modern .vs-history-page-size select {
+  padding-right: 28px !important;
+  white-space: nowrap !important;
+}
+.vs-modern .vs-history-page-size {
+  min-width: 72px !important;
+}
 .vs-modern .vs-history-table tbody tr:hover td{background:#f9fbff}
 .vs-modern .vs-history-page-buttons button{min-width:30px;height:30px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center}
 .vs-modern .vs-history-page-buttons button.active{font-weight:700}
