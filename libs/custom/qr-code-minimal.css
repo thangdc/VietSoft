@@ -408,21 +408,33 @@ body.vs-modern {
   align-items: center !important;
   justify-content: space-between !important;
   gap: 12px !important;
+  width: 100% !important;
   margin: 0 0 12px !important;
   padding: 0 !important;
 }
 
 .vs-modern .vs-history-toolbar .vs-history-search {
-  flex: 1 1 auto;
-  min-width: 180px;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
 }
 
 .vs-modern .vs-history-toolbar-actions {
   display: flex !important;
   align-items: center !important;
-  flex-wrap: wrap;
-  gap: 8px !important;
+  justify-content: flex-end !important;
+  flex: 0 0 auto;
+  flex-wrap: nowrap !important;
+  gap: 10px !important;
   margin: 0 !important;
+  padding: 0 !important;
+}
+
+.vs-modern .vs-history-select-all,
+.vs-modern .vs-history-selected-count,
+.vs-modern .vs-history-toolbar-actions button {
+  margin: 0 !important;
+  white-space: nowrap !important;
 }
 
 .vs-modern .vs-history-select-all {
@@ -553,11 +565,17 @@ body.vs-modern {
   }
   .vs-modern .vs-history-export .vs-btn { flex: 1 1 auto; }
   .vs-modern .vs-history-toolbar {
-    align-items: stretch !important;
-    flex-direction: column !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 8px !important;
   }
   .vs-modern .vs-history-toolbar-actions {
-    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end !important;
+    gap: 6px !important;
+  }
+  .vs-modern .vs-history-toolbar .vs-history-search {
+    min-width: 0 !important;
   }
   .vs-modern .vs-history-header {
     align-items: flex-start !important;
