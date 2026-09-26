@@ -175,17 +175,27 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
   gap: 8px !important;
   white-space: nowrap !important;
   flex: 0 0 auto !important;
+  font-size: 13px !important;
+  line-height: 40px !important;
 }
 .vs-modern .vs-history-page-size-wrap > span {
   white-space: nowrap !important;
   flex: 0 0 auto !important;
+  font-size: 13px !important;
+  line-height: 40px !important;
+  color: #475467 !important;
 }
 .vs-modern .vs-history-page-size {
-  width: 96px !important;
-  min-width: 96px !important;
-  flex: 0 0 96px !important;
-  padding-left: 10px !important;
-  padding-right: 32px !important;
+  width: 112px !important;
+  min-width: 112px !important;
+  flex: 0 0 112px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 28px 0 10px !important;
+  font-size: 13px !important;
+  line-height: normal !important;
+  white-space: nowrap !important;
+  text-overflow: clip !important;
 }
 .vs-modern .vs-history-table tbody tr:hover td{background:#f9fbff}
 .vs-modern .vs-history-page-buttons button{min-width:30px;height:30px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center}
