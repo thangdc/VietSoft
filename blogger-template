@@ -404,6 +404,7 @@ body.td-nav-open .td-mobile-nav{display:block}
 
 /* ============ blog / post page ============ */
 .td-page-item .td-blog,.td-page-static .td-blog{padding:40px 0 56px}
+.td-blog{scroll-margin-top:90px}
 .td-page__title{
   font-size:28px;line-height:1.25;font-weight:800;letter-spacing:-.01em;
   padding:32px 0 8px;
@@ -1870,18 +1871,41 @@ window.TD_CONFIG.about = {
   }
   function fillMeta(root) { fillDates(root); fillTimes(root); }
 
-  /* ---------- image upgrade (72px thumbs -> 16:9 card size) ---------- */
+  /* ---------- image upgrade (avoid stretched Blogger/YouTube low-res thumbnails) ----------
+  function upgradeImageUrl(img) {
+    var src = img.getAttribute("src") || "";
+    if (!src) { return; }
+
+    if (src.indexOf("i.ytimg.com/") !== -1 && /\/default\.jpg(?:\?|$)/.test(src)) {
+      img.setAttribute("src", src.replace("/default.jpg", "/hqdefault.jpg"));
+      return;
+    }
+
+    var m = src.match(/=w\d+-h\d+[-a-zA-Z0-9-]*/);
+    if (m) {
+      img.setAttribute("src", src.replace(m[0], "=w640-h360-c"));
+      return;
+    }
+
+    m = src.match(/=s72(?:-[a-zA-Z0-9-]+)?$/);
+    if (m) {
+      img.setAttribute("src", src.replace(m[0], "=w640-h360-c"));
+      return;
+    }
+
+    if (src.indexOf("/s72/") !== -1) {
+      img.setAttribute("src", src.replace("/s72/", "/w640-h360/"));
+      return;
+    }
+
+    if (src.indexOf("s72-c") !== -1) {
+      img.setAttribute("src", src.replace("s72-c", "w640-h360-c"));
+    }
+  }
+
   function upgradeCardImages(root) {
-    qsa(".td-card__img", root).forEach(function(img) {
-      var src = img.getAttribute("src") || "";
-      var m = src.match(/=w\d+-h\d+[-a-zA-Z0-9-]*/);
-      if (m) {
-        img.setAttribute("src", src.replace(m[0], "=w640-h360-c"));
-      } else if (src.indexOf("s72-c") !== -1) {
-        img.setAttribute("src", src.replace("s72-c", "w640-h360-c"));
-      } else if (src.indexOf("/s72/") !== -1) {
-        img.setAttribute("src", src.replace("/s72/", "/w640-h360/"));
-      }
+    qsa(".td-card__img, .td-item__thumb img, .mobile-index-thumbnail img", root).forEach(function(img) {
+      upgradeImageUrl(img);
     });
   }
 
