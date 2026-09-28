@@ -1931,120 +1931,18 @@ $(function(){
         $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
         $('#vsStatus').text('');
     });
-    var pendingProAction = null;
-    function executeProAction(action) {
+    function executeFreeAction(action) {
         if (action === 'import') $('#vsImportExcelInput').trigger('click');
         else if (action === 'export-excel') exportExcel();
         else if (action === 'export-zip') downloadHistoryQrs();
         else if (action === 'print') printHistoryQrs();
         else if (action === 'download') downloadHistoryQrs();
     }
-    async function gateProAction(action) {
-        var result = await window.VietSoftQrLicense.getActive();
-        if (result.valid) {
-            executeProAction(action);
-            return true;
-        }
-        openProModal(action);
-        return false;
-    }
-    function normalizeLicenseEmail(value) {
-        return String(value || '').trim().toLowerCase();
-    }
 
-    async function refreshProLicenseUi() {
-        var result = await window.VietSoftQrLicense.getActive();
-        var input = $('#vsProLicenseInput');
-        var email = $('#vsProLicenseEmail');
-        var status = $('#vsProLicenseStatus');
-        var clear = $('#vsProLicenseClear');
-        if (result.valid) {
-            input.val(result.license);
-            email.val(result.payload && result.payload.email ? result.payload.email : '');
-            status.text('✓ Pro đã được kích hoạt' + (result.payload && result.payload.email ? ' · ' + result.payload.email : '') + (result.payload && result.payload.expiresAt ? ' · Hết hạn ' + result.payload.expiresAt : ' · Lifetime'));
-            clear.prop('hidden', false);
-            $('#vsProModalContinue').text('Tiếp tục');
-        } else {
-            status.text(result.message || 'Chưa kích hoạt Pro.');
-            clear.prop('hidden', true);
-            $('#vsProModalContinue').text('Kích hoạt & tiếp tục');
-        }
-    }
-
-    function openProModal(action, view) {
-        pendingProAction = action || null;
-        var modal = $('#vsProModal');
-        if (!modal.length) return;
-        var showLicense = view === 'license';
-        $('#vsProUpgradeView').prop('hidden', showLicense);
-        $('#vsProLicenseView').prop('hidden', !showLicense);
-        modal.addClass('is-open').attr('aria-hidden','false');
-        $('body').addClass('vs-pro-modal-open');
-        refreshProLicenseUi();
-        $(showLicense ? '#vsProLicenseInput' : '#vsProUpgradeCta').trigger('focus');
-    }
-    function closeProModal() {
-        var modal = $('#vsProModal');
-        if (!modal.length) return;
-        modal.removeClass('is-open').attr('aria-hidden','true');
-        $('body').removeClass('vs-pro-modal-open');
-    }
-    async function continueProAction() {
-        var button = $('#vsProModalContinue');
-        var input = $('#vsProLicenseInput');
-        var email = $('#vsProLicenseEmail');
-        var status = $('#vsProLicenseStatus');
-        var originalText = button.text();
-
-        button.prop('disabled', true).text('Đang xử lý...');
-        input.prop('disabled', true);
-        email.prop('disabled', true);
-
-        try {
-            var result = await window.VietSoftQrLicense.getActive();
-            if (!result.valid) {
-                var enteredEmail = normalizeLicenseEmail(email.val());
-                var entered = input.val().trim();
-                if (!enteredEmail) {
-                    status.text('Vui lòng nhập email đã dùng khi mua License.');
-                    return;
-                }
-                if (!entered) {
-                    status.text('Vui lòng nhập License Key.');
-                    return;
-                }
-                status.text('Đang kích hoạt License...');
-                result = await window.VietSoftQrLicense.activate(entered, enteredEmail);
-                if (!result.valid) {
-                    status.text('✕ ' + (result.message || 'License không hợp lệ.'));
-                    return;
-                }
-                var licenseEmail = normalizeLicenseEmail(result.payload && result.payload.email);
-                if (!licenseEmail) {
-                    window.VietSoftQrLicense.clear();
-                    status.text('✕ License chưa chứa email. Vui lòng cấp lại License Key.');
-                    return;
-                }
-                if (licenseEmail !== enteredEmail) {
-                    window.VietSoftQrLicense.clear();
-                    status.text('✕ Email không khớp với License Key.');
-                    return;
-                }
-                track('qr_pro_license_activated', {license_id: result.payload && result.payload.licenseId ? result.payload.licenseId : ''});
-            }
-            var action = pendingProAction;
-            pendingProAction = null;
-            closeProModal();
-            executeProAction(action);
-        } finally {
-            button.prop('disabled', false).text(originalText);
-            input.prop('disabled', false);
-            email.prop('disabled', false);
-        }
-    }
-     $('#vsImportExcel').on('click',function(){ gateProAction('import'); });
+    $('#vsImportExcel').on('click',function(){ executeFreeAction('import'); });
     $('#vsImportExcelInput').on('change',function(){ importExcel(this.files && this.files[0]); });
     $(document).on('click.qrImportPreview','#vsImportPreviewConfirm',function(){ if (pendingImport) commitImportedRecords(pendingImport); });
+
     function closeFileExportModal() {
         var modal = $('#vsFileExportModal');
         if (!modal.length) return;
@@ -2061,44 +1959,9 @@ $(function(){
     $('#vsFileExport').on('click',function(){ openFileExportModal(); });
     $('#vsFileExportModalClose').on('click',closeFileExportModal);
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
-    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); gateProAction('export-excel'); });
-    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); gateProAction('export-zip'); });
-    $('#vsPrintHistory').on('click',function(){ gateProAction('print'); });
-    $('#vsProModalClose').on('click',function(){ pendingProAction = null; closeProModal(); });
-    $('#vsProModalContinue').on('click',continueProAction);
-    $('#vsProUpgradeCta').on('click',function(){
-        closeProModal();
-        $('#vsUpgradePro').trigger('click');
-    });
-    $('#vsProOpenLicense').on('click',function(){
-        openProModal(pendingProAction, 'license');
-    });
-    $('#vsProBackToUpgrade').on('click',function(){
-        openProModal(pendingProAction, 'upgrade');
-    });
-    $('#vsPaymentOpenLicense').on('click',function(){
-        $('#vsPaymentModal').removeClass('is-open').attr('aria-hidden','true');
-        $('body').removeClass('vs-payment-modal-open');
-        openProModal(null, 'license');
-    });
-    $('#vsProLicenseClear').on('click',async function(){
-        var button = $(this);
-        button.prop('disabled', true);
-        $('#vsProLicenseStatus').text('Đang xóa License...');
-        try {
-            await window.VietSoftQrLicense.clear();
-            $('#vsProLicenseInput').val('');
-            $('#vsProLicenseEmail').val('');
-            await refreshProLicenseUi();
-        } finally {
-            button.prop('disabled', false);
-        }
-    });
-    $('#vsProLicenseInput,#vsProLicenseEmail').on('input',function(){
-        $('#vsProLicenseStatus').text('');
-    });
-    $('#vsProModal').on('click','[data-pro-close="true"]',function(){ pendingProAction = null; closeProModal(); });
-    $(document).on('keydown.qrProModal',function(e){ if(e.key === 'Escape') { pendingProAction = null; closeProModal(); closeFileExportModal(); } });
+    $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); executeFreeAction('export-excel'); });
+    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); executeFreeAction('export-zip'); });
+    $('#vsPrintHistory').on('click',function(){ executeFreeAction('print'); });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
