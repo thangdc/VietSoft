@@ -1871,7 +1871,7 @@ window.TD_CONFIG.about = {
   }
   function fillMeta(root) { fillDates(root); fillTimes(root); }
 
-  /* ---------- image upgrade (avoid stretched Blogger/YouTube low-res thumbnails) ----------
+  /* ---------- image upgrade (avoid stretched Blogger/YouTube low-res thumbnails) ---------- */
   function upgradeImageUrl(img) {
     var src = img.getAttribute("src") || "";
     if (!src) { return; }
