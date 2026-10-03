@@ -22,18 +22,6 @@ async function sha256(value: string): Promise<string> {
     .join("");
 }
 
-function isExpired(value: string | null): boolean {
-  if (!value) return false;
-  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ? `${value}T23:59:59.999Z`
-    : value;
-  return new Date(normalized).getTime() < Date.now();
-}
-
-function publicExpiresAt(value: string | null): string {
-  return value ?? "";
-}
-
 async function readJson(req: Request): Promise<Record<string, unknown>> {
   try {
     const body = await req.json();
@@ -45,41 +33,149 @@ async function readJson(req: Request): Promise<Record<string, unknown>> {
 
 export default {
   fetch: withSupabase({ auth: ["publishable", "secret"] }, async (req, ctx) => {
-    if (req.method !== "POST") return json({ success: false, message: "Method Not Allowed." }, 405);
+    if (req.method !== "POST") {
+      return json({ success: false, message: "Method Not Allowed." }, 405);
+    }
 
     const body = await readJson(req);
     const email = normalizeEmail(body.email);
     const deviceId = String(body.deviceId ?? "").trim();
     const activationToken = String(body.activationToken ?? "").trim();
+    const licenseKey = String(body.licenseKey ?? "").trim();
 
-    if (!email || !deviceId || !activationToken) {
-      return json({ success: false, message: "Email, Device ID và Activation Token là bắt buộc." }, 400);
+    if (!email || !deviceId || (!activationToken && !licenseKey)) {
+      return json({
+        success: false,
+        message: "Email, Device ID và Activation Token hoặc License Key là bắt buộc.",
+      }, 400);
     }
 
-    const activationTokenHash = await sha256(activationToken);
+    let activation: {
+      id: string;
+      license_id: string;
+      device_id: string;
+      deactivated_at: string | null;
+    } | null = null;
 
-    const { data: activation, error: activationError } = await ctx.supabaseAdmin
-      .from("activations")
-      .select("id, license_id, device_id, deactivated_at")
-      .eq("activation_token_hash", activationTokenHash)
-      .maybeSingle();
+    let license: {
+      id: string;
+      email: string;
+      product_id: string;
+    } | null = null;
 
-    if (activationError || !activation) {
-      return json({ success: false, message: "Activation Token không hợp lệ." }, 403);
+    // Prefer activation token when available.
+    if (activationToken) {
+      const { data } = await ctx.supabaseAdmin
+        .from("activations")
+        .select("id, license_id, device_id, deactivated_at")
+        .eq("activation_token_hash", await sha256(activationToken))
+        .maybeSingle();
+
+      if (data) activation = data;
+    }
+
+    // Fallback to license key + device. This makes clear/deactivate idempotent
+    // even when the old activation token is stale or was already deactivated.
+    if (!activation && licenseKey) {
+      const { data: keyLicense, error } = await ctx.supabaseAdmin
+        .from("licenses")
+        .select("id, email, product_id")
+        .eq("license_key_hash", await sha256(licenseKey))
+        .maybeSingle();
+
+      if (error) {
+        return json({
+          success: false,
+          message: "Không thể kiểm tra License.",
+          detail: error.message,
+        }, 500);
+      }
+
+      if (!keyLicense) {
+        return json({ success: false, message: "License Key không tồn tại." }, 403);
+      }
+
+      if (normalizeEmail(keyLicense.email) !== email) {
+        return json({ success: false, message: "Email không khớp với License." }, 403);
+      }
+
+      const { data: product, error: productError } = await ctx.supabaseAdmin
+        .from("products")
+        .select("code")
+        .eq("id", keyLicense.product_id)
+        .maybeSingle();
+
+      if (productError || !product || product.code !== PRODUCT) {
+        return json({
+          success: false,
+          message: "License không dành cho VietSoft QR Code Generator.",
+        }, 403);
+      }
+
+      license = keyLicense;
+
+      const { data: deviceActivation, error: deviceError } = await ctx.supabaseAdmin
+        .from("activations")
+        .select("id, license_id, device_id, deactivated_at")
+        .eq("license_id", keyLicense.id)
+        .eq("device_id", deviceId)
+        .is("deactivated_at", null)
+        .order("activated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (deviceError) {
+        return json({
+          success: false,
+          message: "Không thể kiểm tra thiết bị.",
+          detail: deviceError.message,
+        }, 500);
+      }
+
+      if (deviceActivation) activation = deviceActivation;
+    }
+
+    if (!activation) {
+      if (license) {
+        const { count } = await ctx.supabaseAdmin
+          .from("activations")
+          .select("id", { count: "exact", head: true })
+          .eq("license_id", license.id)
+          .is("deactivated_at", null);
+
+        return json({
+          success: true,
+          activeDevices: count ?? 0,
+          alreadyDeactivated: true,
+        });
+      }
+
+      return json({
+        success: false,
+        message: "Activation Token không hợp lệ.",
+      }, 403);
     }
 
     if (activation.device_id !== deviceId || activation.deactivated_at) {
-      return json({ success: false, message: "Thiết bị chưa được kích hoạt." }, 403);
+      return json({
+        success: true,
+        activeDevices: 0,
+        alreadyDeactivated: true,
+      });
     }
 
-    const { data: license, error: licenseError } = await ctx.supabaseAdmin
-      .from("licenses")
-      .select("id, email, product_id")
-      .eq("id", activation.license_id)
-      .maybeSingle();
+    if (!license) {
+      const { data, error } = await ctx.supabaseAdmin
+        .from("licenses")
+        .select("id, email, product_id")
+        .eq("id", activation.license_id)
+        .maybeSingle();
 
-    if (licenseError || !license) {
-      return json({ success: false, message: "License không tồn tại." }, 403);
+      if (error || !data) {
+        return json({ success: false, message: "License không tồn tại." }, 403);
+      }
+
+      license = data;
     }
 
     const { data: product, error: productError } = await ctx.supabaseAdmin
@@ -89,7 +185,10 @@ export default {
       .maybeSingle();
 
     if (productError || !product || product.code !== PRODUCT) {
-      return json({ success: false, message: "License không dành cho VietSoft QR Code Generator." }, 403);
+      return json({
+        success: false,
+        message: "License không dành cho VietSoft QR Code Generator.",
+      }, 403);
     }
 
     if (normalizeEmail(license.email) !== email) {
@@ -103,9 +202,22 @@ export default {
 
     if (updateError) {
       console.error("Deactivation failed:", updateError);
-      return json({ success: false, message: "Không thể xóa kích hoạt." }, 500);
+      return json({
+        success: false,
+        message: "Không thể xóa kích hoạt.",
+        detail: updateError.message,
+      }, 500);
     }
 
-    return json({ success: true });
+    const { count: activeDevices } = await ctx.supabaseAdmin
+      .from("activations")
+      .select("id", { count: "exact", head: true })
+      .eq("license_id", license.id)
+      .is("deactivated_at", null);
+
+    return json({
+      success: true,
+      activeDevices: activeDevices ?? 0,
+    });
   }),
 };
