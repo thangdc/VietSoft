@@ -6,7 +6,7 @@ var STORAGE_KEY = 'vietsoft_qr_license_v2';
 var LEGACY_STORAGE_KEY = 'vietsoft_qr_license_v1';
 var PRODUCT = 'vietsoft-qr';
 var SUPABASE_URL = 'https://yatmdgjkljmaohdkvzkd.supabase.co';
-var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ZTRNO7lC0PzRgIfNU9qWtQ_CvXdx6cV';
+var SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_ZTRNO7lC0PzRgNU9WtQ_CvXdx6cV';
 var ACTIVATE_URL = SUPABASE_URL + '/functions/v1/activate-license';
 var VALIDATE_URL = SUPABASE_URL + '/functions/v1/validate-license';
 var DEACTIVATE_URL = SUPABASE_URL + '/functions/v1/deactivate-license';
@@ -54,8 +54,8 @@ async function verifyLicense(license) {
         var key = await crypto.subtle.importKey('spki', base64UrlToBytes(PUBLIC_KEY_SPKI_BASE64), { name: 'Ed25519' }, false, ['verify']);
         var valid = await crypto.subtle.verify({ name: 'Ed25519' }, key, base64UrlToBytes(parsed.signaturePart), utf8Bytes(parsed.payloadPart));
         if (!valid) return { valid: false, message: 'License không hợp lệ hoặc đã bị thay đổi.' };
-        if (parsed.payload.expiresAt && new Date(parsed.payload.expiresAt + 'T23:59:59') < new Date()) {
-            return { valid: false, message: 'License đã hết hạn.' };
+        if (parsed.payload.expiresAt && new Date(parsed.payload.expiresAt + 'T23:59:59.999Z') < new Date()) {
+            return { valid: false, code: 'LICENSE_EXPIRED', message: 'License đã hết hạn.' };
         }
         return { valid: true, payload: parsed.payload, license: parsed.raw };
     } catch (e) {
@@ -86,13 +86,28 @@ async function callFunction(url, body) {
             body: JSON.stringify(body)
         });
     } catch (e) {
-        throw new Error('Không thể kết nối máy chủ License.');
+        var networkError = new Error('Không thể kết nối máy chủ License.');
+        networkError.transient = true;
+        throw networkError;
     }
 
     var data = {};
     try { data = await response.json(); } catch (e) {}
-    if (!response.ok || !data.success) throw new Error(data.message || 'Máy chủ License từ chối yêu cầu.');
+
+    if (!response.ok || !data.success) {
+        var error = new Error(data.message || 'Máy chủ License từ chối yêu cầu.');
+        error.status = response.status;
+        error.code = data.code || '';
+        error.transient = response.status >= 500;
+        throw error;
+    }
+
     return data;
+}
+
+function clearStoredState() {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
 }
 
 async function activate(license, email) {
@@ -132,14 +147,16 @@ async function getActiveLicense() {
 
     var local = await verifyLicense(state.license);
     if (!local.valid) {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(LEGACY_STORAGE_KEY);
+        clearStoredState();
         return local;
     }
 
     var email = normalizeEmail(state.email || (local.payload && local.payload.email));
     var deviceId = state.deviceId || createDeviceId();
-    if (!state.activationToken) return { valid: false, message: 'License cần được kích hoạt lại trên máy chủ.' };
+    if (!state.activationToken) {
+        clearStoredState();
+        return { valid: false, message: 'License cần được kích hoạt lại trên máy chủ.' };
+    }
 
     try {
         var server = await callFunction(VALIDATE_URL, { email: email, deviceId: deviceId, activationToken: state.activationToken });
@@ -153,24 +170,48 @@ async function getActiveLicense() {
             license: local.license
         };
     } catch (e) {
-        if (state.validatedAt && Date.now() - Number(state.validatedAt) <= VALIDATION_GRACE_MS) return local;
-        return { valid: false, message: e && e.message ? e.message : 'Không thể xác thực License với máy chủ.' };
+        // A server-side rejection (expired, revoked, deactivated, device limit, etc.)
+        // must immediately clear local Pro state. Grace period is only for transient
+        // network/server failures.
+        if (e.status >= 400 && e.status < 500) {
+            clearStoredState();
+            return { valid: false, code: e.code || 'LICENSE_REJECTED', message: e.message };
+        }
+
+        if (e.transient && state.validatedAt && Date.now() - Number(state.validatedAt) <= VALIDATION_GRACE_MS) {
+            return local;
+        }
+
+        return { valid: false, message: e.message || 'Không thể xác thực License với máy chủ.' };
     }
 }
 
 async function clear() {
     var state = getStoredState();
-    if (state && state.activationToken && state.deviceId) {
+    var clearError = null;
+
+    if (state && state.deviceId && state.email && (state.activationToken || state.license)) {
         try {
             await callFunction(DEACTIVATE_URL, {
                 email: normalizeEmail(state.email),
                 deviceId: state.deviceId,
-                activationToken: state.activationToken
+                activationToken: state.activationToken || '',
+                licenseKey: state.license || ''
             });
-        } catch (e) {}
+        } catch (e) {
+            // If the server already considers this activation gone, local state
+            // should still be removable. Keep the error for diagnostics only.
+            clearError = e;
+        }
     }
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(LEGACY_STORAGE_KEY);
+
+    clearStoredState();
+
+    if (clearError && clearError.status >= 500) {
+        return { success: false, message: clearError.message };
+    }
+
+    return { success: true };
 }
 
 window.VietSoftQrLicense = {
