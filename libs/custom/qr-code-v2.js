@@ -138,7 +138,7 @@ function renderResultDesignPanel() {
     if (!container.length || $('#vsResultDesign').length) return;
     var html = '<div class="vs-result-design" id="vsResultDesign">' +
         '<div class="vs-result-design-header">' +
-            '<div><div class="vs-result-design-kicker">Tùy chỉnh</div><h3>Thiết kế QR</h3><p class="vs-result-design-summary">Kích thước, màu sắc, kiểu điểm và logo</p></div>' +
+            '<div><div class="vs-result-design-kicker">Tùy chỉnh</div><h3>Thiết kế QR</h3><p class="vs-result-design-summary">Kích thước, màu sắc và kiểu điểm</p></div>' +
             '<button class="vs-result-design-toggle" id="vsResultDesignToggle" type="button" aria-expanded="false"><span>Tùy chỉnh QR</span><span class="vs-result-design-chevron" aria-hidden="true">⌄</span></button>' +
         '</div>' +
         '<div class="vs-result-design-body" id="vsResultDesignBody">' +
@@ -147,8 +147,8 @@ function renderResultDesignPanel() {
         '<div class="vs-field"><label>Màu nền</label><div class="vs-color-control"><input id="vsDesignBackground" type="color" value="#FFFFFF"><input id="vsDesignBackgroundText" type="text" value="#FFFFFF" maxlength="7" aria-label="Mã màu nền"></div></div>' +
         '</div>' +
         '<div class="vs-field"><label>Kiểu điểm</label><select id="vsDesignStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option><option value="dot">Chấm</option></select></div>' +
-        '<div class="vs-field"><label>Logo <span class="vs-label-muted">(tùy chọn)</span></label><input id="vsDesignLogo" type="file" accept="image/png,image/jpeg,image/webp"><div id="vsDesignLogoName" class="vs-design-file-name">Chưa chọn logo</div></div>' +
-        '<div class="vs-design-advanced"><div class="vs-design-advanced-title">Nâng cao</div><div class="vs-grid2"><div class="vs-field"><label>Mắt QR</label><select id="vsDesignEyeStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option></select></div><div class="vs-field"><label>Kích thước logo</label><select id="vsDesignLogoSize"><option value="0.12">Nhỏ</option><option value="0.16" selected>Vừa</option><option value="0.20">Lớn</option><option value="0.24">Rất lớn</option></select></div></div><div class="vs-field"><label>Khoảng trắng</label><select id="vsDesignQuietZone"><option value="2">2 module</option><option value="4" selected>4 module</option><option value="6">6 module</option></select></div></div>' +
+        '<div class="vs-design-warning">Phiên bản miễn phí sử dụng logo VietSoft cố định. Muốn dùng logo riêng hoặc bỏ logo, hãy nâng cấp tại <a href="https://qr.thangdc.com/" target="_blank" rel="noopener noreferrer">QR Tools Pro</a>.</div>' +
+        '<div class="vs-design-advanced"><div class="vs-design-advanced-title">Nâng cao</div><div class="vs-field"><label>Mắt QR</label><select id="vsDesignEyeStyle"><option value="square">Vuông</option><option value="rounded">Bo góc</option></select></div><div class="vs-field"><label>Khoảng trắng</label><select id="vsDesignQuietZone"><option value="2">2 module</option><option value="4" selected>4 module</option><option value="6">6 module</option></select></div></div>' +
         '<div class="vs-design-warning" id="vsDesignWarning">Tạo QR trước, sau đó bạn có thể tùy chỉnh.</div>' +
         '<div class="vs-actions"><button class="vs-btn vs-btn-primary" id="vsApplyDesign" type="button" disabled><svg class="vs-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.8H20l-4.9 3.6 1.9 5.8-5-3.6-5 3.6 1.9-5.8L4 8.8h6.1L12 3z"/></svg><span>Áp dụng thiết kế</span></button><button class="vs-btn vs-btn-secondary" id="vsResetDesign" type="button">Đặt lại</button></div>' +
         '</div></div>';
@@ -176,17 +176,11 @@ function syncDesignColorControls() {
             $(target).val(valueText).trigger('input');
         }
     });
-    $('#vsDesignStyle,#vsDesignEyeStyle,#vsDesignLogoSize,#vsDesignQuietZone').on('change', function(){ if (currentData) renderCustomQr(); });
-    $('#vsDesignLogo').on('change', function(){
-        var file = this.files && this.files[0];
-        $('#vsDesignLogoName').text(file ? file.name : 'Chưa chọn logo');
-        if (currentData) renderCustomQr();
-    });
+    $('#vsDesignStyle,#vsDesignEyeStyle,#vsDesignQuietZone').on('change', function(){ if (currentData) renderCustomQr(); });
     $('#vsApplyDesign').on('click', applyDesign);
     $('#vsResetDesign').on('click', function(){
-        currentDesign = normalizeDesign({foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:''});
+        currentDesign = normalizeDesign({foreground:'#111827', background:'#FFFFFF', style:'square', logoDataUrl:FREE_BRAND_LOGO_URL});
         syncDesignFields(currentDesign);
-        $('#vsDesignLogo').val('');
         if (currentData) {
             renderCustomQr();
             persistCurrentDesign(currentDesign);
@@ -289,7 +283,6 @@ function renderCustomQr() {
         background: $('#vsDesignBackground').val(),
         style: $('#vsDesignStyle').val(),
         eyeStyle: $('#vsDesignEyeStyle').val(),
-        logoSize: $('#vsDesignLogoSize').val(),
         quietZone: $('#vsDesignQuietZone').val()
     });
     getCurrentDesign(function(captured) {
@@ -614,7 +607,7 @@ function normalizeDesign(design) {
         eyeStyle: ['square','rounded'].indexOf(String(design.eyeStyle || '')) !== -1 ? String(design.eyeStyle) : 'square',
         logoSize: isFinite(logoSize) && logoSize >= 0.12 && logoSize <= 0.24 ? logoSize : 0.16,
         quietZone: [2,4,6].indexOf(quietZone) !== -1 ? quietZone : 4,
-        logoDataUrl: String(design.logoDataUrl || FREE_BRAND_LOGO_URL)
+        logoDataUrl: FREE_BRAND_LOGO_URL
     };
 }
 
@@ -624,23 +617,11 @@ function getCurrentDesign(callback) {
         background: $('#vsDesignBackground').val() || '#FFFFFF',
         style: $('#vsDesignStyle').val() || 'square',
         eyeStyle: $('#vsDesignEyeStyle').val() || 'square',
-        logoSize: parseFloat($('#vsDesignLogoSize').val()) || 0.16,
+        logoSize: 0.16,
         quietZone: parseInt($('#vsDesignQuietZone').val(), 10) || 4,
-        logoDataUrl: ''
+        logoDataUrl: FREE_BRAND_LOGO_URL
     };
-    var file = document.getElementById('vsDesignLogo');
-    var logoFile = file && file.files && file.files[0];
-    if (!logoFile) {
-        callback(normalizeDesign(design));
-        return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        design.logoDataUrl = e.target.result || '';
-        callback(normalizeDesign(design));
-    };
-    reader.onerror = function() { callback(normalizeDesign(design)); };
-    reader.readAsDataURL(logoFile);
+    callback(normalizeDesign(design));
 }
 
 function saveCurrentQrState() {
@@ -903,9 +884,7 @@ function syncDesignFields(design) {
     $('#vsDesignBackgroundText').val(design.background);
     $('#vsDesignStyle').val(design.style);
     $('#vsDesignEyeStyle').val(design.eyeStyle);
-    $('#vsDesignLogoSize').val(String(design.logoSize));
     $('#vsDesignQuietZone').val(String(design.quietZone));
-    $('#vsDesignLogoName').text(design.logoDataUrl ? 'Logo đã lưu' : 'Chưa chọn logo');
 }
 function showHistoryQrResult(item) {
     if (!item || !item.data) return;
