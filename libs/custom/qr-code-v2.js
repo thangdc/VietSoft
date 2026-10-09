@@ -283,7 +283,6 @@ function renderCustomQr() {
         background: $('#vsDesignBackground').val(),
         style: $('#vsDesignStyle').val(),
         eyeStyle: $('#vsDesignEyeStyle').val(),
-        logoSize: $('#vsDesignLogoSize').val(),
         quietZone: $('#vsDesignQuietZone').val()
     });
     getCurrentDesign(function(captured) {
