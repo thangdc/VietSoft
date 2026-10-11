@@ -581,3 +581,10 @@ body.vs-modern{background:#f5f7fb!important;color:#172033;font-family:-apple-sys
 .vs-qr-print-check small{color:#667085;font-size:11px;line-height:1.45}
 .vs-qr-print-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
 @media(max-width:640px){.vs-qr-print-options{padding:10px}.vs-qr-print-card{padding:20px 16px;border-radius:14px}}
+
+/* Pro export option: distinguish paid ZIP export without affecting free Excel export. */
+.vs-file-export-option-pro{position:relative;border-color:#c7d7fe;background:linear-gradient(135deg,#f8faff 0%,#eef4ff 100%)}
+.vs-file-export-option-pro:hover{border-color:#84adff;background:#eaf1ff}
+.vs-file-export-option-pro .vs-file-export-option-icon{background:#dbeafe;color:#1849a9}
+.vs-pro-pill{display:inline-flex;align-items:center;margin-left:7px;padding:3px 7px;border-radius:5px;background:#175cd3;color:#fff;font-size:10px;font-style:normal;font-weight:800;letter-spacing:.04em;vertical-align:middle}
+#vsQrToolsProPrompt .vs-btn{min-height:40px;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer}
