@@ -1696,8 +1696,8 @@ function startPrintHistoryQrs(items, withMetadata) {
         '<div id="vsQrPrintPreviewGrid" style="overflow:auto;padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px"></div>' +
         '<footer style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;padding:16px 24px;border-top:1px solid #e4e7ec">' +
         '<button type="button" id="vsQrPrintPreviewCancel" class="vs-btn vs-btn-secondary">Đóng</button>' +
-        '<button type="button" id="vsQrPrintPreviewDownload" class="vs-btn vs-btn-secondary">Tải ảnh PNG</button>' +
-        '<button type="button" id="vsQrPrintPreviewPrint" class="vs-btn vs-btn-primary">In QR</button></footer></section>';
+        '<button type="button" id="vsQrPrintPreviewDownload" class="vs-btn vs-btn-primary">Tải ảnh PNG <em class="vs-pro-pill">PRO</em></button>' +
+        '<button type="button" id="vsQrPrintPreviewPrint" class="vs-btn vs-btn-primary">In QR <em class="vs-pro-pill">PRO</em></button></footer></section>';
     modal.style.display = 'flex';
 
     function closePreview() {
