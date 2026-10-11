@@ -1655,70 +1655,65 @@ function printHistoryQrs() {
 function startPrintHistoryQrs(items, withMetadata) {
     var button = $('#vsPrintHistory');
     button.prop('disabled', true);
-    $('#vsExportStatus').text('Đang chuẩn bị ' + items.length + ' mã QR để xem trước...');
+    $('#vsExportStatus').text('Đang chuẩn bị ' + items.length + ' mã QR để in...');
 
-    var modal = document.getElementById('vsQrPrintPreview');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'vsQrPrintPreview';
-        modal.setAttribute('role', 'dialog');
-        modal.setAttribute('aria-modal', 'true');
-        modal.setAttribute('aria-labelledby', 'vsQrPrintPreviewTitle');
-        document.body.appendChild(modal);
+    var frame = document.getElementById('vsQrPrintFrame');
+    if (!frame) {
+        frame = document.createElement('iframe');
+        frame.id = 'vsQrPrintFrame';
+        frame.setAttribute('aria-hidden', 'true');
+        frame.style.position = 'fixed';
+        frame.style.width = '1px';
+        frame.style.height = '1px';
+        frame.style.border = '0';
+        frame.style.opacity = '0';
+        frame.style.pointerEvents = 'none';
+        frame.style.left = '-10000px';
+        frame.style.top = '0';
+        document.body.appendChild(frame);
     }
 
-    modal.style.cssText = 'display:none;position:fixed;inset:0;z-index:10003;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.52);';
-    modal.innerHTML = '<section style="position:relative;display:flex;flex-direction:column;width:min(1000px,100%);max-height:90vh;overflow:hidden;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.25)">' +
-        '<header style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;border-bottom:1px solid #e4e7ec">' +
-        '<div><div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:#175cd3">XEM TRƯỚC KHI IN</div><h2 id="vsQrPrintPreviewTitle" style="margin:4px 0 0;font-size:22px;color:#101828">Xem trước ' + items.length + ' mã QR</h2></div>' +
-        '<button type="button" id="vsQrPrintPreviewClose" aria-label="Đóng" style="border:0;background:transparent;font-size:28px;cursor:pointer;color:#667085">×</button></header>' +
-        '<div id="vsQrPrintPreviewGrid" style="overflow:auto;padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px"></div>' +
-        '<footer style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;padding:16px 24px;border-top:1px solid #e4e7ec">' +
-        '<button type="button" id="vsQrPrintPreviewCancel" class="vs-btn vs-btn-secondary">Đóng</button>' +
-        '<button type="button" id="vsQrPrintPreviewDownload" class="vs-btn vs-btn-secondary">Tải xuống <span class="vs-pro-badge">PRO</span></button>' +
-        '<button type="button" id="vsQrPrintPreviewPrint" class="vs-btn vs-btn-primary">In QR <span class="vs-pro-badge">PRO</span></button></footer></section>';
-    modal.style.display = 'flex';
-
-    function closePreview() { modal.style.display = 'none'; }
-    $('#vsQrPrintPreviewClose, #vsQrPrintPreviewCancel').off('click.qrPrintPreview').on('click.qrPrintPreview', closePreview);
-    $('#vsQrPrintPreviewDownload').off('click.qrPrintPreview').on('click.qrPrintPreview', function() {
-        var params = new URLSearchParams();
-        params.set('source', 'vietsofts');
-        params.set('intent', 'export');
-        params.set('action', 'export-zip');
-        params.set('type', String(currentType || 'url'));
-        window.location.href = 'https://qr.thangdc.com/?' + params.toString();
-    });
-    $('#vsQrPrintPreviewPrint').off('click.qrPrintPreview').on('click.qrPrintPreview', function() {
-        var params = new URLSearchParams();
-        params.set('source', 'vietsofts');
-        params.set('intent', 'export');
-        params.set('action', 'print');
-        params.set('type', String(currentType || 'url'));
-        window.location.href = 'https://qr.thangdc.com/?' + params.toString();
-    });
-
-    var grid = $('#vsQrPrintPreviewGrid');
-    grid.empty();
+    var qrCells = [];
     var renderNext = function(index) {
         if (index >= items.length) {
-            button.prop('disabled', false);
-            $('#vsExportStatus').text('✓ Đã chuẩn bị xem trước ' + items.length + ' mã QR.');
+            var printDocument = frame.contentDocument || frame.contentWindow.document;
+            printDocument.open();
+            printDocument.write('<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>In ' + items.length + ' mã QR</title>' +
+                '<style>' +
+                '@page{margin:12mm}' +
+                'html,body{margin:0;padding:0;background:#fff}' +
+                'body{font-family:Arial,sans-serif;color:#101828}' +
+                '.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10mm 12mm;align-items:start}' +
+                '.qr-cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;break-inside:avoid;page-break-inside:avoid;text-align:center;min-width:0}' +
+                '.qr-cell img{display:block;width:55mm;height:55mm;object-fit:contain}' +
+                '.qr-meta{width:100%;margin-top:3mm;font-size:10pt;line-height:1.35;overflow-wrap:anywhere;word-break:break-word}' +
+                '.qr-meta-line{margin:0 0 1mm}' +
+                '</style></head><body><div class="qr-grid">' + qrCells.join('') + '</div></body></html>');
+            printDocument.close();
+
+            $('#vsExportStatus').text('✓ Đã chuẩn bị ' + items.length + ' mã QR. Mở hộp thoại in...');
+            setTimeout(function() {
+                frame.contentWindow.focus();
+                frame.contentWindow.print();
+                button.prop('disabled', false);
+            }, 250);
             return;
         }
+
         var item = items[index];
         var metadata = withMetadata ? getPrintMetadata(item) : [];
         renderQrImage(String(item.data || ''), normalizeDesign(item.design), 320, function(imageUrl) {
-            var metaHtml = metadata.length ? '<div style="margin-top:8px;font-size:12px;line-height:1.4;overflow-wrap:anywhere">' + metadata.map(function(line) {
-                return '<div>' + escapePrintText(line) + '</div>';
+            var metaHtml = metadata.length ? '<div class="qr-meta">' + metadata.map(function(line) {
+                return '<div class="qr-meta-line">' + escapePrintText(line) + '</div>';
             }).join('') + '</div>' : '';
-            var card = document.createElement('div');
-            card.style.cssText = 'padding:12px;border:1px solid #e4e7ec;border-radius:12px;text-align:center;min-width:0;';
-            card.innerHTML = '<img src="' + imageUrl.replace(/"/g, '&quot;') + '" alt="QR Code" style="display:block;width:100%;max-width:220px;aspect-ratio:1;object-fit:contain;margin:0 auto">' + metaHtml;
-            grid.append(card);
+            qrCells[index] = '<div class="qr-cell"><img src="' + imageUrl.replace(/"/g, '&quot;') + '" alt="QR Code">' + metaHtml + '</div>';
             renderNext(index + 1);
-        }, function() { renderNext(index + 1); });
+        }, function() {
+            qrCells[index] = '';
+            renderNext(index + 1);
+        });
     };
+
     renderNext(0);
 }
 
