@@ -2018,7 +2018,16 @@ $(function(){
         updateHistorySelectionUi();
     });
     $('#vsHistory').on('click', '#vsClearHistory', clearCurrentHistory);
-    $('#vsDownload').on('click',function(){ if(!currentImage)return; redirectExportToQrTools('download'); track('qr_export_redirect',{qr_type:currentType,format:'png'}); });
+    $('#vsDownload').on('click',function(){
+        if(!currentImage)return;
+        var link = document.createElement('a');
+        link.href = currentImage;
+        link.download = 'qrcode-' + String(currentType || 'qr') + '.png';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        track('qr_download',{qr_type:currentType,format:'png'});
+    });
     $('#vsCopy').on('click',async function(){if(!currentImage)return;try{var blob=await (await fetch(currentImage)).blob();await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setStatus('✓ Đã sao chép ảnh QR');track('qr_copy',{qr_type:currentType});}catch(e){setStatus('Trình duyệt không hỗ trợ sao chép ảnh. Hãy dùng Tải PNG.');}});
     $('#vsOpen').on('click',function(){if(currentImage)window.open(currentImage,'_blank');});
     $(window).off('resize.qrLocation').on('resize.qrLocation', function(){
