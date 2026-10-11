@@ -1620,7 +1620,7 @@ function getPrintMetadataOptions() {
             '<h3 id="vsQrPrintTitle">Chọn nội dung in</h3>' +
             '<p>Thêm thông tin dưới mỗi mã QR để dễ nhận biết khi in nhiều mã.</p>' +
             '<label class="vs-qr-print-check"><input id="vsQrPrintWithMetadata" type="checkbox" checked><span><strong>In thông tin dưới QR</strong><small>Hiển thị thông tin nhận diện phù hợp với từng loại QR.</small></span></label>' +
-            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">Tiếp tục in</button></div>' +
+            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-secondary" id="vsQrBulkDownload" style="display:none">Tải nhiều QR <span class="vs-pro-badge">PRO</span></button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">Tiếp tục in</button></div>' +
         '</div>';
     document.body.appendChild(modal);
 
@@ -1644,15 +1644,22 @@ function printHistoryQrs() {
     }
 
     var modal = getPrintMetadataOptions();
+    var isBulk = items.length > 1;
+    $('#vsQrPrintConfirm').text(isBulk ? 'In nhiều QR PRO' : 'Tiếp tục in');
+    $('#vsQrPrintConfirm').toggleClass('vs-pro-action', isBulk);
+    $('#vsQrBulkDownload').toggle(isBulk);
     $(modal).addClass('is-open');
 
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
-        $(modal).removeClass('is-open');
-        if (items.length > 1) {
+        if (isBulk) {
             redirectExportToQrTools('print');
             return;
         }
+        $(modal).removeClass('is-open');
         startPrintHistoryQrs(items, $('#vsQrPrintWithMetadata').prop('checked'));
+    });
+    $('#vsQrBulkDownload').off('click.qrPrint').on('click.qrPrint', function() {
+        redirectExportToQrTools('export-zip');
     });
 }
 
