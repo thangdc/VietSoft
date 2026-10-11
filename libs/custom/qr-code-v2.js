@@ -1647,8 +1647,7 @@ function printHistoryQrs() {
     $(modal).addClass('is-open');
 
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
-        $(modal).removeClass('is-open');
-        startPrintHistoryQrs(items, $('#vsQrPrintWithMetadata').prop('checked'));
+        redirectExportToQrTools('print');
     });
 }
 
@@ -1910,12 +1909,20 @@ $(function(){
         $('#vsDesignWarning').text('Tạo QR trước, sau đó bạn có thể tùy chỉnh.');
         $('#vsStatus').text('');
     });
+    function redirectExportToQrTools(action) {
+        var params = new URLSearchParams();
+        params.set('source', 'vietsofts');
+        params.set('intent', 'export');
+        params.set('action', action);
+        params.set('type', String(currentType || 'url'));
+        window.location.href = 'https://qr.thangdc.com/?' + params.toString();
+    }
+
     function executeFreeAction(action) {
         if (action === 'import') $('#vsImportExcelInput').trigger('click');
-        else if (action === 'export-excel') exportExcel();
-        else if (action === 'export-zip') downloadHistoryQrs();
-        else if (action === 'print') printHistoryQrs();
-        else if (action === 'download') downloadHistoryQrs();
+        else if (action === 'export-excel' || action === 'export-zip' || action === 'print' || action === 'download') {
+            redirectExportToQrTools(action);
+        }
     }
 
     $('#vsImportExcel').on('click',function(){ executeFreeAction('import'); });
@@ -1940,7 +1947,7 @@ $(function(){
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
     $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); executeFreeAction('export-excel'); });
     $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); executeFreeAction('export-zip'); });
-    $('#vsPrintHistory').on('click',function(){ executeFreeAction('print'); });
+    $('#vsPrintHistory').on('click',function(){ printHistoryQrs(); });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
@@ -2008,7 +2015,7 @@ $(function(){
         updateHistorySelectionUi();
     });
     $('#vsHistory').on('click', '#vsClearHistory', clearCurrentHistory);
-    $('#vsDownload').on('click',function(){if(!currentImage)return;var a=document.createElement('a');a.href=currentImage;a.download='vietsoft-qr-' + currentType + '.png';a.click();track('qr_download',{qr_type:currentType,format:'png'});});
+    $('#vsDownload').on('click',function(){ if(!currentImage)return; redirectExportToQrTools('download'); track('qr_export_redirect',{qr_type:currentType,format:'png'}); });
     $('#vsCopy').on('click',async function(){if(!currentImage)return;try{var blob=await (await fetch(currentImage)).blob();await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setStatus('✓ Đã sao chép ảnh QR');track('qr_copy',{qr_type:currentType});}catch(e){setStatus('Trình duyệt không hỗ trợ sao chép ảnh. Hãy dùng Tải PNG.');}});
     $('#vsOpen').on('click',function(){if(currentImage)window.open(currentImage,'_blank');});
     $(window).off('resize.qrLocation').on('resize.qrLocation', function(){
