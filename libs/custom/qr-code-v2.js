@@ -1620,7 +1620,7 @@ function getPrintMetadataOptions() {
             '<h3 id="vsQrPrintTitle">Chọn nội dung in</h3>' +
             '<p>Thêm thông tin dưới mỗi mã QR để dễ nhận biết khi in nhiều mã.</p>' +
             '<label class="vs-qr-print-check"><input id="vsQrPrintWithMetadata" type="checkbox" checked><span><strong>In thông tin dưới QR</strong><small>Hiển thị thông tin nhận diện phù hợp với từng loại QR.</small></span></label>' +
-            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">Tiếp tục in</button></div>' +
+            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-secondary" id="vsQrModalDownload">Tải xuống <span class="vs-pro-badge">PRO</span></button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">In QR <span class="vs-pro-badge">PRO</span></button></div>' +
         '</div>';
     document.body.appendChild(modal);
 
@@ -1648,6 +1648,9 @@ function printHistoryQrs() {
 
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
         redirectExportToQrTools('print');
+    });
+    $('#vsQrModalDownload').off('click.qrPrint').on('click.qrPrint', function() {
+        redirectExportToQrTools('export-zip');
     });
 }
 
