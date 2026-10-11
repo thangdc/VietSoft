@@ -1620,7 +1620,7 @@ function getPrintMetadataOptions() {
             '<h3 id="vsQrPrintTitle">Chọn nội dung in</h3>' +
             '<p>Thêm thông tin dưới mỗi mã QR để dễ nhận biết khi in nhiều mã.</p>' +
             '<label class="vs-qr-print-check"><input id="vsQrPrintWithMetadata" type="checkbox" checked><span><strong>In thông tin dưới QR</strong><small>Hiển thị thông tin nhận diện phù hợp với từng loại QR.</small></span></label>' +
-            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-secondary" id="vsQrBulkDownload" style="display:none">Tải nhiều QR <span class="vs-pro-badge">PRO</span></button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">Tiếp tục in</button></div>' +
+            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-secondary vs-pro-action" id="vsQrModalDownload">Tải xuống <span class="vs-pro-badge">PRO</span></button><button type="button" class="vs-btn vs-btn-primary vs-pro-action" id="vsQrPrintConfirm">In QR <span class="vs-pro-badge">PRO</span></button></div>' +
         '</div>';
     document.body.appendChild(modal);
 
@@ -1644,21 +1644,14 @@ function printHistoryQrs() {
     }
 
     var modal = getPrintMetadataOptions();
-    var isBulk = items.length > 1;
-    $('#vsQrPrintConfirm').text(isBulk ? 'In nhiều QR PRO' : 'Tiếp tục in');
-    $('#vsQrPrintConfirm').toggleClass('vs-pro-action', isBulk);
-    $('#vsQrBulkDownload').toggle(isBulk);
     $(modal).addClass('is-open');
 
+    // The modal is a review-only step. Printing or downloading from it always requires Pro,
+    // regardless of whether one QR or many QR codes are selected.
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
-        if (isBulk) {
-            redirectExportToQrTools('print');
-            return;
-        }
-        $(modal).removeClass('is-open');
-        startPrintHistoryQrs(items, $('#vsQrPrintWithMetadata').prop('checked'));
+        redirectExportToQrTools('print');
     });
-    $('#vsQrBulkDownload').off('click.qrPrint').on('click.qrPrint', function() {
+    $('#vsQrModalDownload').off('click.qrPrint').on('click.qrPrint', function() {
         redirectExportToQrTools('export-zip');
     });
 }
