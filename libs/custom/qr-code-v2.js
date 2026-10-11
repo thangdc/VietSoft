@@ -1647,8 +1647,7 @@ function printHistoryQrs() {
     $(modal).addClass('is-open');
 
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
-        $(modal).removeClass('is-open');
-        startPrintHistoryQrs(items, $('#vsQrPrintWithMetadata').prop('checked'));
+        redirectExportToQrTools('print');
     });
 }
 
@@ -1948,7 +1947,7 @@ $(function(){
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
     $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); executeFreeAction('export-excel'); });
     $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); executeFreeAction('export-zip'); });
-    $('#vsPrintHistory').on('click',function(){ executeFreeAction('print'); });
+    $('#vsPrintHistory').on('click',function(){ printHistoryQrs(); });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
