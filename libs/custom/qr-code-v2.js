@@ -1647,8 +1647,32 @@ function printHistoryQrs() {
     $(modal).addClass('is-open');
 
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
+        var withMetadata = $('#vsQrPrintWithMetadata').prop('checked');
         $(modal).removeClass('is-open');
-        startPrintHistoryQrs(items, $('#vsQrPrintWithMetadata').prop('checked'));
+        var handoffItems = items.map(function(item, index) {
+            var metadata = withMetadata ? getPrintMetadata(item) : [];
+            return {
+                id: String(item.historyId || index),
+                label: metadata[0] || String(item.type || 'QR').toUpperCase() + ' ' + (index + 1),
+                payload: String(item.data || ''),
+                type: String(item.type || 'url'),
+                subtitle: metadata.slice(1).join(' · ')
+            };
+        }).filter(function(item) { return !!item.payload; });
+
+        if (!handoffItems.length) {
+            $('#vsExportStatus').text('Không có nội dung QR hợp lệ để mở xem trước.');
+            return;
+        }
+
+        try {
+            var json = JSON.stringify(handoffItems);
+            var encoded = btoa(unescape(encodeURIComponent(json)))
+                .replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/g, '');
+            window.location.href = 'https://qr.thangdc.com/#vietsoft-export=' + encoded;
+        } catch (e) {
+            $('#vsExportStatus').text('Không thể chuyển danh sách QR sang cửa sổ xem trước.');
+        }
     });
 }
 
