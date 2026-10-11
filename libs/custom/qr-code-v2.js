@@ -1620,7 +1620,7 @@ function getPrintMetadataOptions() {
             '<h3 id="vsQrPrintTitle">Chọn nội dung in</h3>' +
             '<p>Thêm thông tin dưới mỗi mã QR để dễ nhận biết khi in nhiều mã.</p>' +
             '<label class="vs-qr-print-check"><input id="vsQrPrintWithMetadata" type="checkbox" checked><span><strong>In thông tin dưới QR</strong><small>Hiển thị thông tin nhận diện phù hợp với từng loại QR.</small></span></label>' +
-            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">Tiếp tục in</button></div>' +
+            '<div class="vs-qr-print-actions"><button type="button" class="vs-btn vs-btn-secondary" id="vsQrPrintCancel">Hủy</button><button type="button" class="vs-btn vs-btn-secondary" id="vsQrModalDownload">Tải xuống <span class="vs-pro-badge">PRO</span></button><button type="button" class="vs-btn vs-btn-primary" id="vsQrPrintConfirm">In QR <span class="vs-pro-badge">PRO</span></button></div>' +
         '</div>';
     document.body.appendChild(modal);
 
@@ -1648,6 +1648,9 @@ function printHistoryQrs() {
 
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
         redirectExportToQrTools('print');
+    });
+    $('#vsQrModalDownload').off('click.qrPrint').on('click.qrPrint', function() {
+        redirectExportToQrTools('export-zip');
     });
 }
 
@@ -2015,7 +2018,16 @@ $(function(){
         updateHistorySelectionUi();
     });
     $('#vsHistory').on('click', '#vsClearHistory', clearCurrentHistory);
-    $('#vsDownload').on('click',function(){ if(!currentImage)return; redirectExportToQrTools('download'); track('qr_export_redirect',{qr_type:currentType,format:'png'}); });
+    $('#vsDownload').on('click',function(){
+        if(!currentImage)return;
+        var link = document.createElement('a');
+        link.href = currentImage;
+        link.download = 'qrcode-' + String(currentType || 'qr') + '.png';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        track('qr_download',{qr_type:currentType,format:'png'});
+    });
     $('#vsCopy').on('click',async function(){if(!currentImage)return;try{var blob=await (await fetch(currentImage)).blob();await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setStatus('✓ Đã sao chép ảnh QR');track('qr_copy',{qr_type:currentType});}catch(e){setStatus('Trình duyệt không hỗ trợ sao chép ảnh. Hãy dùng Tải PNG.');}});
     $('#vsOpen').on('click',function(){if(currentImage)window.open(currentImage,'_blank');});
     $(window).off('resize.qrLocation').on('resize.qrLocation', function(){
