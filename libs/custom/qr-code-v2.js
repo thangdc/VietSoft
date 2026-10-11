@@ -1668,7 +1668,7 @@ function printHistoryQrs() {
         try {
             var json = JSON.stringify(handoffItems);
             var encoded = btoa(unescape(encodeURIComponent(json)))
-                .replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/g, '');
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
             window.location.href = 'https://qr.thangdc.com/#vietsoft-export=' + encoded;
         } catch (e) {
             $('#vsExportStatus').text('Không thể chuyển danh sách QR sang cửa sổ xem trước.');
