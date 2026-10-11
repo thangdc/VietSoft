@@ -1652,6 +1652,27 @@ function printHistoryQrs() {
     });
 }
 
+function showQrToolsProPrompt(feature) {
+    var modal = document.getElementById('vsQrToolsProPrompt');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'vsQrToolsProPrompt';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'vsQrToolsProPromptTitle');
+        document.body.appendChild(modal);
+    }
+    modal.style.cssText = 'display:flex;position:fixed;inset:0;z-index:10010;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.58);';
+    modal.innerHTML = '<section style="width:min(460px,100%);padding:26px;border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(15,23,42,.25);font-family:inherit">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span style="font-size:11px;font-weight:800;letter-spacing:.1em;color:#175cd3">QR TOOLS PRO</span><button type="button" id="vsQrToolsProPromptClose" aria-label="Đóng" style="border:0;background:transparent;font-size:26px;cursor:pointer;color:#667085">×</button></div>' +
+        '<h2 id="vsQrToolsProPromptTitle" style="margin:10px 0 8px;font-size:22px;color:#101828">Tính năng Pro</h2>' +
+        '<p style="margin:0 0 20px;color:#475467;line-height:1.6">Tính năng ' + feature + ' dành cho QR Tools Pro. Xuất Excel vẫn miễn phí tại VietSoft; bạn có thể tự nhập tệp Excel vào QR Tools sau khi nâng cấp.</p>' +
+        '<div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap"><button type="button" id="vsQrToolsProPromptCancel" class="vs-btn vs-btn-secondary">Để sau</button><a href="https://qr.thangdc.com/" target="_blank" rel="noopener noreferrer" class="vs-btn vs-btn-primary" style="display:inline-flex;align-items:center;text-decoration:none">Mở QR Tools Pro</a></div></section>';
+    $('#vsQrToolsProPromptClose, #vsQrToolsProPromptCancel').off('click.qrToolsProPrompt').on('click.qrToolsProPrompt', function() {
+        modal.style.display = 'none';
+    });
+}
+
 function startPrintHistoryQrs(items, withMetadata) {
     var button = $('#vsPrintHistory');
     button.prop('disabled', true);
@@ -1685,39 +1706,10 @@ function startPrintHistoryQrs(items, withMetadata) {
     }
     $('#vsQrPrintPreviewClose, #vsQrPrintPreviewCancel').off('click.qrPrintPreview').on('click.qrPrintPreview', closePreview);
     $('#vsQrPrintPreviewDownload').off('click.qrPrintPreview').on('click.qrPrintPreview', function() {
-        var images = $('#vsQrPrintPreviewGrid img').toArray();
-        images.forEach(function(img, index) {
-            var link = document.createElement('a');
-            link.href = img.src;
-            link.download = 'vietsoft-qr-' + (index + 1) + '.png';
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-        });
-        $('#vsExportStatus').text('Đã yêu cầu tải ' + images.length + ' ảnh PNG. Trình duyệt có thể hỏi quyền tải nhiều tệp.');
+        showQrToolsProPrompt('tải ZIP hoặc ảnh QR');
     });
     $('#vsQrPrintPreviewPrint').off('click.qrPrintPreview').on('click.qrPrintPreview', function() {
-        var frame = document.getElementById('vsQrPrintFrame');
-        if (!frame) {
-            frame = document.createElement('iframe');
-            frame.id = 'vsQrPrintFrame';
-            frame.setAttribute('aria-hidden', 'true');
-            frame.style.cssText = 'position:fixed;width:1px;height:1px;border:0;opacity:0;pointer-events:none;left:-10000px;top:0;';
-            document.body.appendChild(frame);
-        }
-        var cells = [];
-        $('#vsQrPrintPreviewGrid .vs-qr-print-preview-card').each(function() {
-            cells.push(this.innerHTML);
-        });
-        var printDocument = frame.contentDocument || frame.contentWindow.document;
-        printDocument.open();
-        printDocument.write('<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>In ' + items.length + ' mã QR</title>' +
-            '<style>@page{margin:12mm}html,body{margin:0;padding:0;background:#fff}body{font-family:Arial,sans-serif;color:#101828}.qr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10mm 12mm;align-items:start}.qr-cell{display:flex;flex-direction:column;align-items:center;break-inside:avoid;page-break-inside:avoid;text-align:center;min-width:0}.qr-cell img{display:block;width:55mm;height:55mm;object-fit:contain}.qr-meta{width:100%;margin-top:3mm;font-size:10pt;line-height:1.35;overflow-wrap:anywhere;word-break:break-word}.qr-meta-line{margin:0 0 1mm}</style></head><body><div class="qr-grid">' + cells.join('') + '</div></body></html>');
-        printDocument.close();
-        setTimeout(function() {
-            frame.contentWindow.focus();
-            frame.contentWindow.print();
-        }, 250);
+        showQrToolsProPrompt('in nhiều mã QR');
     });
 
     var grid = $('#vsQrPrintPreviewGrid');
@@ -1969,7 +1961,7 @@ $(function(){
     $('#vsFileExportModalClose').on('click',closeFileExportModal);
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
     $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); executeFreeAction('export-excel'); });
-    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); executeFreeAction('export-zip'); });
+    $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); showQrToolsProPrompt('tải ZIP mã QR'); });
     $('#vsPrintHistory').on('click',function(){ printHistoryQrs(); });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
