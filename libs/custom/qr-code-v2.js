@@ -1631,23 +1631,23 @@ function getPrintMetadataOptions() {
 }
 
 function printHistoryQrs() {
-    var type = String(currentType || '').toLowerCase().trim();
-    var allItems = getHistory().filter(function(item) {
-        return String(item.type || '').toLowerCase().trim() === type && item.data;
-    });
-    var selectedItems = getSelectedHistoryItems(allItems);
-    var items = selectedItems.length ? selectedItems : getHistoryViewItems();
-
-    if (!items.length) {
-        $('#vsExportStatus').text('Chưa có mã QR để in.');
-        return;
-    }
-
     var modal = getPrintMetadataOptions();
     $(modal).addClass('is-open');
 
     $('#vsQrPrintConfirm').off('click.qrPrint').on('click.qrPrint', function() {
+        var type = String(currentType || '').toLowerCase().trim();
+        var allItems = getHistory().filter(function(item) {
+            return String(item.type || '').toLowerCase().trim() === type && item.data;
+        });
+        var selectedItems = getSelectedHistoryItems(allItems);
+        var items = selectedItems.length ? selectedItems : getHistoryViewItems();
+
         $(modal).removeClass('is-open');
+        if (!items.length) {
+            $('#vsExportStatus').text('Chưa có mã QR để in.');
+            return;
+        }
+
         startPrintHistoryQrs(items, $('#vsQrPrintWithMetadata').prop('checked'));
     });
 }
@@ -1962,7 +1962,7 @@ $(function(){
     $('#vsFileExportModal').on('click','[data-file-export-close="true"]',closeFileExportModal);
     $('#vsFileExportExcel').on('click',function(){ closeFileExportModal(); executeFreeAction('export-excel'); });
     $('#vsFileExportZip').on('click',function(){ closeFileExportModal(); showQrToolsProPrompt('tải ZIP mã QR'); });
-    $('#vsPrintHistory').on('click',function(){ printHistoryQrs(); });
+    $(document).off('click.qrPrintHistory', '#vsPrintHistory').on('click.qrPrintHistory', '#vsPrintHistory', function(e){ e.preventDefault(); printHistoryQrs(); });
     $('#vsSize,#vsLevel').on('change', function(){
         saveQrConfig();
         if (currentData) {
